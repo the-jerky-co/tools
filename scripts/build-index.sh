@@ -1,46 +1,83 @@
-#!/bin/bash
+#!/bin/sh
 # ============================================================
 #  build-index.sh
 #  Auto-generates index.html from the repo's folder/file structure.
 #  Called by watch-and-pr.sh after each file copy.
 #  Also run this manually to regenerate locally.
+#  POSIX sh compatible — no bash 4+ features (works on Synology DSM).
 # ============================================================
 
 REPO_DIR="${1:-$(pwd)}"
 OUTPUT="$REPO_DIR/index.html"
+TMPDIR_BASE="${TMPDIR:-/tmp}/build-index-$$"
+mkdir -p "$TMPDIR_BASE"
 
-# Collect all HTML tools (exclude index.html itself and scripts/)
-TOOLS=$(find "$REPO_DIR" -name "*.html" \
+# Collect all HTML tools, excluding Synology system dirs and repo internals
+find "$REPO_DIR" -name "*.html" \
   ! -name "index.html" \
   ! -path "*/scripts/*" \
   ! -path "*/.git*" \
-  | sort)
+  ! -path "*/#recycle*" \
+  ! -path "*/@eaDir*" \
+  ! -path "*/@tmp*" \
+  | sort > "$TMPDIR_BASE/files.txt"
 
-# Build category blocks as JSON-ish data for the template
-declare -A CATEGORIES
+# Build one temp file per category using awk to group files
+awk -v repo="$REPO_DIR/" '
+{
+  rel = $0
+  sub(repo, "", rel)
+  n = split(rel, parts, "/")
+  if (n < 2) next
+  cat = parts[1]
+  filename = parts[n]
+  sub(/\.html$/, "", filename)
+  # humanise: replace -_ with space
+  gsub(/[-_]/, " ", filename)
+  label = filename
+  print cat "\t" rel "\t" label
+}
+' "$TMPDIR_BASE/files.txt" | sort > "$TMPDIR_BASE/entries.txt"
 
-while IFS= read -r FILE; do
-  REL="${FILE#$REPO_DIR/}"
-  CATEGORY=$(echo "$REL" | cut -d'/' -f1)
-  FILENAME=$(basename "$REL" .html)
-  # Humanise filename: replace dashes/underscores with spaces, title case
-  LABEL=$(echo "$FILENAME" | sed 's/[-_]/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')
-  CATEGORIES["$CATEGORY"]+="<a href=\"$REL\" class=\"tool-card\" target=\"_blank\"><span class=\"tool-name\">$LABEL</span><span class=\"tool-arrow\">↗</span></a>"
-done <<< "$TOOLS"
+# Get unique sorted categories
+cut -f1 "$TMPDIR_BASE/entries.txt" | sort -u > "$TMPDIR_BASE/cats.txt"
 
-# Build category HTML blocks
 CATEGORY_BLOCKS=""
-for CAT in $(echo "${!CATEGORIES[@]}" | tr ' ' '\n' | sort); do
-  LABEL=$(echo "$CAT" | sed 's/[-_]/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2); print}')
-  CATEGORY_BLOCKS+="
+
+while IFS= read -r CAT; do
+  [ -z "$CAT" ] && continue
+
+  # Title-case the category name
+  CAT_LABEL=$(echo "$CAT" | sed 's/[-_]/ /g' | awk '{
+    for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)
+    print
+  }')
+
+  # Build card HTML for all files in this category
+  CARDS=""
+  while IFS='	' read -r ENTRY_CAT REL LABEL; do
+    [ "$ENTRY_CAT" = "$CAT" ] || continue
+    # Title-case each word of the label
+    TC_LABEL=$(echo "$LABEL" | awk '{
+      for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)
+      print
+    }')
+    CARDS="${CARDS}<a href=\"${REL}\" class=\"tool-card\" target=\"_blank\"><span class=\"tool-name\">${TC_LABEL}</span><span class=\"tool-arrow\">↗</span></a>"
+  done < "$TMPDIR_BASE/entries.txt"
+
+  [ -z "$CARDS" ] && continue
+
+  CATEGORY_BLOCKS="${CATEGORY_BLOCKS}
     <section class=\"category\">
       <h2 class=\"category-title\">
-        <span class=\"category-label\">$LABEL</span>
+        <span class=\"category-label\">${CAT_LABEL}</span>
         <span class=\"category-line\"></span>
       </h2>
-      <div class=\"tool-grid\">${CATEGORIES[$CAT]}</div>
+      <div class=\"tool-grid\">${CARDS}</div>
     </section>"
-done
+done < "$TMPDIR_BASE/cats.txt"
+
+rm -rf "$TMPDIR_BASE"
 
 # If no tools yet, show placeholder
 if [ -z "$CATEGORY_BLOCKS" ]; then
