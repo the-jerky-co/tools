@@ -84,7 +84,7 @@ while IFS= read -r FILE; do
   # Skip system/hidden directories
   case "$CAT" in '#'*|'@'*|'.'*) continue ;; esac
 
-  FNAME=$(basename "$REL" .html)
+  FNAME=$(basename "$REL" .html | sed 's/-protected$//')
   LABEL=$(title_case "$FNAME")
   HAS_FILES=1
 

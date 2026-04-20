@@ -1,0 +1,4 @@
+.env
+.watcher.log
+.watcher.log.old
+.idx_files_*
