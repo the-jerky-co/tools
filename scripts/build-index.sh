@@ -20,7 +20,7 @@ title_case() {
 find "$REPO_DIR" -name "*.html" \
   ! -name "index.html" \
   ! -path "*/scripts/*" \
-  ! -path "*/.git*" \
+  ! -path "*/.git/*" \
   ! -path "*/#recycle*" \
   ! -path "*/@eaDir*" \
   ! -path "*/@tmp*" \
