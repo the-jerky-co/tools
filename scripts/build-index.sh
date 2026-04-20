@@ -1,90 +1,67 @@
 #!/bin/sh
 # ============================================================
-#  build-index.sh
-#  Auto-generates index.html from the repo's folder/file structure.
-#  Called by watch-and-pr.sh after each file copy.
-#  Also run this manually to regenerate locally.
-#  POSIX sh compatible — no bash 4+ features (works on Synology DSM).
+#  build-index.sh  —  POSIX sh, no bash 4+ features, no temp files.
+#  Works on Synology DSM (bash 3.x / dash).
 # ============================================================
 
 REPO_DIR="${1:-$(pwd)}"
 OUTPUT="$REPO_DIR/index.html"
-TMPDIR_BASE="${TMPDIR:-/tmp}/build-index-$$"
-mkdir -p "$TMPDIR_BASE"
+BUILT_DATE=$(date '+%d %b %Y, %H:%M')
 
-# Collect all HTML tools, excluding Synology system dirs and repo internals
-find "$REPO_DIR" -name "*.html" \
+# Build category sections using a single awk pass over sorted find output.
+# find → sort → awk produces the full HTML block in one pipeline.
+CATEGORY_BLOCKS=$(find "$REPO_DIR" -name "*.html" \
   ! -name "index.html" \
   ! -path "*/scripts/*" \
   ! -path "*/.git*" \
   ! -path "*/#recycle*" \
   ! -path "*/@eaDir*" \
   ! -path "*/@tmp*" \
-  | sort > "$TMPDIR_BASE/files.txt"
-
-# Build one temp file per category using awk to group files
-awk -v repo="$REPO_DIR/" '
+  | sort | awk -v repo="$REPO_DIR" '
+BEGIN { last_cat = ""; out = "" }
 {
-  rel = $0
-  sub(repo, "", rel)
+  # Strip leading repo path + separator
+  rel = substr($0, length(repo) + 2)
+
   n = split(rel, parts, "/")
   if (n < 2) next
+
   cat = parts[1]
-  filename = parts[n]
-  sub(/\.html$/, "", filename)
-  # humanise: replace -_ with space
-  gsub(/[-_]/, " ", filename)
-  label = filename
-  print cat "\t" rel "\t" label
+  c1 = substr(cat, 1, 1)
+  if (c1 == "#" || c1 == "@" || c1 == ".") next
+
+  fname = parts[n]
+  sub(/\.html$/, "", fname)
+  gsub(/[-_]/, " ", fname)
+
+  # Title-case the file label
+  label = ""
+  nw = split(fname, ww, " ")
+  for (i = 1; i <= nw; i++)
+    label = label (i > 1 ? " " : "") toupper(substr(ww[i],1,1)) substr(ww[i],2)
+
+  # Title-case the category heading
+  cat_label = ""
+  nc = split(cat, cw, /[-_ ]/)
+  for (i = 1; i <= nc; i++)
+    cat_label = cat_label (i > 1 ? " " : "") toupper(substr(cw[i],1,1)) substr(cw[i],2)
+
+  # Open a new section when the category changes
+  if (cat != last_cat) {
+    if (last_cat != "")
+      out = out "</div></section>"
+    out = out "<section class=\"category\"><h2 class=\"category-title\"><span class=\"category-label\">" cat_label "</span><span class=\"category-line\"></span></h2><div class=\"tool-grid\">"
+    last_cat = cat
+  }
+
+  out = out "<a href=\"" rel "\" class=\"tool-card\" target=\"_blank\"><span class=\"tool-name\">" label "</span><span class=\"tool-arrow\">↗</span></a>"
 }
-' "$TMPDIR_BASE/files.txt" | sort > "$TMPDIR_BASE/entries.txt"
+END { if (last_cat != "") print out "</div></section>" }
+')
 
-# Get unique sorted categories
-cut -f1 "$TMPDIR_BASE/entries.txt" | sort -u > "$TMPDIR_BASE/cats.txt"
-
-CATEGORY_BLOCKS=""
-
-while IFS= read -r CAT; do
-  [ -z "$CAT" ] && continue
-
-  # Title-case the category name
-  CAT_LABEL=$(echo "$CAT" | sed 's/[-_]/ /g' | awk '{
-    for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)
-    print
-  }')
-
-  # Build card HTML for all files in this category
-  CARDS=""
-  while IFS='	' read -r ENTRY_CAT REL LABEL; do
-    [ "$ENTRY_CAT" = "$CAT" ] || continue
-    # Title-case each word of the label
-    TC_LABEL=$(echo "$LABEL" | awk '{
-      for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)
-      print
-    }')
-    CARDS="${CARDS}<a href=\"${REL}\" class=\"tool-card\" target=\"_blank\"><span class=\"tool-name\">${TC_LABEL}</span><span class=\"tool-arrow\">↗</span></a>"
-  done < "$TMPDIR_BASE/entries.txt"
-
-  [ -z "$CARDS" ] && continue
-
-  CATEGORY_BLOCKS="${CATEGORY_BLOCKS}
-    <section class=\"category\">
-      <h2 class=\"category-title\">
-        <span class=\"category-label\">${CAT_LABEL}</span>
-        <span class=\"category-line\"></span>
-      </h2>
-      <div class=\"tool-grid\">${CARDS}</div>
-    </section>"
-done < "$TMPDIR_BASE/cats.txt"
-
-rm -rf "$TMPDIR_BASE"
-
-# If no tools yet, show placeholder
 if [ -z "$CATEGORY_BLOCKS" ]; then
   CATEGORY_BLOCKS='<p class="empty">No tools published yet. Drop an HTML file into a department folder on the NAS to get started.</p>'
 fi
-
-BUILT_DATE=$(date '+%d %b %Y, %H:%M')
 
 cat > "$OUTPUT" <<HTML
 <!DOCTYPE html>
@@ -116,7 +93,6 @@ cat > "$OUTPUT" <<HTML
       padding: 0 0 80px;
     }
 
-    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 48px 64px 40px;
@@ -134,9 +110,7 @@ cat > "$OUTPUT" <<HTML
       line-height: 1;
     }
 
-    .site-title span {
-      color: var(--accent);
-    }
+    .site-title span { color: var(--accent); }
 
     .site-meta {
       font-family: 'DM Mono', monospace;
@@ -146,17 +120,13 @@ cat > "$OUTPUT" <<HTML
       line-height: 1.8;
     }
 
-    /* ── Layout ── */
     main {
       max-width: 1200px;
       margin: 0 auto;
       padding: 64px 64px 0;
     }
 
-    /* ── Category ── */
-    .category {
-      margin-bottom: 56px;
-    }
+    .category { margin-bottom: 56px; }
 
     .category-title {
       display: flex;
@@ -177,7 +147,6 @@ cat > "$OUTPUT" <<HTML
       background: var(--border);
     }
 
-    /* ── Tool Grid ── */
     .tool-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -198,10 +167,7 @@ cat > "$OUTPUT" <<HTML
       gap: 12px;
     }
 
-    .tool-card:hover {
-      background: var(--card-hover);
-      color: var(--accent);
-    }
+    .tool-card:hover { background: var(--card-hover); color: var(--accent); }
 
     .tool-name {
       font-size: 0.95rem;
@@ -216,10 +182,7 @@ cat > "$OUTPUT" <<HTML
       flex-shrink: 0;
     }
 
-    .tool-card:hover .tool-arrow {
-      opacity: 1;
-      transform: translate(2px, -2px);
-    }
+    .tool-card:hover .tool-arrow { opacity: 1; transform: translate(2px, -2px); }
 
     .empty {
       color: var(--muted);
@@ -228,7 +191,6 @@ cat > "$OUTPUT" <<HTML
       padding: 32px 0;
     }
 
-    /* ── Footer ── */
     footer {
       margin-top: 80px;
       padding: 0 64px;
@@ -275,4 +237,4 @@ cat > "$OUTPUT" <<HTML
 </html>
 HTML
 
-echo "Index built → $OUTPUT"
+echo "Index built: $OUTPUT"
