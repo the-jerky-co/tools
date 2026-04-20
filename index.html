@@ -27,7 +27,6 @@
       padding: 0 0 80px;
     }
 
-    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 48px 64px 40px;
@@ -45,9 +44,7 @@
       line-height: 1;
     }
 
-    .site-title span {
-      color: var(--accent);
-    }
+    .site-title span { color: var(--accent); }
 
     .site-meta {
       font-family: 'DM Mono', monospace;
@@ -57,17 +54,13 @@
       line-height: 1.8;
     }
 
-    /* ── Layout ── */
     main {
       max-width: 1200px;
       margin: 0 auto;
       padding: 64px 64px 0;
     }
 
-    /* ── Category ── */
-    .category {
-      margin-bottom: 56px;
-    }
+    .category { margin-bottom: 56px; }
 
     .category-title {
       display: flex;
@@ -88,7 +81,6 @@
       background: var(--border);
     }
 
-    /* ── Tool Grid ── */
     .tool-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -109,10 +101,7 @@
       gap: 12px;
     }
 
-    .tool-card:hover {
-      background: var(--card-hover);
-      color: var(--accent);
-    }
+    .tool-card:hover { background: var(--card-hover); color: var(--accent); }
 
     .tool-name {
       font-size: 0.95rem;
@@ -127,10 +116,7 @@
       flex-shrink: 0;
     }
 
-    .tool-card:hover .tool-arrow {
-      opacity: 1;
-      transform: translate(2px, -2px);
-    }
+    .tool-card:hover .tool-arrow { opacity: 1; transform: translate(2px, -2px); }
 
     .empty {
       color: var(--muted);
@@ -139,7 +125,6 @@
       padding: 32px 0;
     }
 
-    /* ── Footer ── */
     footer {
       margin-top: 80px;
       padding: 0 64px;
@@ -172,26 +157,12 @@
     <h1 class="site-title">Team<span>Tools</span></h1>
     <div class="site-meta">
       Internal use only<br>
-      Updated 20 Apr 2026, 09:43
+      Updated 20 Apr 2026, 10:55
     </div>
   </header>
 
   <main>
-    
-    <section class="category">
-      <h2 class="category-title">
-        <span class="category-label">Finance</span>
-        <span class="category-line"></span>
-      </h2>
-      <div class="tool-grid"><a href="Finance/RETAIL-NSW_Report.html" class="tool-card" target="_blank"><span class="tool-name">RETAIL NSW Report</span><span class="tool-arrow">↗</span></a><a href="Finance/RETAIL-NT_Report.html" class="tool-card" target="_blank"><span class="tool-name">RETAIL NT Report</span><span class="tool-arrow">↗</span></a><a href="Finance/RETAIL-QLD_Report.html" class="tool-card" target="_blank"><span class="tool-name">RETAIL QLD Report</span><span class="tool-arrow">↗</span></a><a href="Finance/RETAIL-VIC_Report.html" class="tool-card" target="_blank"><span class="tool-name">RETAIL VIC Report</span><span class="tool-arrow">↗</span></a><a href="Finance/RETAIL-WA_Report.html" class="tool-card" target="_blank"><span class="tool-name">RETAIL WA Report</span><span class="tool-arrow">↗</span></a></div>
-    </section>
-    <section class="category">
-      <h2 class="category-title">
-        <span class="category-label">Marketing</span>
-        <span class="category-line"></span>
-      </h2>
-      <div class="tool-grid"><a href="Marketing/New-doc.html" class="tool-card" target="_blank"><span class="tool-name">New Doc</span><span class="tool-arrow">↗</span></a><a href="Marketing/tjc-timeline.html" class="tool-card" target="_blank"><span class="tool-name">Tjc Timeline</span><span class="tool-arrow">↗</span></a></div>
-    </section>
+    <p class="empty">No tools published yet. Drop an HTML file into a department folder on the NAS to get started.</p>
   </main>
 
   <footer>Auto-generated from repository structure</footer>
