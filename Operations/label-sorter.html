@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Label Sorter — The Jerky Co</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+<style>
+    :root {
+        --bg: #0f0f0f;
+        --panel: #1a1a1a;
+        --panel-hi: #242424;
+        --border: #2e2e2e;
+        --text: #e8e8e8;
+        --text-dim: #888;
+        --text-faint: #555;
+        --accent: #d4ff3a;
+        --accent-dim: #9bbf20;
+        --danger: #ff4d4d;
+        --warn: #ffaa33;
+        --grid: rgba(255,255,255,0.02);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        min-height: 100vh;
+        background-image:
+            linear-gradient(var(--grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 32px 32px;
+    }
+
+    .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+    }
+
+    .header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 24px;
+        margin-bottom: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .header-title {
+        font-family: 'Archivo', sans-serif;
+        font-weight: 900;
+        font-size: 42px;
+        letter-spacing: -0.02em;
+        line-height: 0.95;
+        text-transform: uppercase;
+    }
+
+    .header-title .accent {
+        color: var(--accent);
+    }
+
+    .header-meta {
+        font-size: 11px;
+        color: var(--text-dim);
+        text-align: right;
+        line-height: 1.8;
+    }
+
+    .header-meta .label {
+        color: var(--text-faint);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .description {
+        color: var(--text-dim);
+        margin-bottom: 32px;
+        max-width: 560px;
+    }
+
+    .description strong {
+        color: var(--text);
+        font-weight: 500;
+    }
+
+    .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 24px;
+        margin-bottom: 16px;
+    }
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+    }
+
+    .panel-header .step {
+        color: var(--accent);
+        font-weight: 700;
+    }
+
+    .dropzone {
+        display: block;
+        border: 2px dashed var(--border);
+        background: var(--panel-hi);
+        padding: 48px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        position: relative;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+        border-color: var(--accent);
+        background: rgba(212, 255, 58, 0.04);
+    }
+
+    .dropzone.has-file {
+        border-style: solid;
+        border-color: var(--accent-dim);
+        background: rgba(212, 255, 58, 0.03);
+    }
+
+    .dropzone-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+        color: var(--text-faint);
+        font-family: 'Archivo', sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+    }
+
+    .dropzone.has-file .dropzone-icon {
+        color: var(--accent);
+    }
+
+    .dropzone-text {
+        font-size: 13px;
+        color: var(--text);
+        margin-bottom: 4px;
+    }
+
+    .dropzone-sub {
+        font-size: 11px;
+        color: var(--text-dim);
+    }
+
+    .dropzone input {
+        display: none;
+    }
+
+    .file-info {
+        display: none;
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: var(--panel-hi);
+        border-left: 3px solid var(--accent);
+        font-size: 12px;
+    }
+
+    .file-info.active { display: block; }
+
+    .file-info .filename {
+        color: var(--text);
+        font-weight: 500;
+        word-break: break-all;
+    }
+
+    .file-info .meta {
+        color: var(--text-dim);
+        font-size: 11px;
+        margin-top: 4px;
+    }
+
+    .btn {
+        background: var(--accent);
+        color: var(--bg);
+        border: none;
+        padding: 14px 24px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.15s ease;
+        position: relative;
+    }
+
+    .btn:hover:not(:disabled) {
+        background: #e2ff5a;
+        transform: translateY(-1px);
+    }
+
+    .btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .btn:disabled {
+        background: var(--border);
+        color: var(--text-faint);
+        cursor: not-allowed;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: var(--panel-hi);
+        border-color: var(--text-dim);
+    }
+
+    .progress-wrap {
+        display: none;
+        margin-top: 16px;
+    }
+
+    .progress-wrap.active { display: block; }
+
+    .progress-bar {
+        height: 4px;
+        background: var(--panel-hi);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.2s ease;
+    }
+
+    .progress-text {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .results {
+        display: none;
+    }
+
+    .results.active { display: block; }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        margin-bottom: 16px;
+    }
+
+    .stat {
+        background: var(--panel);
+        padding: 16px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        font-family: 'Archivo', sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        color: var(--text);
+    }
+
+    .stat-value.accent { color: var(--accent); }
+
+    .warning {
+        background: rgba(255, 170, 51, 0.08);
+        border-left: 3px solid var(--warn);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        font-size: 12px;
+        color: var(--text);
+    }
+
+    .warning-label {
+        color: var(--warn);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 10px;
+        margin-bottom: 4px;
+    }
+
+    .error {
+        background: rgba(255, 77, 77, 0.08);
+        border-left: 3px solid var(--danger);
+        padding: 12px 16px;
+        margin-top: 16px;
+        font-size: 12px;
+        color: var(--text);
+        display: none;
+    }
+
+    .error.active { display: block; }
+
+    .preview-list {
+        background: var(--panel-hi);
+        border: 1px solid var(--border);
+        padding: 16px;
+        margin-bottom: 16px;
+        font-size: 11px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        color: var(--text-dim);
+        border-bottom: 1px dotted var(--border);
+    }
+
+    .preview-item:last-child { border-bottom: none; }
+
+    .preview-item .ref {
+        color: var(--accent);
+        font-weight: 500;
+    }
+
+    .preview-item .was {
+        color: var(--text-faint);
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .footer {
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text-faint);
+        text-align: center;
+        line-height: 1.8;
+    }
+
+    .footer code {
+        color: var(--text-dim);
+        background: var(--panel);
+        padding: 1px 6px;
+    }
+
+    @media (max-width: 560px) {
+        .header-title { font-size: 32px; }
+        .stat-grid { grid-template-columns: 1fr; }
+        .actions { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1 class="header-title">Label<br>Sorter<span class="accent">.</span></h1>
+        </div>
+        <div class="header-meta">
+            <div><span class="label">Utility</span> / AP eParcel</div>
+            <div><span class="label">Sort</span> / Ref Ascending</div>
+            <div><span class="label">Runtime</span> / Browser</div>
+        </div>
+    </header>
+
+    <p class="description">
+        Fix the out-of-order label issue from ShipHQ. Drop in a bulk eParcel PDF, and get back the same pages reordered by <strong>Ref number</strong> (ascending) — matching the pick list.
+        Runs entirely in your browser. Nothing gets uploaded anywhere.
+    </p>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span class="step">01</span> &nbsp; Input PDF</span>
+            <span id="input-status">—</span>
+        </div>
+        <label class="dropzone" id="dropzone">
+            <div class="dropzone-icon">+</div>
+            <div class="dropzone-text">Click to select or drag a PDF here</div>
+            <div class="dropzone-sub">Bulk label PDF from ShipHQ / Australia Post eParcel</div>
+            <input type="file" id="file-input" accept="application/pdf,.pdf">
+        </label>
+
+        <div class="file-info" id="file-info">
+            <div class="filename" id="file-name">—</div>
+            <div class="meta" id="file-meta">—</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span class="step">02</span> &nbsp; Process</span>
+            <span id="process-status">Waiting</span>
+        </div>
+
+        <button class="btn" id="process-btn" disabled>Reorder by Ref Number</button>
+
+        <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="progress-text">
+                <span id="progress-label">Reading pages…</span>
+                <span id="progress-pct">0%</span>
+            </div>
+        </div>
+
+        <div class="error" id="error">—</div>
+    </div>
+
+    <div class="results" id="results">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span class="step">03</span> &nbsp; Result</span>
+                <span style="color: var(--accent);">Ready</span>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat">
+                    <div class="stat-label">Pages</div>
+                    <div class="stat-value" id="stat-pages">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">First Ref</div>
+                    <div class="stat-value accent" id="stat-first">—</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Last Ref</div>
+                    <div class="stat-value accent" id="stat-last">—</div>
+                </div>
+            </div>
+
+            <div class="warning" id="warning" style="display: none;">
+                <div class="warning-label">Heads up</div>
+                <div id="warning-text">—</div>
+            </div>
+
+            <div class="preview-list" id="preview-list"></div>
+
+            <div class="actions">
+                <button class="btn" id="download-btn">Download Sorted PDF</button>
+                <button class="btn btn-secondary" id="reset-btn">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Extracts <code>######_########</code> pattern from each page · sorts ascending · writes new PDF · all client-side
+    </div>
+
+</div>
+
+<script>
+(() => {
+    const REF_PATTERN = /\b(\d{6})_\d{8,}\b/;
+
+    const els = {
+        dropzone: document.getElementById('dropzone'),
+        fileInput: document.getElementById('file-input'),
+        fileInfo: document.getElementById('file-info'),
+        fileName: document.getElementById('file-name'),
+        fileMeta: document.getElementById('file-meta'),
+        inputStatus: document.getElementById('input-status'),
+        processBtn: document.getElementById('process-btn'),
+        processStatus: document.getElementById('process-status'),
+        progressWrap: document.getElementById('progress-wrap'),
+        progressFill: document.getElementById('progress-fill'),
+        progressLabel: document.getElementById('progress-label'),
+        progressPct: document.getElementById('progress-pct'),
+        error: document.getElementById('error'),
+        results: document.getElementById('results'),
+        statPages: document.getElementById('stat-pages'),
+        statFirst: document.getElementById('stat-first'),
+        statLast: document.getElementById('stat-last'),
+        warning: document.getElementById('warning'),
+        warningText: document.getElementById('warning-text'),
+        previewList: document.getElementById('preview-list'),
+        downloadBtn: document.getElementById('download-btn'),
+        resetBtn: document.getElementById('reset-btn'),
+    };
+
+    const state = {
+        file: null,
+        sortedPdfBytes: null,
+        outputName: null,
+    };
+
+    // --- File handling ---
+    function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function setFile(file) {
+        if (!file) return;
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+            showError('That doesn\'t look like a PDF. Try again.');
+            return;
+        }
+        state.file = file;
+        els.fileName.textContent = file.name;
+        els.fileMeta.textContent = formatBytes(file.size);
+        els.fileInfo.classList.add('active');
+        els.dropzone.classList.add('has-file');
+        els.inputStatus.textContent = 'Loaded';
+        els.inputStatus.style.color = 'var(--accent)';
+        els.processBtn.disabled = false;
+        hideError();
+        // Reset any previous output
+        els.results.classList.remove('active');
+        state.sortedPdfBytes = null;
+    }
+
+    els.dropzone.addEventListener('click', () => els.fileInput.click());
+    els.fileInput.addEventListener('change', (e) => setFile(e.target.files[0]));
+
+    ['dragover', 'dragenter'].forEach(ev => {
+        els.dropzone.addEventListener(ev, (e) => {
+            e.preventDefault();
+            els.dropzone.classList.add('dragover');
+        });
+    });
+    ['dragleave', 'drop'].forEach(ev => {
+        els.dropzone.addEventListener(ev, (e) => {
+            e.preventDefault();
+            els.dropzone.classList.remove('dragover');
+        });
+    });
+    els.dropzone.addEventListener('drop', (e) => {
+        if (e.dataTransfer.files.length > 0) setFile(e.dataTransfer.files[0]);
+    });
+
+    // --- Error handling ---
+    function showError(msg) {
+        els.error.textContent = msg;
+        els.error.classList.add('active');
+    }
+    function hideError() {
+        els.error.classList.remove('active');
+    }
+
+    // --- Progress ---
+    function setProgress(pct, label) {
+        els.progressFill.style.width = pct + '%';
+        els.progressPct.textContent = Math.round(pct) + '%';
+        if (label) els.progressLabel.textContent = label;
+    }
+
+    // --- Core processing ---
+    async function processFile() {
+        if (!state.file) return;
+
+        hideError();
+        els.processBtn.disabled = true;
+        els.processStatus.textContent = 'Running';
+        els.processStatus.style.color = 'var(--warn)';
+        els.progressWrap.classList.add('active');
+        els.results.classList.remove('active');
+        setProgress(0, 'Reading PDF…');
+
+        try {
+            const arrayBuffer = await state.file.arrayBuffer();
+
+            // Extract refs via pdf.js
+            const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+            const pageCount = pdfDoc.numPages;
+            const pageRefs = []; // { originalIndex (0-based), ref (number|null) }
+
+            for (let i = 1; i <= pageCount; i++) {
+                const page = await pdfDoc.getPage(i);
+                const content = await page.getTextContent();
+                const text = content.items.map(it => it.str).join(' ');
+                const match = text.match(REF_PATTERN);
+                pageRefs.push({
+                    originalIndex: i - 1,
+                    ref: match ? parseInt(match[1], 10) : null,
+                });
+                setProgress((i / pageCount) * 50, `Reading page ${i} of ${pageCount}…`);
+            }
+
+            // Sort: refs ascending, no-ref pages at the end in original order
+            const sorted = pageRefs.slice().sort((a, b) => {
+                if (a.ref === null && b.ref === null) return a.originalIndex - b.originalIndex;
+                if (a.ref === null) return 1;
+                if (b.ref === null) return -1;
+                if (a.ref !== b.ref) return a.ref - b.ref;
+                return a.originalIndex - b.originalIndex;
+            });
+
+            setProgress(55, 'Reassembling PDF…');
+
+            // Use pdf-lib to build the new PDF in the sorted order
+            const srcPdf = await PDFLib.PDFDocument.load(arrayBuffer);
+            const outPdf = await PDFLib.PDFDocument.create();
+            const indicesToCopy = sorted.map(s => s.originalIndex);
+            const copiedPages = await outPdf.copyPages(srcPdf, indicesToCopy);
+
+            for (let i = 0; i < copiedPages.length; i++) {
+                outPdf.addPage(copiedPages[i]);
+                if (i % 10 === 0) {
+                    setProgress(55 + (i / copiedPages.length) * 40, `Writing page ${i + 1} of ${copiedPages.length}…`);
+                }
+            }
+
+            setProgress(98, 'Finalising…');
+            const bytes = await outPdf.save();
+            state.sortedPdfBytes = bytes;
+
+            // Output filename
+            const baseName = state.file.name.replace(/\.pdf$/i, '');
+            state.outputName = `${baseName}_sorted.pdf`;
+
+            // Render results
+            renderResults(sorted, pageCount);
+
+            setProgress(100, 'Done');
+            els.processStatus.textContent = 'Complete';
+            els.processStatus.style.color = 'var(--accent)';
+        } catch (err) {
+            console.error(err);
+            showError('Something went wrong: ' + (err.message || err));
+            els.processStatus.textContent = 'Error';
+            els.processStatus.style.color = 'var(--danger)';
+        } finally {
+            els.processBtn.disabled = false;
+            setTimeout(() => {
+                els.progressWrap.classList.remove('active');
+            }, 600);
+        }
+    }
+
+    function renderResults(sorted, pageCount) {
+        const withRef = sorted.filter(s => s.ref !== null);
+        const missing = sorted.filter(s => s.ref === null);
+
+        els.statPages.textContent = pageCount;
+        els.statFirst.textContent = withRef.length > 0 ? withRef[0].ref : '—';
+        els.statLast.textContent = withRef.length > 0 ? withRef[withRef.length - 1].ref : '—';
+
+        // Warning for missing refs
+        if (missing.length > 0) {
+            els.warning.style.display = 'block';
+            els.warningText.textContent = `${missing.length} page(s) had no detectable Ref number. These were placed at the end of the PDF in their original order. Original page numbers: ${missing.map(m => m.originalIndex + 1).join(', ')}`;
+        } else {
+            els.warning.style.display = 'none';
+        }
+
+        // Preview: first 10 pages in new order
+        const previewCount = Math.min(10, sorted.length);
+        let previewHtml = '';
+        for (let i = 0; i < previewCount; i++) {
+            const s = sorted[i];
+            const refLabel = s.ref !== null ? `Ref ${s.ref}` : 'No Ref';
+            previewHtml += `
+                <div class="preview-item">
+                    <span>${String(i + 1).padStart(3, '0')} &nbsp; <span class="ref">${refLabel}</span></span>
+                    <span class="was">was page ${s.originalIndex + 1}</span>
+                </div>`;
+        }
+        if (sorted.length > previewCount) {
+            previewHtml += `<div class="preview-item" style="justify-content: center; color: var(--text-faint); padding-top: 8px;">+ ${sorted.length - previewCount} more pages</div>`;
+        }
+        els.previewList.innerHTML = previewHtml;
+
+        els.results.classList.add('active');
+    }
+
+    function downloadSorted() {
+        if (!state.sortedPdfBytes) return;
+        const blob = new Blob([state.sortedPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = state.outputName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function reset() {
+        state.file = null;
+        state.sortedPdfBytes = null;
+        state.outputName = null;
+        els.fileInput.value = '';
+        els.fileInfo.classList.remove('active');
+        els.dropzone.classList.remove('has-file');
+        els.inputStatus.textContent = '—';
+        els.inputStatus.style.color = '';
+        els.processBtn.disabled = true;
+        els.processStatus.textContent = 'Waiting';
+        els.processStatus.style.color = '';
+        els.results.classList.remove('active');
+        els.progressWrap.classList.remove('active');
+        setProgress(0, 'Reading pages…');
+        hideError();
+    }
+
+    els.processBtn.addEventListener('click', processFile);
+    els.downloadBtn.addEventListener('click', downloadSorted);
+    els.resetBtn.addEventListener('click', reset);
+})();
+</script>
+</body>
+</html>
