@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TJC Klaviyo Naming Convention Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-hi: #242424;
+    --border: #2e2e2e;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #d4ff3a;
+    --accent-dim: #9bbf20;
+    --accent-hover: #e2ff5a;
+    --danger: #ff4d4d;
+    --warn: #ffaa33;
+    --grid: rgba(255,255,255,0.02);
+    --font-display: 'Futura', 'Futura PT', 'Futura Std', 'Trebuchet MS', 'Century Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+/* Header */
+.doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.doc-title { font-size: 56px; }
+.doc-title .accent { color: var(--accent); }
+.doc-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.9;
+}
+.doc-meta .label {
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.lede { color: var(--text-dim); margin-bottom: 48px; max-width: 640px; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+/* Section */
+section { margin-bottom: 56px; }
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+.section-title { font-size: 28px; }
+
+h3.sub-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+    color: var(--text);
+    margin: 24px 0 10px;
+}
+
+p { margin-bottom: 12px; color: var(--text-dim); }
+p strong { color: var(--text); font-weight: 500; }
+
+/* Panel */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+}
+
+/* Tabs */
+.tab-row {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+.tab {
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.tab:hover { color: var(--text-dim); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Form elements */
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.form-select, .form-input {
+    width: 100%;
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.form-select:focus, .form-input:focus { border-color: var(--accent); }
+.form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Output */
+.output-box {
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 12px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
+.output-empty { color: var(--text-faint); font-weight: 400; font-size: 13px; }
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 14px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--panel-hi); border-color: var(--text-dim); transform: translateY(-1px); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Copied toast */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Reference grid */
+.ref-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    font-size: 12px;
+}
+.ref-grid .code {
+    background: var(--panel);
+    padding: 8px 14px;
+    color: var(--accent);
+    font-weight: 700;
+}
+.ref-grid .desc {
+    background: var(--panel);
+    padding: 8px 14px;
+    color: var(--text-dim);
+}
+
+/* Alert */
+.alert-warn {
+    background: rgba(255, 170, 51, 0.08);
+    border-left: 3px solid var(--warn);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+.alert-warn .tag {
+    color: var(--warn);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    margin-bottom: 4px;
+}
+
+/* Footer */
+.doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    line-height: 1.9;
+}
+
+@media (max-width: 640px) {
+    .doc-title { font-size: 40px; }
+    .section-title { font-size: 22px; }
+    .form-row { grid-template-columns: 1fr; }
+    .tab { padding: 10px 12px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="doc-header">
+        <div>
+            <h1 class="display doc-title">Klaviyo<br>Naming Gen<span class="accent">.</span></h1>
+        </div>
+        <div class="doc-meta">
+            <div><span class="label">Utility</span> / Klaviyo Naming</div>
+            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Owner</span> / Sheldon</div>
+        </div>
+    </header>
+
+    <p class="lede">
+        Select the asset type, fill in the fields, and get the correct Klaviyo naming string. <strong>Copy it. Paste it. Move on.</strong>
+    </p>
+
+    <!-- Tab navigation -->
+    <div class="tab-row">
+        <button class="tab active" data-tab="campaign" onclick="switchTab('campaign')">Campaign</button>
+        <button class="tab" data-tab="flow" onclick="switchTab('flow')">Flow</button>
+        <button class="tab" data-tab="segment" onclick="switchTab('segment')">Segment / List</button>
+        <button class="tab" data-tab="form" onclick="switchTab('form')">Form</button>
+        <button class="tab" data-tab="transactional" onclick="switchTab('transactional')">Transactional</button>
+    </div>
+
+    <!-- ============ CAMPAIGN ============ -->
+    <div id="tab-campaign" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Campaign Details</span>
+                <span>YY-MM-DD | CHANNEL | TYPE | TOPIC</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-input" id="c-date" onchange="generateCampaign()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Channel</label>
+                    <select class="form-select" id="c-channel" onchange="generateCampaign()">
+                        <option value="">Select channel...</option>
+                        <option value="ONL">ONL — Online / DTC</option>
+                        <option value="RTL">RTL — Retail / Stores</option>
+                        <option value="WHS">WHS — Wholesale</option>
+                        <option value="SUB">SUB — Subscriptions</option>
+                        <option value="LOY">LOY — Loyalty Club</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="c-type" onchange="generateCampaign()">
+                        <option value="">Select type...</option>
+                        <option value="PROMO">PROMO — Sale / Discount / Offer</option>
+                        <option value="NEWS">NEWS — Newsletter / Update</option>
+                        <option value="PROD">PROD — Product Launch</option>
+                        <option value="ENG">ENG — Engagement / Interactive</option>
+                        <option value="COMP">COMP — Competition</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Topic / Name</label>
+                <input type="text" class="form-input" id="c-topic" placeholder="e.g. Flash Sale, New Biltong Range, Weekly Roundup" oninput="generateCampaign()">
+            </div>
+
+            <div class="form-group" style="margin-top:8px;">
+                <label class="form-label" style="margin-bottom:8px;">
+                    <input type="checkbox" id="c-sms" onchange="generateCampaign()" style="margin-right:6px;"> SMS variant
+                </label>
+            </div>
+        </div>
+
+        <div class="output-box" id="c-output"><span class="output-empty">Fill in the fields above...</span></div>
+        <div class="btn-row">
+            <button class="btn" onclick="copyOutput('c-output')">Copy to Clipboard</button>
+            <button class="btn btn-secondary" onclick="resetForm('campaign')">Reset</button>
+        </div>
+    </div>
+
+    <!-- ============ FLOW ============ -->
+    <div id="tab-flow" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Flow Details</span>
+                <span>CHANNEL | STAGE | NAME | (v.DATE)</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Channel</label>
+                    <select class="form-select" id="f-channel" onchange="generateFlow()">
+                        <option value="">Select channel...</option>
+                        <option value="ONL">ONL — Online / DTC</option>
+                        <option value="RTL">RTL — Retail / Stores</option>
+                        <option value="WHS">WHS — Wholesale</option>
+                        <option value="SUB">SUB — Subscriptions</option>
+                        <option value="LOY">LOY — Loyalty Club</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Stage</label>
+                    <select class="form-select" id="f-stage" onchange="generateFlow()">
+                        <option value="">Select stage...</option>
+                        <option value="ACQ">ACQ — Acquisition (Welcome, Lead Magnets)</option>
+                        <option value="RET">RET — Retention (Post-Purchase, Cross-Sell)</option>
+                        <option value="LOY">LOY — Loyalty (VIP, Anniversary)</option>
+                        <option value="WIN">WIN — Winback (Lapsed, Sunset)</option>
+                        <option value="REC">REC — Recovery (Cart, Checkout, Payment)</option>
+                        <option value="ADM">ADM — Admin (Back in Stock, Utility)</option>
+                        <option value="TX">TX — Transactional (Receipts, Shipping)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Flow Name</label>
+                <input type="text" class="form-input" id="f-name" placeholder="e.g. Welcome Series, Abandoned Checkout, Failed Payment Recovery" oninput="generateFlow()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Version Date</label>
+                <input type="date" class="form-input" id="f-date" onchange="generateFlow()">
+            </div>
+
+            <div class="form-group" style="margin-top:8px;">
+                <label class="form-label" style="margin-bottom:8px;">
+                    <input type="checkbox" id="f-sms" onchange="generateFlow()" style="margin-right:6px;"> SMS variant
+                </label>
+            </div>
+        </div>
+
+        <div class="output-box" id="f-output"><span class="output-empty">Fill in the fields above...</span></div>
+        <div class="btn-row">
+            <button class="btn" onclick="copyOutput('f-output')">Copy to Clipboard</button>
+            <button class="btn btn-secondary" onclick="resetForm('flow')">Reset</button>
+        </div>
+    </div>
+
+    <!-- ============ SEGMENT / LIST ============ -->
+    <div id="tab-segment" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Segment / List Details</span>
+                <span>CHANNEL | SEG/LIST | SUB-GROUP</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Channel</label>
+                    <select class="form-select" id="s-channel" onchange="generateSegment()">
+                        <option value="">Select channel...</option>
+                        <option value="ONL">ONL — Online / DTC</option>
+                        <option value="RTL">RTL — Retail / Stores</option>
+                        <option value="WHS">WHS — Wholesale</option>
+                        <option value="SUB">SUB — Subscriptions</option>
+                        <option value="LOY">LOY — Loyalty Club</option>
+                        <option value="GLOBAL">GLOBAL — Cross-Pillar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asset Type</label>
+                    <select class="form-select" id="s-type" onchange="generateSegment()">
+                        <option value="">Select type...</option>
+                        <option value="SEG">SEG — Segment (Dynamic)</option>
+                        <option value="LIST">LIST — List (Static)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Sub-Group / Logic</label>
+                <input type="text" class="form-input" id="s-name" placeholder="e.g. VIC - High Value, Active Stockists, Tier 1 — Clicked 30 Days" oninput="generateSegment()">
+            </div>
+        </div>
+
+        <div class="output-box" id="s-output"><span class="output-empty">Fill in the fields above...</span></div>
+        <div class="btn-row">
+            <button class="btn" onclick="copyOutput('s-output')">Copy to Clipboard</button>
+            <button class="btn btn-secondary" onclick="resetForm('segment')">Reset</button>
+        </div>
+    </div>
+
+    <!-- ============ FORM ============ -->
+    <div id="tab-form" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Form Details</span>
+                <span>AREA - TYPE - FORMAT - DETAIL - DATE</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Area</label>
+                    <select class="form-select" id="fo-area" onchange="generateForm()">
+                        <option value="">Select area...</option>
+                        <option value="ONL">ONL — Online</option>
+                        <option value="RTL">RTL — Physical Store</option>
+                        <option value="WHS">WHS — Wholesale</option>
+                        <option value="SUB">SUB — Subscription</option>
+                        <option value="LOY">LOY — Loyalty Club</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type (Goal)</label>
+                    <select class="form-select" id="fo-type" onchange="generateForm()">
+                        <option value="">Select type...</option>
+                        <option value="GEN">GEN — General Newsletter</option>
+                        <option value="COMP">COMP — Competition / Giveaway</option>
+                        <option value="WARN">WARN — Age Gate / Warning</option>
+                        <option value="OOS">OOS — Back in Stock</option>
+                        <option value="VIP">VIP — Early Access / Exclusive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Format (Behaviour)</label>
+                    <select class="form-select" id="fo-format" onchange="generateForm()">
+                        <option value="">Select format...</option>
+                        <option value="POP">POP — Popup</option>
+                        <option value="EMB">EMB — Embedded</option>
+                        <option value="FLY">FLY — Flyout</option>
+                        <option value="FUL">FUL — Full Page</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date (MMMYY) or Version</label>
+                    <input type="text" class="form-input" id="fo-date" placeholder="e.g. APR26 or V1" oninput="generateForm()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Detail / Purpose</label>
+                <input type="text" class="form-input" id="fo-detail" placeholder="e.g. 10OffFirstOrder, BlackFriday, Footer, CounterQR" oninput="generateForm()">
+            </div>
+        </div>
+
+        <div class="alert-warn">
+            <div class="tag">Heads up</div>
+            Form names use hyphens as separators (not pipes). Date format is MMMYY (e.g. JAN26), not ISO. Drafts get a [TEST] prefix. Archived forms get z_ARCHIVE at the start.
+        </div>
+
+        <div class="output-box" id="fo-output"><span class="output-empty">Fill in the fields above...</span></div>
+        <div class="btn-row">
+            <button class="btn" onclick="copyOutput('fo-output')">Copy to Clipboard</button>
+            <button class="btn btn-secondary" onclick="resetForm('form')">Reset</button>
+        </div>
+    </div>
+
+    <!-- ============ TRANSACTIONAL ============ -->
+    <div id="tab-transactional" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Transactional Email</span>
+                <span>TX | CHANNEL | PURPOSE</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Channel</label>
+                    <select class="form-select" id="t-channel" onchange="generateTx()">
+                        <option value="">Select channel...</option>
+                        <option value="ONL">ONL — Online / DTC</option>
+                        <option value="RTL">RTL — Retail / Stores</option>
+                        <option value="WHS">WHS — Wholesale</option>
+                        <option value="SUB">SUB — Subscriptions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Purpose</label>
+                    <input type="text" class="form-input" id="t-purpose" placeholder="e.g. Order Confirmation, Shipping Notification, Invoice Ready" oninput="generateTx()">
+                </div>
+            </div>
+        </div>
+
+        <div class="output-box" id="t-output"><span class="output-empty">Fill in the fields above...</span></div>
+        <div class="btn-row">
+            <button class="btn" onclick="copyOutput('t-output')">Copy to Clipboard</button>
+            <button class="btn btn-secondary" onclick="resetForm('transactional')">Reset</button>
+        </div>
+    </div>
+
+    <!-- ============ REFERENCE ============ -->
+    <section style="margin-top: 56px;">
+        <div class="section-header">
+            <span class="section-num">REF</span>
+            <h2 class="display section-title">Quick Reference</h2>
+        </div>
+
+        <h3 class="sub-title">Channel Codes</h3>
+        <div class="ref-grid">
+            <div class="code">ONL</div><div class="desc">Online Store / DTC (e-commerce list)</div>
+            <div class="code">RTL</div><div class="desc">Retail / Physical Stores (local customers)</div>
+            <div class="code">WHS</div><div class="desc">Wholesale (B2B stockists)</div>
+            <div class="code">SUB</div><div class="desc">Subscription Customers (recurring orders)</div>
+            <div class="code">LOY</div><div class="desc">Loyalty Club (online + store members)</div>
+            <div class="code">TX</div><div class="desc">Transactional (order confirmations, shipping, receipts)</div>
+            <div class="code">GLOBAL</div><div class="desc">Cross-pillar segments (engagement tiers, etc.)</div>
+        </div>
+
+        <h3 class="sub-title">Campaign Types</h3>
+        <div class="ref-grid">
+            <div class="code">PROMO</div><div class="desc">Sale, discount, or offer</div>
+            <div class="code">NEWS</div><div class="desc">Newsletter, blog content, company update</div>
+            <div class="code">PROD</div><div class="desc">New product launch or highlight</div>
+            <div class="code">ENG</div><div class="desc">Engagement — polls, quizzes, interactive content</div>
+            <div class="code">COMP</div><div class="desc">Competition / giveaway</div>
+        </div>
+
+        <h3 class="sub-title">Flow Stages</h3>
+        <div class="ref-grid">
+            <div class="code">ACQ</div><div class="desc">Acquisition — welcome series, lead magnets, first contact</div>
+            <div class="code">RET</div><div class="desc">Retention — post-purchase, replenishment, cross-sell</div>
+            <div class="code">LOY</div><div class="desc">Loyalty — VIP tiers, anniversary, rewards</div>
+            <div class="code">WIN</div><div class="desc">Winback — lapsed customers, sunset flows</div>
+            <div class="code">REC</div><div class="desc">Recovery — abandoned cart/checkout, failed payment</div>
+            <div class="code">ADM</div><div class="desc">Admin — back in stock, price drop, utility</div>
+            <div class="code">TX</div><div class="desc">Transactional — receipts, shipping, invoices</div>
+        </div>
+
+        <h3 class="sub-title">Form Types</h3>
+        <div class="ref-grid">
+            <div class="code">GEN</div><div class="desc">General newsletter signup</div>
+            <div class="code">COMP</div><div class="desc">Competition / giveaway entry</div>
+            <div class="code">WARN</div><div class="desc">Age gate / content warning</div>
+            <div class="code">OOS</div><div class="desc">Back in stock request</div>
+            <div class="code">VIP</div><div class="desc">Early access / exclusive list</div>
+        </div>
+
+        <h3 class="sub-title">Form Formats</h3>
+        <div class="ref-grid">
+            <div class="code">POP</div><div class="desc">Popup — overlays content</div>
+            <div class="code">EMB</div><div class="desc">Embedded — fixed in footer/page</div>
+            <div class="code">FLY</div><div class="desc">Flyout — slides in from corner</div>
+            <div class="code">FUL</div><div class="desc">Full page — dedicated landing page</div>
+        </div>
+    </section>
+
+    <footer class="doc-footer">
+        TJC Klaviyo Naming Convention Generator · v1.0 · Maintained by Sheldon
+    </footer>
+</div>
+
+<div class="toast" id="toast">Copied.</div>
+
+<script>
+// Set today's date as default
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('c-date').value = today;
+    document.getElementById('f-date').value = today;
+    generateCampaign();
+    generateFlow();
+});
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).style.display = 'block';
+    document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    const yy = String(d.getFullYear()).slice(-2);
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return yy + '-' + mm + '-' + dd;
+}
+
+function generateCampaign() {
+    const date = formatDate(document.getElementById('c-date').value);
+    const channel = document.getElementById('c-channel').value;
+    const type = document.getElementById('c-type').value;
+    const topic = document.getElementById('c-topic').value.trim();
+    const sms = document.getElementById('c-sms').checked;
+
+    const el = document.getElementById('c-output');
+
+    if (!date || !channel || !type || !topic) {
+        el.innerHTML = '<span class="output-empty">Fill in all fields...</span>';
+        return;
+    }
+
+    let result = date + ' | ' + channel + ' | ' + type + ' | ';
+    if (sms) result += 'SMS | ';
+    result += topic;
+    el.textContent = result;
+}
+
+function generateFlow() {
+    const channel = document.getElementById('f-channel').value;
+    const stage = document.getElementById('f-stage').value;
+    const name = document.getElementById('f-name').value.trim();
+    const date = formatDate(document.getElementById('f-date').value);
+    const sms = document.getElementById('f-sms').checked;
+
+    const el = document.getElementById('f-output');
+
+    if (!channel || !stage || !name) {
+        el.innerHTML = '<span class="output-empty">Fill in all fields...</span>';
+        return;
+    }
+
+    let result = channel + ' | ' + stage + ' | ' + name;
+    if (sms) result += ' | SMS';
+    if (date) result += ' | (v.' + date + ')';
+    el.textContent = result;
+}
+
+function generateSegment() {
+    const channel = document.getElementById('s-channel').value;
+    const type = document.getElementById('s-type').value;
+    const name = document.getElementById('s-name').value.trim();
+
+    const el = document.getElementById('s-output');
+
+    if (!channel || !type || !name) {
+        el.innerHTML = '<span class="output-empty">Fill in all fields...</span>';
+        return;
+    }
+
+    el.textContent = channel + ' | ' + type + ' | ' + name;
+}
+
+function generateForm() {
+    const area = document.getElementById('fo-area').value;
+    const type = document.getElementById('fo-type').value;
+    const format = document.getElementById('fo-format').value;
+    const detail = document.getElementById('fo-detail').value.trim();
+    const date = document.getElementById('fo-date').value.trim();
+
+    const el = document.getElementById('fo-output');
+
+    if (!area || !type || !format || !detail) {
+        el.innerHTML = '<span class="output-empty">Fill in all fields...</span>';
+        return;
+    }
+
+    let result = area + ' - ' + type + ' - ' + format + ' - ' + detail;
+    if (date) result += ' - ' + date;
+    el.textContent = result;
+}
+
+function generateTx() {
+    const channel = document.getElementById('t-channel').value;
+    const purpose = document.getElementById('t-purpose').value.trim();
+
+    const el = document.getElementById('t-output');
+
+    if (!channel || !purpose) {
+        el.innerHTML = '<span class="output-empty">Fill in all fields...</span>';
+        return;
+    }
+
+    el.textContent = 'TX | ' + channel + ' | ' + purpose;
+}
+
+function copyOutput(id) {
+    const el = document.getElementById(id);
+    const text = el.textContent;
+    if (!text || el.querySelector('.output-empty')) return;
+
+    navigator.clipboard.writeText(text).then(function() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 1500);
+    });
+}
+
+function resetForm(type) {
+    switch(type) {
+        case 'campaign':
+            document.getElementById('c-channel').value = '';
+            document.getElementById('c-type').value = '';
+            document.getElementById('c-topic').value = '';
+            document.getElementById('c-sms').checked = false;
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('c-date').value = today;
+            generateCampaign();
+            break;
+        case 'flow':
+            document.getElementById('f-channel').value = '';
+            document.getElementById('f-stage').value = '';
+            document.getElementById('f-name').value = '';
+            document.getElementById('f-sms').checked = false;
+            document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+            generateFlow();
+            break;
+        case 'segment':
+            document.getElementById('s-channel').value = '';
+            document.getElementById('s-type').value = '';
+            document.getElementById('s-name').value = '';
+            generateSegment();
+            break;
+        case 'form':
+            document.getElementById('fo-area').value = '';
+            document.getElementById('fo-type').value = '';
+            document.getElementById('fo-format').value = '';
+            document.getElementById('fo-detail').value = '';
+            document.getElementById('fo-date').value = '';
+            generateForm();
+            break;
+        case 'transactional':
+            document.getElementById('t-channel').value = '';
+            document.getElementById('t-purpose').value = '';
+            generateTx();
+            break;
+    }
+}
+</script>
+</body>
+</html>
