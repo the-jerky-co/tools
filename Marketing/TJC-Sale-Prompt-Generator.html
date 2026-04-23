@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TJC Sale Email Prompt Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-hi: #242424;
+    --border: #2e2e2e;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #d4ff3a;
+    --accent-dim: #9bbf20;
+    --accent-hover: #e2ff5a;
+    --danger: #ff4d4d;
+    --warn: #ffaa33;
+    --grid: rgba(255,255,255,0.02);
+    --font-display: 'Futura', 'Futura PT', 'Futura Std', 'Trebuchet MS', 'Century Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+.doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.doc-title { font-size: 56px; }
+.doc-title .accent { color: var(--accent); }
+.doc-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.9;
+}
+.doc-meta .label {
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.lede { color: var(--text-dim); margin-bottom: 48px; max-width: 640px; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+section { margin-bottom: 56px; }
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+.section-title { font-size: 28px; }
+
+h3.sub-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+    color: var(--text);
+    margin: 24px 0 10px;
+}
+
+p { margin-bottom: 12px; color: var(--text-dim); }
+p strong { color: var(--text); font-weight: 500; }
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+}
+
+/* Form elements */
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.form-select, .form-input, .form-textarea {
+    width: 100%;
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+.form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+/* Checkbox group */
+.checkbox-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+}
+.checkbox-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.checkbox-label input { cursor: pointer; }
+
+/* Output */
+.output-box {
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 600px;
+    overflow-y: auto;
+    line-height: 1.6;
+}
+.output-empty { color: var(--text-faint); }
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 14px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--panel-hi); border-color: var(--text-dim); transform: translateY(-1px); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Stat grid */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+.stat { background: var(--panel); padding: 16px; }
+.stat .lab { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 4px; }
+.stat .val { font-family: var(--font-display); font-weight: 900; font-size: 28px; color: var(--text); letter-spacing: -0.01em; }
+.stat .val.accent { color: var(--accent); }
+
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    line-height: 1.9;
+}
+
+@media (max-width: 640px) {
+    .doc-title { font-size: 40px; }
+    .section-title { font-size: 22px; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="doc-header">
+        <div>
+            <h1 class="display doc-title">Prompt<br>Gen<span class="accent">.</span></h1>
+        </div>
+        <div class="doc-meta">
+            <div><span class="label">Utility</span> / Sale Email Prompts</div>
+            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Owner</span> / Sheldon</div>
+        </div>
+    </header>
+
+    <p class="lede">
+        Fill in the sale details. Get a structured AI prompt you can paste into Claude to generate all the email components — subject lines, copy, CTAs, SMS, and naming strings. <strong>No guesswork. No forgotten bits.</strong>
+    </p>
+
+    <!-- Sale Details -->
+    <section>
+        <div class="section-header">
+            <span class="section-num">01</span>
+            <h2 class="display section-title">Sale Details</h2>
+        </div>
+
+        <div class="panel">
+            <div class="form-group">
+                <label class="form-label">Sale / Campaign Name</label>
+                <input type="text" class="form-input" id="sale-name" placeholder="e.g. Easter Flash Sale, New Biltong Range Launch, EOFY Clearance">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Discount Type</label>
+                    <select class="form-select" id="discount-type">
+                        <option value="">Select...</option>
+                        <option value="percentage">Percentage Off</option>
+                        <option value="dollar">Dollar Amount Off</option>
+                        <option value="bogo">Buy One Get One</option>
+                        <option value="bundle">Bundle Deal</option>
+                        <option value="free-shipping">Free Shipping</option>
+                        <option value="gift-with-purchase">Gift with Purchase</option>
+                        <option value="tiered">Tiered Discount (Spend more, save more)</option>
+                        <option value="none">No Discount (Product launch / announcement)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Discount Value</label>
+                    <input type="text" class="form-input" id="discount-value" placeholder="e.g. 20%, $15 off, Buy 2 Get 1 Free">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-input" id="sale-start">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-input" id="sale-end">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Products / Collections Included</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Entire store"> Entire store</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Beef jerky"> Beef jerky</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Beef biltong"> Beef biltong</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Snap sticks"> Snap sticks</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Droewors"> Droewors</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Fruit jerky"> Fruit jerky</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Hampers"> Hampers</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Subscriptions"> Subscriptions</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="New / limited edition products"> New / Limited</label>
+                    <label class="checkbox-label"><input type="checkbox" class="prod-opt" value="Spicy range"> Spicy</label>
+                </div>
+                <input type="text" class="form-input" id="products-custom" placeholder="Other specific products (optional)" style="margin-top: 8px;">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Discount Code (if applicable)</label>
+                    <input type="text" class="form-input" id="discount-code" placeholder="e.g. EASTER20, FLASH15, blank if auto-applied">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Minimum Spend (if applicable)</label>
+                    <input type="text" class="form-input" id="min-spend" placeholder="e.g. $50, $100, leave blank if none">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audience & Tone -->
+    <section>
+        <div class="section-header">
+            <span class="section-num">02</span>
+            <h2 class="display section-title">Audience & Tone</h2>
+        </div>
+
+        <div class="panel">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Primary Audience (Channel)</label>
+                    <select class="form-select" id="audience">
+                        <option value="">Select...</option>
+                        <option value="ONL">ONL — Online / DTC Customers</option>
+                        <option value="RTL">RTL — Retail / Store Customers</option>
+                        <option value="WHS">WHS — Wholesale Stockists</option>
+                        <option value="SUB">SUB — Subscription Members</option>
+                        <option value="LOY">LOY — Loyalty Club Members</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Urgency Level</label>
+                    <select class="form-select" id="urgency">
+                        <option value="">Select...</option>
+                        <option value="low">Low — Soft launch, no rush</option>
+                        <option value="medium">Medium — Limited time, worth acting on</option>
+                        <option value="high">High — Flash sale, ending soon, limited stock</option>
+                        <option value="extreme">Extreme — BFCM / Major event, now or never</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tone</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Casual and fun — mate-to-mate, lighthearted"> Casual / Fun</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Cheeky and playful — witty, a bit tongue-in-cheek"> Cheeky</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Urgent and direct — get to the point, time is running out"> Urgent / Direct</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Premium and considered — quality-focused, not discount-driven"> Premium</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Storytelling — founder's voice, behind-the-scenes, personal"> Storytelling</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Hype and excitement — big energy, launch vibes, exclamation marks allowed"> Hype / Launch</label>
+                    <label class="checkbox-label"><input type="checkbox" class="tone-opt" value="Professional but warm — suited for wholesale / B2B audience"> Professional (B2B)</label>
+                </div>
+                <input type="text" class="form-input" id="tone-custom" placeholder="Other tone notes (optional)" style="margin-top: 8px;">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Selling Angles</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="High protein / health-conscious snacking"> High protein</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Australian made / locally crafted"> Aussie made</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Award-winning recipe / quality ingredients"> Award-winning</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Limited batch / small run / won't last"> Limited batch</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Perfect for gifting / gift box angle"> Gifting</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Great for outdoor activities — camping, hiking, road trips, game day"> Outdoor / Active</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="New flavour or product launch"> New product</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Seasonal relevance — summer, winter, Easter, Christmas, BFCM"> Seasonal</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Subscribe and save / recurring delivery convenience"> Subscription push</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Customer reviews and social proof"> Social proof</label>
+                    <label class="checkbox-label"><input type="checkbox" class="angle-opt" value="Value for money / stock up opportunity"> Value / Stock up</label>
+                </div>
+                <input type="text" class="form-input" id="angle-custom" placeholder="Other selling angles (optional)" style="margin-top: 8px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Deliverables -->
+    <section>
+        <div class="section-header">
+            <span class="section-num">03</span>
+            <h2 class="display section-title">Deliverables</h2>
+        </div>
+
+        <div class="panel">
+            <div class="form-group">
+                <label class="form-label">What do you need generated?</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" id="del-subjects" checked> Subject lines (3 options)</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-preview" checked> Preview text</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-body" checked> Email body copy</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-cta" checked> CTA text</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-sms"> SMS copy</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-naming" checked> Campaign naming string</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-schedule"> Send schedule recommendation</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-followup"> Follow-up email (reminder)</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-lastchance"> Last chance email</label>
+                    <label class="checkbox-label"><input type="checkbox" id="del-disclaimer" checked> Footer disclaimer / T&Cs</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Number of Emails in Sequence</label>
+                <select class="form-select" id="email-count" style="max-width: 200px;">
+                    <option value="1">1 — Single send</option>
+                    <option value="2">2 — Announcement + reminder</option>
+                    <option value="3" selected>3 — Launch + reminder + last chance</option>
+                    <option value="4">4 — Tease + launch + reminder + last chance</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Additional Instructions (optional)</label>
+                <textarea class="form-textarea" id="extra-instructions" placeholder="e.g. Include a recipe idea, mention free shipping over $50, reference the new packaging"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <!-- Generate -->
+    <section>
+        <div class="section-header">
+            <span class="section-num">04</span>
+            <h2 class="display section-title">Output</h2>
+        </div>
+
+        <div class="btn-row" style="margin-bottom: 16px;">
+            <button class="btn" onclick="generatePrompt()">Generate Prompt</button>
+            <button class="btn btn-secondary" onclick="resetAll()">Reset All</button>
+        </div>
+
+        <div class="output-box" id="prompt-output"><span class="output-empty">Fill in the details above and hit Generate Prompt...</span></div>
+
+        <div class="btn-row">
+            <button class="btn" onclick="copyPrompt()">Copy to Clipboard</button>
+        </div>
+    </section>
+
+    <footer class="doc-footer">
+        TJC Sale Email Prompt Generator · v1.0 · Maintained by Sheldon
+    </footer>
+</div>
+
+<div class="toast" id="toast">Copied.</div>
+
+<script>
+function generatePrompt() {
+    const saleName = document.getElementById('sale-name').value.trim();
+    const discountType = document.getElementById('discount-type').value;
+    const discountValue = document.getElementById('discount-value').value.trim();
+    const saleStart = document.getElementById('sale-start').value;
+    const saleEnd = document.getElementById('sale-end').value;
+    const prodChecked = Array.from(document.querySelectorAll('.prod-opt:checked')).map(c => c.value);
+    const prodCustom = document.getElementById('products-custom').value.trim();
+    const products = prodChecked.concat(prodCustom ? [prodCustom] : []).join(', ');
+    const discountCode = document.getElementById('discount-code').value.trim();
+    const minSpend = document.getElementById('min-spend').value.trim();
+    const audience = document.getElementById('audience').value;
+    const urgency = document.getElementById('urgency').value;
+    const toneChecked = Array.from(document.querySelectorAll('.tone-opt:checked')).map(c => c.value);
+    const toneCustom = document.getElementById('tone-custom').value.trim();
+    const toneNotes = toneChecked.concat(toneCustom ? [toneCustom] : []).join('. ');
+    const angleChecked = Array.from(document.querySelectorAll('.angle-opt:checked')).map(c => c.value);
+    const angleCustom = document.getElementById('angle-custom').value.trim();
+    const sellingPoints = angleChecked.concat(angleCustom ? [angleCustom] : []).join('. ');
+    const emailCount = document.getElementById('email-count').value;
+    const extraInstructions = document.getElementById('extra-instructions').value.trim();
+
+    const el = document.getElementById('prompt-output');
+
+    if (!saleName) {
+        el.innerHTML = '<span class="output-empty">At minimum, enter a sale name to generate...</span>';
+        return;
+    }
+
+    // Audience labels
+    const audienceLabels = {
+        'ONL': 'Online / DTC customers',
+        'RTL': 'Retail / store customers',
+        'WHS': 'Wholesale stockists (B2B)',
+        'SUB': 'Subscription members',
+        'LOY': 'Loyalty Club members'
+    };
+
+    const urgencyLabels = {
+        'low': 'Low — soft launch, no rush',
+        'medium': 'Medium — limited time but not urgent',
+        'high': 'High — flash sale / ending soon / limited stock',
+        'extreme': 'Extreme — BFCM-level, now or never'
+    };
+
+    const discountLabels = {
+        'percentage': 'Percentage off',
+        'dollar': 'Dollar amount off',
+        'bogo': 'Buy one get one',
+        'bundle': 'Bundle deal',
+        'free-shipping': 'Free shipping',
+        'gift-with-purchase': 'Gift with purchase',
+        'tiered': 'Tiered discount (spend more, save more)',
+        'none': 'No discount — product launch / announcement'
+    };
+
+    // Build deliverables list
+    let deliverables = [];
+    if (document.getElementById('del-subjects').checked) deliverables.push('3 subject line options (under 50 characters each, varied styles — curiosity, urgency, benefit-led)');
+    if (document.getElementById('del-preview').checked) deliverables.push('Preview text for each subject line (complementary, not repeating the subject)');
+    if (document.getElementById('del-body').checked) deliverables.push('Full email body copy for each email in the sequence');
+    if (document.getElementById('del-cta').checked) deliverables.push('CTA button text (2-3 options per email)');
+    if (document.getElementById('del-sms').checked) deliverables.push('SMS copy (under 160 characters, with opt-out note)');
+    if (document.getElementById('del-naming').checked) deliverables.push('Klaviyo campaign naming string using this format: YY-MM-DD | CHANNEL | TYPE | Topic');
+    if (document.getElementById('del-schedule').checked) deliverables.push('Recommended send schedule (day and time for each email, with reasoning)');
+    if (document.getElementById('del-followup').checked) deliverables.push('Follow-up / reminder email (different angle from the original)');
+    if (document.getElementById('del-lastchance').checked) deliverables.push('Last chance / final hours email with heightened urgency');
+    if (document.getElementById('del-disclaimer').checked) deliverables.push('Footer disclaimer / Terms & Conditions text for the sale. Keep it short (2-4 lines), covering: offer validity dates, any exclusions, whether the discount can be combined with other offers, any minimum spend requirements, and that The Jerky Co reserves the right to modify or end the promotion. Use plain language, not legalese.');
+
+    // Build the prompt
+    let prompt = `You are writing sale/promotional emails for The Jerky Co, an Australian premium jerky and snack brand. The tone is casual, direct, mate-to-mate — think bloke at a barbecue who genuinely loves what he makes, not a corporate marketing department. Use Australian English spelling throughout (colour, favourite, organise, etc.).
+
+---
+
+SALE DETAILS:
+- Sale name: ${saleName}`;
+
+    if (discountType) prompt += `\n- Discount type: ${discountLabels[discountType] || discountType}`;
+    if (discountValue) prompt += `\n- Discount value: ${discountValue}`;
+    if (saleStart) prompt += `\n- Start date: ${formatDisplayDate(saleStart)}`;
+    if (saleEnd) prompt += `\n- End date: ${formatDisplayDate(saleEnd)}`;
+    if (products) prompt += `\n- Products included: ${products}`;
+    if (discountCode) prompt += `\n- Discount code: ${discountCode}`;
+    if (!discountCode && discountType && discountType !== 'none') prompt += `\n- Discount code: Auto-applied at checkout (no code needed)`;
+    if (minSpend) prompt += `\n- Minimum spend: ${minSpend}`;
+
+    prompt += `\n\nAUDIENCE & TONE:`;
+    if (audience) prompt += `\n- Primary audience: ${audienceLabels[audience] || audience}`;
+    if (urgency) prompt += `\n- Urgency level: ${urgencyLabels[urgency] || urgency}`;
+    if (toneNotes) prompt += `\n- Tone notes: ${toneNotes}`;
+    if (sellingPoints) prompt += `\n- Key selling points: ${sellingPoints}`;
+
+    prompt += `\n\nEMAIL SEQUENCE:
+- Number of emails: ${emailCount}`;
+
+    if (emailCount === '1') {
+        prompt += `\n- Single send — all the impact in one email`;
+    } else if (emailCount === '2') {
+        prompt += `\n- Email 1: Announcement / launch\n- Email 2: Reminder (different angle, added urgency)`;
+    } else if (emailCount === '3') {
+        prompt += `\n- Email 1: Announcement / launch\n- Email 2: Reminder (different angle, social proof or product focus)\n- Email 3: Last chance (urgency, scarcity, deadline)`;
+    } else if (emailCount === '4') {
+        prompt += `\n- Email 1: Teaser (build anticipation, no details yet)\n- Email 2: Launch (full details, main offer)\n- Email 3: Reminder (different angle, social proof)\n- Email 4: Last chance (final hours, scarcity)`;
+    }
+
+    prompt += `\n\nDELIVERABLES — Generate all of the following:`;
+    deliverables.forEach(function(d, i) {
+        prompt += `\n${i + 1}. ${d}`;
+    });
+
+    prompt += `\n\nBRAND VOICE GUIDELINES:
+- Casual and direct. Not corporate. Not try-hard.
+- Short sentences. Punchy. Get to the point.
+- Australian English spelling (colour, favourite, organise).
+- The reader is a mate, not a "valued customer".
+- CTAs should be action-oriented and specific (not generic "Shop Now").
+- Subject lines: curiosity > cleverness. Under 50 characters preferred.
+- 3:1 ratio thinking — even promo emails should lead with value/story before the sell.
+- Single primary CTA per email. Place above fold AND below main content.`;
+
+    if (extraInstructions) {
+        prompt += `\n\nADDITIONAL INSTRUCTIONS:\n${extraInstructions}`;
+    }
+
+    prompt += `\n\n---\nGenerate all deliverables now. Format each email clearly with its number, subject line options, preview text, body copy, and CTA. Keep the copy tight — no waffle.`;
+
+    el.textContent = prompt;
+}
+
+function formatDisplayDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function copyPrompt() {
+    const el = document.getElementById('prompt-output');
+    const text = el.textContent;
+    if (!text || el.querySelector('.output-empty')) return;
+
+    navigator.clipboard.writeText(text).then(function() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 1500);
+    });
+}
+
+function resetAll() {
+    document.querySelectorAll('.form-input, .form-textarea').forEach(function(el) { el.value = ''; });
+    document.querySelectorAll('.form-select').forEach(function(el) { el.selectedIndex = 0; });
+    document.querySelectorAll('.prod-opt, .tone-opt, .angle-opt').forEach(function(el) { el.checked = false; });
+    document.getElementById('email-count').value = '3';
+    document.getElementById('del-subjects').checked = true;
+    document.getElementById('del-preview').checked = true;
+    document.getElementById('del-body').checked = true;
+    document.getElementById('del-cta').checked = true;
+    document.getElementById('del-sms').checked = false;
+    document.getElementById('del-naming').checked = true;
+    document.getElementById('del-schedule').checked = false;
+    document.getElementById('del-followup').checked = false;
+    document.getElementById('del-lastchance').checked = false;
+    document.getElementById('del-disclaimer').checked = true;
+    document.getElementById('prompt-output').innerHTML = '<span class="output-empty">Fill in the details above and hit Generate Prompt...</span>';
+}
+</script>
+</body>
+</html>
