@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription App Review — Seal vs Loop vs Recharge | The Jerky Co.</title>
+<style>
+  :root{
+    --bg:#0f0e0d;--ink:#1a1816;--cream:#f4ede1;--paper:#faf6ee;
+    --rust:#b2431c;--rust-dark:#7a2c10;--gold:#c89a3e;--olive:#3a3a25;
+    --muted:#6b6459;--line:#d9cfba;--good:#2d6a4f;--warn:#c9751c;--bad:#a02828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  nav.top{position:sticky;top:0;z-index:50;background:rgba(250,246,238,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  nav.top .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1180px;margin:0 auto}
+  nav.top .brand{font-weight:800;letter-spacing:.08em;font-size:13px;text-transform:uppercase;color:var(--ink)}
+  nav.top .brand span{color:var(--rust)}
+  nav.top ul{display:flex;gap:22px;list-style:none;flex-wrap:wrap}
+  nav.top a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600}
+  nav.top a:hover{color:var(--rust)}
+  header.hero{background:linear-gradient(180deg,#14110e 0%,#1f1a15 100%);color:var(--cream);padding:64px 0 72px;border-bottom:4px solid var(--rust);position:relative;overflow:hidden;}
+  header.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 30%, rgba(200,154,62,.12), transparent 50%);pointer-events:none;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:14px}
+  h1{font-size:clamp(32px,5vw,54px);line-height:1.05;font-weight:800;letter-spacing:-.015em;max-width:900px}
+  h1 em{color:var(--gold);font-style:normal}
+  .hero-sub{max-width:720px;margin-top:18px;color:#d9ccb5;font-size:17px}
+  .meta-row{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap;font-size:13px;color:#b8ab93}
+  .meta-row b{color:var(--cream);font-weight:700}
+  .verdict{margin-top:40px;background:#fffdf7;color:var(--ink);border-left:6px solid var(--rust);padding:24px 28px;border-radius:2px;box-shadow:0 20px 50px rgba(0,0,0,.25);max-width:900px;}
+  .verdict h3{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-bottom:10px}
+  .verdict p{font-size:17px;line-height:1.55}
+  .verdict strong{color:var(--rust-dark)}
+  section{padding:72px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(24px,3.2vw,36px);font-weight:800;letter-spacing:-.01em;margin-bottom:8px}
+  section .kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--rust);font-weight:700;margin-bottom:10px}
+  section .lede{color:var(--muted);font-size:16px;max-width:780px;margin-bottom:36px}
+  .pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  .pain{background:#fff;border:1px solid var(--line);border-top:4px solid var(--rust);padding:22px;border-radius:4px}
+  .pain h4{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--rust-dark);margin-bottom:8px;font-weight:800}
+  .pain p{font-size:14px;color:var(--ink)}
+  .pain .tag{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--rust);color:#fff;padding:3px 8px;border-radius:2px;margin-top:12px;font-weight:700}
+  .app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;margin-bottom:40px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:24px;display:flex;flex-direction:column;position:relative;}
+  .card.current{border:2px solid var(--olive)}
+  .card.pick{border:2px solid var(--rust);box-shadow:0 10px 30px rgba(178,67,28,.15)}
+  .card .ribbon{position:absolute;top:-12px;right:16px;background:var(--rust);color:#fff;padding:4px 12px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;border-radius:2px}
+  .card.current .ribbon{background:var(--olive)}
+  .card h3{font-size:24px;font-weight:800;margin-bottom:4px}
+  .card .role{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px}
+  .card .price{font-size:28px;font-weight:800;color:var(--rust-dark);margin-bottom:2px}
+  .card .price small{font-size:13px;color:var(--muted);font-weight:500}
+  .card .fees{font-size:13px;color:var(--muted);margin-bottom:16px}
+  .card ul{list-style:none;margin:0;padding:0}
+  .card li{font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+  .card li:last-child{border-bottom:0}
+  .card li .ic{color:var(--rust);font-weight:800;flex-shrink:0}
+  .card li .neg{color:var(--bad)}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:720px}
+  thead th{background:var(--ink);color:var(--cream);text-align:left;padding:14px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+  tbody td{padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+  tbody tr:nth-child(even) td{background:#fbf7ef}
+  td.feat{font-weight:700;color:var(--ink)}
+  .chip{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .chip.yes{background:#d8ecd8;color:var(--good)}
+  .chip.no{background:#f1d0d0;color:var(--bad)}
+  .chip.mid{background:#f6e1c0;color:var(--warn)}
+  .calc{background:var(--ink);color:var(--cream);border-radius:6px;padding:32px;display:grid;grid-template-columns:280px 1fr;gap:32px;margin-top:10px;}
+  .calc .inputs label{display:block;margin-bottom:18px}
+  .calc .inputs label span{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:700}
+  .calc input[type=number]{width:100%;padding:12px 14px;border-radius:3px;border:0;font-size:16px;background:#241f1a;color:var(--cream);border:1px solid #3a3228;}
+  .calc input[type=number]:focus{outline:2px solid var(--gold)}
+  .calc .results{display:flex;flex-direction:column;gap:10px}
+  .rev-banner{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:linear-gradient(90deg,rgba(178,67,28,.18),rgba(200,154,62,.08));border-radius:3px;margin-bottom:8px;border-left:3px solid var(--rust)}
+  .rev-label{font-size:13px;font-weight:700;color:var(--cream)}
+  .rev-sub{font-size:11px;color:#b8ab93;margin-top:2px}
+  .rev-figs{display:flex;gap:24px;font-family:monospace}
+  .rev-figs > div{text-align:right}
+  .rev-figs span{font-size:18px;font-weight:800;color:var(--gold);display:block}
+  .rev-figs small{font-size:10px;color:#b8ab93;text-transform:uppercase;letter-spacing:.1em}
+  .result-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:14px 16px;background:rgba(200,154,62,.06);border-radius:3px;border-left:3px solid var(--gold)}
+  .row-head .name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:800}
+  .badge.cur{background:#3a3a25;color:#c5c5a0}
+  .badge.pick{background:var(--rust);color:#fff}
+  .row-figs{display:flex;gap:18px;font-family:monospace}
+  .row-figs .fig{text-align:right;min-width:78px}
+  .row-figs .fig span{font-size:15px;font-weight:800;color:var(--gold);display:block}
+  .row-figs .fig small{font-size:9px;color:#b8ab93;text-transform:uppercase;letter-spacing:.08em}
+  .row-figs .fig.pct span{color:var(--rust)}
+  .result-row.seal{border-left-color:#6b7a3a}
+  .result-row.seal .fig.pct span{color:#9eb05a}
+  .result-row.loop{border-left-color:var(--rust)}
+  .result-row.recharge{border-left-color:#c89a3e}
+  .result-row.recharge .fig.pct span{color:#c89a3e}
+  .calc-note{grid-column:1/-1;font-size:12px;color:#b8ab93;border-top:1px solid #2c2722;padding-top:16px;line-height:1.6}
+
+  /* Cost vs value */
+  .value-comp{margin-top:36px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:32px}
+  .value-head{margin-bottom:24px}
+  .bars{display:flex;flex-direction:column;gap:14px}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 200px;gap:16px;align-items:center}
+  .bar-label{font-weight:700;font-size:14px;color:var(--ink)}
+  .bar-label small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+  .bar-track{height:24px;background:#f0e8d6;border-radius:3px;overflow:hidden;position:relative}
+  .bar-fill{height:100%;background:var(--rust);border-radius:3px;transition:width .3s}
+  .bar-val{font-family:monospace;font-size:13px;color:var(--rust-dark);font-weight:700;text-align:right}
+  .payback{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
+  .payback-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+  .pay-card{background:#fbf7ef;border:1px solid var(--line);padding:16px;border-radius:4px;text-align:center}
+  .pay-num{font-size:24px;font-weight:800;color:var(--rust);font-family:monospace}
+  .pay-num.good{color:var(--good);font-size:18px}
+  .pay-label{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+  .final{background:linear-gradient(135deg,#1f1a15 0%,#0f0e0d 100%);color:var(--cream);padding:48px;border-radius:6px;border-left:6px solid var(--rust);}
+  .final h2{color:var(--cream)}
+  .final .verdict-pick{margin-top:20px;padding:20px;background:rgba(200,154,62,.08);border-radius:3px;border:1px solid rgba(200,154,62,.3)}
+  .final .verdict-pick .name{color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;margin-bottom:6px}
+  .final .verdict-pick h3{font-size:28px;font-weight:800}
+  .final .verdict-pick p{margin-top:10px;color:#d9ccb5;font-size:15px}
+  .final .risks{margin-top:30px}
+  .final .risks h4{color:var(--gold);font-size:13px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
+  .final .risks ul{list-style:none;padding:0}
+  .final .risks li{padding:8px 0;border-bottom:1px dashed #2c2722;font-size:14px;color:#c9bfa5}
+  .final .risks li:last-child{border:0}
+  .scorecard{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:24px}
+  .score{background:#fff;border:1px solid var(--line);padding:20px;border-radius:4px}
+  .score .app{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .score .total{font-size:48px;font-weight:800;color:var(--rust);line-height:1;margin:6px 0 14px}
+  .score .total small{font-size:16px;color:var(--muted);font-weight:600}
+  .score .bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px}
+  .score .bar .fill{height:100%;background:var(--rust)}
+  .score .criteria{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;padding:3px 0;border-top:1px dashed var(--line)}
+  .score .criteria b{color:var(--ink);font-weight:700}
+  .timeline{border-left:3px solid var(--rust);padding-left:28px;margin-left:8px}
+  .step{margin-bottom:26px;position:relative}
+  .step::before{content:"";position:absolute;left:-37px;top:6px;width:16px;height:16px;background:var(--rust);border:3px solid var(--paper);border-radius:50%}
+  .step h4{font-size:16px;font-weight:800;margin-bottom:4px}
+  .step .when{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--rust);font-weight:700;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:14px}
+  .sources{background:#fff;border:1px solid var(--line);padding:24px;border-radius:4px}
+  .sources h3{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700}
+  .sources ul{list-style:none;padding:0;columns:2;column-gap:32px}
+  .sources li{padding:5px 0;font-size:13px;break-inside:avoid}
+  .sources a{color:var(--rust-dark);text-decoration:none;border-bottom:1px solid transparent}
+  .sources a:hover{border-bottom-color:var(--rust)}
+  footer{background:var(--ink);color:#b8ab93;padding:32px 0;text-align:center;font-size:13px}
+  footer b{color:var(--cream)}
+  @media (max-width:980px){
+    .result-row{grid-template-columns:1fr}
+    .row-figs{flex-wrap:wrap;gap:12px}
+    .row-figs .fig{min-width:64px}
+    .bar-row{grid-template-columns:100px 1fr;gap:10px}
+    .bar-val{grid-column:1/-1;text-align:left}
+  }
+  @media (max-width:780px){.calc{grid-template-columns:1fr}.sources ul{columns:1}.rev-figs{gap:14px}.rev-figs span{font-size:15px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <div class="brand">The Jerky Co. <span>— Ops Review</span></div>
+    <ul>
+      <li><a href="#verdict">Verdict</a></li>
+      <li><a href="#pain">Pain points</a></li>
+      <li><a href="#apps">The apps</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing / TCO</a></li>
+      <li><a href="#oos">OOS behaviour</a></li>
+      <li><a href="#migration">Migration</a></li>
+      <li><a href="#recommendation">Recommendation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Internal review · April 2026 · Prepared for Sheldon</div>
+    <h1>Subscription app shortlist: <em>Seal vs Loop vs Recharge</em> — at 364 subscribers and A$130 AOV, where should TJC land?</h1>
+    <p class="hero-sub">A grounded look at pricing, features, customer-portal UX, integrations and out-of-stock handling — with Total Cost of Ownership modelled at TJC's actual scale, in AUD.</p>
+    <div class="meta-row">
+      <div><b>Current:</b> Seal Subscriptions</div>
+      <div><b>Subscribers:</b> 364</div>
+      <div><b>Online AOV:</b> A$130</div>
+      <div><b>Trigger:</b> Portal UX, integrations, OOS chain bugs</div>
+    </div>
+
+    <div id="verdict" class="verdict">
+      <h3>One-line verdict</h3>
+      <p><strong>Loop Subscriptions</strong> is the right upgrade at TJC's current scale. Recharge is overbuilt and meaningfully more expensive per year; Seal is cheap but is the direct cause of the OOS chain-reaction bugs and portal gaps you're already feeling. Loop sits in the middle on price, beats both on customer-portal UX, and has the most flexible out-of-stock logic of the three.</p>
+    </div>
+  </div>
+</header>
+
+<section id="pain">
+  <div class="wrap">
+    <div class="kicker">The brief</div>
+    <h2>What's actually breaking right now</h2>
+    <p class="lede">Before comparing features, the three specific issues you flagged — mapped to what each app does about them. This is the lens for the rest of the review.</p>
+    <div class="pain-grid">
+      <div class="pain">
+        <h4>01 · OOS chain bugs</h4>
+        <p>Seal's default behaviour still processes subscription renewals even when a linked product is out of stock, with a warning in admin — which can cascade into broken orders, refunds, or split fulfilment. Inventory skip logic exists but is blunt.</p>
+        <span class="tag">Highest priority</span>
+      </div>
+      <div class="pain">
+        <h4>02 · Customer portal / UX</h4>
+        <p>Seal's portal is functional but dated. Loop is the clear category leader on portal UX — passwordless login, mobile-first, fully customisable, one-click skip/swap/pause. Recharge has improved but still feels legacy.</p>
+        <span class="tag">High priority</span>
+      </div>
+      <div class="pain">
+        <h4>03 · Scaling & integrations</h4>
+        <p>Seal has basic Klaviyo + GA4 hooks; Loop and Recharge both ship deep Klaviyo, Gorgias, Segment, Attentive and headless-grade APIs. Loop's API is newer but evolving quickly; Recharge's is mature but the admin UX is dated.</p>
+        <span class="tag">Medium priority</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="apps">
+  <div class="wrap">
+    <div class="kicker">The shortlist</div>
+    <h2>The three apps, at a glance</h2>
+    <p class="lede">Pricing is shown at entry-tier (what TJC would actually land on). App-store prices are in USD — AUD totals are modelled further down in the TCO section.</p>
+
+    <div class="app-grid">
+      <div class="card current">
+        <span class="ribbon">Current</span>
+        <h3>Seal Subscriptions</h3>
+        <div class="role">Budget · Low-touch · Small brands</div>
+        <div class="price">US$20<small> /mo (Legend)</small></div>
+        <div class="fees">0% transaction fees · 15,000 subs cap</div>
+        <ul>
+          <li><span class="ic">+</span>Cheapest on market by a wide margin</li>
+          <li><span class="ic">+</span>4.9★ on Shopify App Store (2,100+ reviews)</li>
+          <li><span class="ic">+</span>No transaction fees — ever</li>
+          <li><span class="ic">+</span>Passwordless login already supported</li>
+          <li><span class="ic neg">−</span>OOS handling is binary (skip all / process anyway)</li>
+          <li><span class="ic neg">−</span>Reports of post-cancellation charging bugs</li>
+          <li><span class="ic neg">−</span>No native build-a-box / bundle swap</li>
+          <li><span class="ic neg">−</span>Thin analytics & cancellation flows</li>
+        </ul>
+      </div>
+
+      <div class="card pick">
+        <span class="ribbon">Recommended</span>
+        <h3>Loop Subscriptions</h3>
+        <div class="role">Growth · Retention-focused · DTC</div>
+        <div class="price">US$99<small> /mo + 1% tx fee</small></div>
+        <div class="fees">Free white-glove migration · 5.0★ / 630+ reviews</div>
+        <ul>
+          <li><span class="ic">+</span>Best-in-class customer portal (passwordless, mobile-first)</li>
+          <li><span class="ic">+</span>Granular OOS: partial billing, delay, skip, threshold rules</li>
+          <li><span class="ic">+</span>Build-a-Box, bundle swap, cancellation surveys</li>
+          <li><span class="ic">+</span>Deep Klaviyo, Gorgias, Attentive, Segment integrations</li>
+          <li><span class="ic">+</span>Migrated OSEA (10 days), DLG (140k subs in 2 weeks)</li>
+          <li><span class="ic">+</span>Dedicated Slack support, &lt;4 hr response</li>
+          <li><span class="ic neg">−</span>API still evolving vs Recharge</li>
+          <li><span class="ic neg">−</span>Prepaid/gift subs workflow is maturing</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Recharge</h3>
+        <div class="role">Enterprise · Mature · 8-figure brands</div>
+        <div class="price">US$99<small> /mo + 1.25% + $0.19/tx</small></div>
+        <div class="fees">Pro tier US$499/mo + 1%. 60-day trial</div>
+        <ul>
+          <li><span class="ic">+</span>Industry standard — most 3rd-party apps integrate</li>
+          <li><span class="ic">+</span>Mature, reliable billing engine</li>
+          <li><span class="ic">+</span>Strong OOS controls + dunning recovery</li>
+          <li><span class="ic">+</span>Best documentation and consultant ecosystem</li>
+          <li><span class="ic neg">−</span>Most expensive — fees can hit ~10% of recurring revenue</li>
+          <li><span class="ic neg">−</span>Admin UX is dated; bulk ops require workarounds</li>
+          <li><span class="ic neg">−</span>Contracted tiers can lock you into double-fee scenarios</li>
+          <li><span class="ic neg">−</span>Innovation has stalled vs Loop/Skio; no native AI features</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="scorecard">
+      <div class="score">
+        <div class="app">Seal Subscriptions</div>
+        <div class="total">6.2<small>/10</small></div>
+        <div class="bar"><div class="fill" style="width:62%;background:#6b7a3a"></div></div>
+        <div class="criteria"><span>Pricing</span><b>9.5</b></div>
+        <div class="criteria"><span>Customer portal</span><b>5.5</b></div>
+        <div class="criteria"><span>OOS handling</span><b>4.0</b></div>
+        <div class="criteria"><span>Integrations</span><b>5.5</b></div>
+        <div class="criteria"><span>Analytics</span><b>5.0</b></div>
+        <div class="criteria"><span>Scale readiness</span><b>5.0</b></div>
+      </div>
+      <div class="score">
+        <div class="app">Loop Subscriptions</div>
+        <div class="total" style="color:var(--rust)">8.7<small>/10</small></div>
+        <div class="bar"><div class="fill" style="width:87%"></div></div>
+        <div class="criteria"><span>Pricing</span><b>7.5</b></div>
+        <div class="criteria"><span>Customer portal</span><b>9.5</b></div>
+        <div class="criteria"><span>OOS handling</span><b>9.0</b></div>
+        <div class="criteria"><span>Integrations</span><b>8.5</b></div>
+        <div class="criteria"><span>Analytics</span><b>8.5</b></div>
+        <div class="criteria"><span>Scale readiness</span><b>9.0</b></div>
+      </div>
+      <div class="score">
+        <div class="app">Recharge</div>
+        <div class="total" style="color:#c89a3e">7.6<small>/10</small></div>
+        <div class="bar"><div class="fill" style="width:76%;background:#c89a3e"></div></div>
+        <div class="criteria"><span>Pricing</span><b>5.0</b></div>
+        <div class="criteria"><span>Customer portal</span><b>7.5</b></div>
+        <div class="criteria"><span>OOS handling</span><b>8.5</b></div>
+        <div class="criteria"><span>Integrations</span><b>9.5</b></div>
+        <div class="criteria"><span>Analytics</span><b>8.0</b></div>
+        <div class="criteria"><span>Scale readiness</span><b>9.5</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="kicker">Head to head</div>
+    <h2>Feature comparison matrix</h2>
+    <p class="lede">Focus on what you actually care about: portal UX, OOS handling, integrations, retention tooling. Sourced from each vendor's live docs and app-store pages, April 2026.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:26%">Feature</th>
+            <th>Seal</th>
+            <th>Loop</th>
+            <th>Recharge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat">Passwordless customer login</td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes (default)</span></td><td><span class="chip mid">Via custom build</span></td></tr>
+          <tr><td class="feat">Mobile-first portal</td><td><span class="chip mid">Basic</span></td><td><span class="chip yes">Category leader</span></td><td><span class="chip mid">Functional</span></td></tr>
+          <tr><td class="feat">Skip / pause / swap</td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes + delay</span></td><td><span class="chip yes">Yes</span></td></tr>
+          <tr><td class="feat">Partial billing (ship in-stock, skip OOS)</td><td><span class="chip no">No</span></td><td><span class="chip yes">Yes, with thresholds</span></td><td><span class="chip yes">Yes</span></td></tr>
+          <tr><td class="feat">Delay order until full inventory</td><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip mid">Partial</span></td></tr>
+          <tr><td class="feat">Build-a-Box / BYOB bundles</td><td><span class="chip no">No</span></td><td><span class="chip yes">Native</span></td><td><span class="chip yes">Native (Pro)</span></td></tr>
+          <tr><td class="feat">Cancellation survey / save flows</td><td><span class="chip mid">Basic</span></td><td><span class="chip yes">Advanced + gamified</span></td><td><span class="chip yes">Standard</span></td></tr>
+          <tr><td class="feat">Dunning recovery (failed payments)</td><td><span class="chip mid">Basic retries</span></td><td><span class="chip yes">Smart dunning, ~25% recovery</span></td><td><span class="chip yes">Configurable</span></td></tr>
+          <tr><td class="feat">Klaviyo deep integration</td><td><span class="chip mid">Events only</span></td><td><span class="chip yes">Deep sync</span></td><td><span class="chip yes">Deepest</span></td></tr>
+          <tr><td class="feat">Gorgias integration</td><td><span class="chip no">No</span></td><td><span class="chip yes">Native</span></td><td><span class="chip yes">Native</span></td></tr>
+          <tr><td class="feat">Attentive / Postscript</td><td><span class="chip no">No</span></td><td><span class="chip yes">Native</span></td><td><span class="chip yes">Native</span></td></tr>
+          <tr><td class="feat">Bulk subscription actions</td><td><span class="chip mid">Limited</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip mid">Workarounds</span></td></tr>
+          <tr><td class="feat">Analytics (LTV, churn, cohort)</td><td><span class="chip mid">Basic</span></td><td><span class="chip yes">Robust</span></td><td><span class="chip yes">Robust</span></td></tr>
+          <tr><td class="feat">Transaction fees</td><td><span class="chip yes">0%</span></td><td><span class="chip mid">0.75–1%</span></td><td><span class="chip no">1.25% + $0.19</span></td></tr>
+          <tr><td class="feat">Prepaid / gift subscriptions</td><td><span class="chip yes">Yes</span></td><td><span class="chip mid">Workaround</span></td><td><span class="chip yes">Native</span></td></tr>
+          <tr><td class="feat">White-glove migration</td><td>N/A (current)</td><td><span class="chip yes">Free, ~2 weeks</span></td><td><span class="chip yes">Guided</span></td></tr>
+          <tr><td class="feat">Support response time</td><td><span class="chip yes">Fast (email)</span></td><td><span class="chip yes">Slack &lt;4 hrs</span></td><td><span class="chip mid">Hit-or-miss</span></td></tr>
+          <tr><td class="feat">Shopify App Store rating</td><td>4.9 ★ (2,100+)</td><td>5.0 ★ (630+)</td><td>4.5 ★ (2,000+)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="kicker">Total cost of ownership</div>
+    <h2>Real pricing at TJC's scale — 364 subs, A$130 AOV</h2>
+    <p class="lede">Modelled in AUD at today's rate (1 USD ≈ A$1.40). Assumes 1 subscription order / subscriber / month — adjust the inputs below if your subscription frequency differs. This is the number that matters; headline app-page pricing does not.</p>
+
+    <div class="calc">
+      <div class="inputs">
+        <label><span>Active subscribers</span><input type="number" id="subs" value="364"></label>
+        <label><span>Avg subscription order value (AUD)</span><input type="number" id="aov" value="130"></label>
+        <label><span>Orders per subscriber per month</span><input type="number" id="freq" value="1" step="0.25"></label>
+        <label><span>USD → AUD rate</span><input type="number" id="fx" value="1.40" step="0.01"></label>
+      </div>
+      <div class="results">
+        <div class="rev-banner">
+          <div>
+            <div class="rev-label">Subscription revenue this generates</div>
+            <div class="rev-sub">at the inputs you've entered</div>
+          </div>
+          <div class="rev-figs">
+            <div><span id="rev-month">A$0</span><small>/month</small></div>
+            <div><span id="rev-year">A$0</span><small>/year</small></div>
+          </div>
+        </div>
+
+        <div class="result-row seal">
+          <div class="row-head">
+            <div class="name">Seal (Legend) <span class="badge cur">Current</span></div>
+            <div style="font-size:12px;color:#b8ab93">US$20/mo · 0% fees</div>
+          </div>
+          <div class="row-figs">
+            <div class="fig"><span id="seal-month">A$0</span><small>/mo</small></div>
+            <div class="fig"><span id="seal-order">A$0</span><small>/order</small></div>
+            <div class="fig"><span id="seal-year">A$0</span><small>/yr</small></div>
+            <div class="fig pct"><span id="seal-pct">0%</span><small>of revenue</small></div>
+          </div>
+        </div>
+
+        <div class="result-row loop">
+          <div class="row-head">
+            <div class="name">Loop (Starter) <span class="badge pick">Recommended</span></div>
+            <div style="font-size:12px;color:#b8ab93">US$99/mo + 1% tx fee</div>
+          </div>
+          <div class="row-figs">
+            <div class="fig"><span id="loop-month">A$0</span><small>/mo</small></div>
+            <div class="fig"><span id="loop-order">A$0</span><small>/order</small></div>
+            <div class="fig"><span id="loop-year">A$0</span><small>/yr</small></div>
+            <div class="fig pct"><span id="loop-pct">0%</span><small>of revenue</small></div>
+          </div>
+        </div>
+
+        <div class="result-row recharge">
+          <div class="row-head">
+            <div class="name">Recharge (Standard)</div>
+            <div style="font-size:12px;color:#b8ab93">US$99/mo + 1.25% + $0.19/order</div>
+          </div>
+          <div class="row-figs">
+            <div class="fig"><span id="recharge-month">A$0</span><small>/mo</small></div>
+            <div class="fig"><span id="recharge-order">A$0</span><small>/order</small></div>
+            <div class="fig"><span id="recharge-year">A$0</span><small>/yr</small></div>
+            <div class="fig pct"><span id="recharge-pct">0%</span><small>of revenue</small></div>
+          </div>
+        </div>
+
+        <div class="result-row recharge" style="border-left-color:#7a2c10;opacity:.85">
+          <div class="row-head">
+            <div class="name">Recharge (Pro)</div>
+            <div style="font-size:12px;color:#b8ab93">US$499/mo + 1% + $0.19 — overkill at your scale</div>
+          </div>
+          <div class="row-figs">
+            <div class="fig"><span id="pro-month">A$0</span><small>/mo</small></div>
+            <div class="fig"><span id="pro-order">A$0</span><small>/order</small></div>
+            <div class="fig"><span id="pro-year">A$0</span><small>/yr</small></div>
+            <div class="fig pct"><span id="pro-pct">0%</span><small>of revenue</small></div>
+          </div>
+        </div>
+
+        <div class="calc-note">
+          <b>All values in AUD.</b> Includes platform fee + transaction % + per-order fees where applicable. Excludes Shopify Payments processing (applies regardless of which app you pick). <b>"% of revenue"</b> shows what the app costs you as a share of the subscription revenue it processes — the cleanest way to think about value.
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost vs value section -->
+    <div class="value-comp">
+      <div class="value-head">
+        <div class="kicker" style="color:var(--rust);margin-bottom:6px">Cost vs value brought in</div>
+        <h3 style="font-size:22px;font-weight:800">Every dollar of subscription revenue costs you…</h3>
+        <p style="color:var(--muted);font-size:14px;margin-top:6px">A more useful framing than raw monthly fees. If an app costs 1.5% of subscription revenue but recovers 3% in churn prevention or failed-payment recovery, it's net-positive.</p>
+      </div>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-label">Seal <small>(current)</small></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-seal" style="background:#6b7a3a"></div></div>
+          <div class="bar-val" id="barv-seal">0.06¢ per A$1 revenue</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Loop <small>(starter)</small></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-loop" style="background:var(--rust)"></div></div>
+          <div class="bar-val" id="barv-loop">1.29¢ per A$1 revenue</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Recharge <small>(std)</small></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-recharge" style="background:#c89a3e"></div></div>
+          <div class="bar-val" id="barv-recharge">1.75¢ per A$1 revenue</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Recharge <small>(pro)</small></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-pro" style="background:#7a2c10"></div></div>
+          <div class="bar-val" id="barv-pro">2.68¢ per A$1 revenue</div>
+        </div>
+      </div>
+
+      <div class="payback">
+        <h4 style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);margin-bottom:14px">Payback maths — Loop vs Seal</h4>
+        <div class="payback-grid">
+          <div class="pay-card">
+            <div class="pay-num" id="pay-delta">A$7,000</div>
+            <div class="pay-label">Extra cost per year switching to Loop</div>
+          </div>
+          <div class="pay-card">
+            <div class="pay-num" id="pay-churn">A$11,357</div>
+            <div class="pay-label">Revenue saved if Loop reduces churn by just 2%</div>
+          </div>
+          <div class="pay-card">
+            <div class="pay-num" id="pay-dunning">A$3,000+</div>
+            <div class="pay-label">Failed-payment recovery (Loop's smart dunning)</div>
+          </div>
+          <div class="pay-card">
+            <div class="pay-num good">Net positive</div>
+            <div class="pay-label">Even on conservative assumptions</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6">
+          <b>The honest read:</b> Loop costs ~22× more than Seal on raw fees. But it processes the same revenue at <b>1.29% vs Seal's 0.06%</b> — meaning it's still a tiny share of the revenue you're collecting. The break-even point is recovering ~A$7k/yr in extra subscription revenue from better retention, dunning, or fewer broken OOS orders. At 364 subs, that's a 2–3% churn improvement. Loop's published case studies show 25%+ dunning recovery and ~30% reduction in cancellations from their save flows — even at half those rates you're well ahead.
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;background:#fff;border:1px solid var(--line);padding:24px;border-radius:4px">
+      <h3 style="font-size:18px;margin-bottom:12px">What this means in plain English</h3>
+      <p style="color:var(--ink);font-size:15px">Switching from Seal to Loop costs roughly <b>A$7k/yr extra</b> — about A$1.62 per subscription order. Recharge Standard costs ~A$9.5k/yr extra, or A$2.27 per order. Seal is essentially free per order (A$0.08), but it's the source of the chain bugs and the portal gap. The trade isn't "cheap vs expensive" — it's "leak-prone tool you barely pay for vs paid tool that plugs the leaks." On the numbers above, Loop pays for itself the moment it prevents one decent-sized churn cohort or a handful of OOS-driven refunds.</p>
+    </div>
+  </div>
+</section>
+
+<section id="oos">
+  <div class="wrap">
+    <div class="kicker">Your #1 pain point</div>
+    <h2>Out-of-stock handling, compared</h2>
+    <p class="lede">You flagged OOS as causing chain issues. This is where the three apps diverge most sharply.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:26%">Scenario</th>
+            <th>Seal</th>
+            <th>Loop</th>
+            <th>Recharge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="feat">One product in a multi-product sub is OOS</td>
+            <td>Processes order as if in stock; admin warning only. Manual intervention required.</td>
+            <td>Partial billing: ships what's in stock, skips OOS items. Threshold-based (min order value or weight).</td>
+            <td>Skips the OOS line item and charges for remainder. Partial fulfilment supported.</td>
+          </tr>
+          <tr>
+            <td class="feat">Entire subscription OOS</td>
+            <td>"Skip renewal when OOS" toggle available app-wide only.</td>
+            <td>Choose: skip, delay to in-stock date, or place full order anyway.</td>
+            <td>Skip, pause, or cancel after configurable retries.</td>
+          </tr>
+          <tr>
+            <td class="feat">Product comes back in stock</td>
+            <td>Manual — merchant must re-trigger.</td>
+            <td>Auto-resume delayed orders; notify customer.</td>
+            <td>Auto-resume with customer notification.</td>
+          </tr>
+          <tr>
+            <td class="feat">Swap to alternative flavour/SKU</td>
+            <td>Customer-initiated only (if portal editing enabled).</td>
+            <td>Customer-initiated + merchant-initiated bulk swap.</td>
+            <td>Customer-initiated + merchant bulk swap.</td>
+          </tr>
+          <tr>
+            <td class="feat">Bug risk at scale</td>
+            <td><span class="chip no">Reported in 2025 reviews</span></td>
+            <td><span class="chip yes">Clean at 8-fig scale</span></td>
+            <td><span class="chip yes">Proven at enterprise</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:24px;padding:20px;background:#fff8ea;border-left:4px solid var(--warn);border-radius:3px">
+      <strong style="color:var(--warn);text-transform:uppercase;font-size:12px;letter-spacing:.1em;display:block;margin-bottom:6px">The honest read</strong>
+      <p style="font-size:15px">The "chain issues" you're seeing on Seal are consistent with what other merchants have reported in 2025 — Seal's OOS logic is binary and doesn't handle partial-cart situations gracefully. Loop's threshold-based partial billing + automatic delay-until-restock is the specific capability that would fix your problem. Recharge also solves it, but you're paying enterprise prices for it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="migration">
+  <div class="wrap">
+    <div class="kicker">How painful is the switch?</div>
+    <h2>Migration plan &amp; risk</h2>
+    <p class="lede">Moving 364 subscribers is a controlled operation — not a big-bang. Both Loop and Recharge offer free, white-glove migrations. Here's the realistic timeline and the risks worth pre-empting.</p>
+
+    <div class="timeline">
+      <div class="step">
+        <div class="when">Week 0 · Pre-migration</div>
+        <h4>Export Seal data, lock in migration window</h4>
+        <p>Export active subscriptions from Seal (customer, SKU, cadence, next-charge date, discount). Most migration teams ask for a read-only CSV or API token. Agree on a cut-over weekend to minimise churn risk.</p>
+      </div>
+      <div class="step">
+        <div class="when">Week 1 · Build &amp; test</div>
+        <h4>New app installed, portal branded, flows built</h4>
+        <p>Configure Loop/Recharge. Rebuild OOS rules (partial billing thresholds, delay logic), cancellation flows, Klaviyo events. Test migration on a sandbox subscriber set first.</p>
+      </div>
+      <div class="step">
+        <div class="when">Week 2 · Migrate tokens + go live</div>
+        <h4>Payment tokens + schedules transferred</h4>
+        <p>Loop's process migrates Shopify-stored payment tokens without re-authentication — no customer disruption. Go-live is usually an overnight cut-over. Seal stays running until tokens confirm transferred.</p>
+      </div>
+      <div class="step">
+        <div class="when">Week 3 · Monitor &amp; reconcile</div>
+        <h4>First renewal cycle audit</h4>
+        <p>Watch the first full renewal cycle. Audit that all subscribers charged correctly, discounts carried over, OOS logic fired as expected. Keep Seal in read-only mode for 30–60 days as a fallback.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+      <div style="background:#fff;border:1px solid var(--line);padding:20px;border-radius:4px">
+        <h4 style="color:var(--bad);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Key risks</h4>
+        <ul style="list-style:none;font-size:14px;color:var(--ink)">
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Discount codes not preserved during migration</li>
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Next-charge-date drift on long-interval subs</li>
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Klaviyo event schema changes — flows break silently</li>
+          <li style="padding:6px 0">Customers confused by portal URL change — brief heads-up email required</li>
+        </ul>
+      </div>
+      <div style="background:#fff;border:1px solid var(--line);padding:20px;border-radius:4px">
+        <h4 style="color:var(--good);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Risk mitigations</h4>
+        <ul style="list-style:none;font-size:14px;color:var(--ink)">
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Insist on test-migration report before go-live</li>
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Run Seal + Loop in parallel for 30 days</li>
+          <li style="padding:6px 0;border-bottom:1px dashed var(--line)">Pre-migration subscriber email: "We're improving your portal"</li>
+          <li style="padding:6px 0">Rebuild 2–3 Klaviyo flows (skipped order, OOS delay, failed payment) in week 1</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recommendation" style="border-bottom:none">
+  <div class="wrap">
+    <div class="final">
+      <div class="eyebrow" style="color:var(--gold)">The call</div>
+      <h2>Recommendation</h2>
+      <div class="verdict-pick">
+        <div class="name">Go with</div>
+        <h3>Loop Subscriptions (Starter plan)</h3>
+        <p>At 364 subs with A$130 AOV, Loop is the sweet spot. You get best-in-class customer portal UX, fixable-by-configuration OOS handling (the specific bug biting you now), native Gorgias + Klaviyo + Attentive integration, and free migration. Roughly A$7k/year more than Seal — which is easily recovered if it prevents even 2–3% of churn or a handful of broken OOS orders that become refunds/support tickets.</p>
+      </div>
+
+      <div class="risks">
+        <h4>Why not Recharge</h4>
+        <ul>
+          <li>+A$9,500–A$14,000/yr premium over Seal — you're paying for capabilities you won't use yet</li>
+          <li>Admin UX is dated; merchant reviews in 2025 trend negative on innovation</li>
+          <li>Contract tiers create friction if you grow past a threshold mid-year</li>
+          <li>Reconsider at ~2,000 subs or when you add B2B/wholesale subs — Recharge earns its price at that scale</li>
+        </ul>
+      </div>
+
+      <div class="risks">
+        <h4>Why not stay on Seal</h4>
+        <ul>
+          <li>The OOS behaviour is architectural — a config tweak won't fix the chain bugs</li>
+          <li>Portal UX ceiling is low; churn save flows aren't there</li>
+          <li>Cost-optimising against a tool that's leaking revenue is a false economy</li>
+          <li>Seal remains an excellent choice for brands under 100 subs — TJC has outgrown it</li>
+        </ul>
+      </div>
+
+      <div class="risks">
+        <h4>What to do this week</h4>
+        <ul>
+          <li>1. Book a 30-min Loop demo — explicitly ask them to walk through OOS partial billing and delayed-order flows</li>
+          <li>2. Request a test migration quote and timeline (typically free, 2 weeks)</li>
+          <li>3. Pull Seal churn + refund data for the last 90 days — quantify what OOS chain bugs have actually cost you</li>
+          <li>4. If Loop demo disappoints, get a Recharge Standard quote as fallback — still better than staying on Seal</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:48px 0;background:#fbf7ef">
+  <div class="wrap">
+    <div class="sources">
+      <h3>Sources &amp; further reading</h3>
+      <ul>
+        <li><a href="https://apps.shopify.com/seal-subscriptions" target="_blank">Seal Subscriptions — Shopify App Store listing</a></li>
+        <li><a href="https://www.sealsubscriptions.com/pricing" target="_blank">Seal Subscriptions — Pricing tiers</a></li>
+        <li><a href="https://www.sealsubscriptions.com/articles/frequently-asked-questions/what-will-happen-with-my-subscriptions-when-the-product-goes-out-of-stock-70" target="_blank">Seal — OOS handling documentation</a></li>
+        <li><a href="https://www.getecomtools.com/app/seal-subscriptions-app" target="_blank">Seal Subscriptions Review 2025 — getecomtools</a></li>
+        <li><a href="https://apps.shopify.com/loop-subscriptions" target="_blank">Loop Subscriptions — Shopify App Store listing</a></li>
+        <li><a href="https://www.loopwork.co/pricing" target="_blank">Loop Subscriptions — Pricing</a></li>
+        <li><a href="https://help.loopwork.co/article/166-inventory-management" target="_blank">Loop — Inventory management / OOS handling</a></li>
+        <li><a href="https://www.loopwork.co/feature/customer-portal" target="_blank">Loop — Customer portal feature page</a></li>
+        <li><a href="https://www.loopwork.co/migration" target="_blank">Loop — Migration process</a></li>
+        <li><a href="https://www.g2.com/products/loop-subscriptions/reviews" target="_blank">Loop Subscriptions — G2 reviews</a></li>
+        <li><a href="https://apps.shopify.com/subscription-payments" target="_blank">Recharge — Shopify App Store listing</a></li>
+        <li><a href="https://getrecharge.com/pricing/" target="_blank">Recharge — Pricing page</a></li>
+        <li><a href="https://support.getrecharge.com/hc/en-us/articles/8592670804503-Handling-out-of-stock-items" target="_blank">Recharge — OOS handling</a></li>
+        <li><a href="https://www.capterra.com/p/206617/ReCharge-Payments/reviews/" target="_blank">Recharge — Capterra reviews</a></li>
+        <li><a href="https://www.loopwork.co/blog/recharge-vs-seal-vs-loop" target="_blank">Recharge vs Seal vs Loop (Loop's own comparison — read critically)</a></li>
+        <li><a href="https://zectox.is-a.dev/blog/shopify-subscription-apps-comparison-2026" target="_blank">Independent 2026 Shopify subscription app comparison</a></li>
+      </ul>
+      <p style="margin-top:16px;color:var(--muted);font-size:12px;font-style:italic">Prepared April 2026. Pricing, features and reviews may have changed — verify current figures directly with each vendor before signing.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Prepared for <b>Sheldon · The Jerky Co.</b> · Internal document, not for external distribution
+  </div>
+</footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const subsEl = $('subs'), aovEl = $('aov'), freqEl = $('freq'), fxEl = $('fx');
+
+  const fmt = n => 'A$' + Math.round(n).toLocaleString('en-AU');
+  const fmtCents = n => 'A$' + n.toFixed(2);
+  const fmtPct = n => (n * 100).toFixed(2) + '%';
+
+  function setApp(prefix, monthAUD, perOrderAUD, yearAUD, pct){
+    $(prefix + '-month').textContent = fmt(monthAUD);
+    $(prefix + '-order').textContent = fmtCents(perOrderAUD);
+    $(prefix + '-year').textContent = fmt(yearAUD);
+    $(prefix + '-pct').textContent = fmtPct(pct);
+  }
+
+  function calc(){
+    const subs = parseFloat(subsEl.value) || 0;
+    const aov = parseFloat(aovEl.value) || 0;
+    const freq = parseFloat(freqEl.value) || 0;
+    const fx = parseFloat(fxEl.value) || 1.40;
+
+    const ordersPerMonth = subs * freq;
+    const gmvMonthlyAUD = ordersPerMonth * aov;
+    const gmvAnnualAUD = gmvMonthlyAUD * 12;
+    const gmvMonthlyUSD = gmvMonthlyAUD / fx;
+
+    // Revenue banner
+    $('rev-month').textContent = fmt(gmvMonthlyAUD);
+    $('rev-year').textContent = fmt(gmvAnnualAUD);
+
+    // App costs (USD per month → AUD)
+    const sealUSD = 20;
+    const loopUSD = 99 + gmvMonthlyUSD * 0.01;
+    const rechargeUSD = 99 + gmvMonthlyUSD * 0.0125 + ordersPerMonth * 0.19;
+    const proUSD = 499 + gmvMonthlyUSD * 0.01 + ordersPerMonth * 0.19;
+
+    const sealMo = sealUSD * fx;
+    const loopMo = loopUSD * fx;
+    const rechargeMo = rechargeUSD * fx;
+    const proMo = proUSD * fx;
+
+    const ordersSafe = ordersPerMonth || 1;
+    const revSafe = gmvMonthlyAUD || 1;
+
+    setApp('seal', sealMo, sealMo / ordersSafe, sealMo * 12, sealMo / revSafe);
+    setApp('loop', loopMo, loopMo / ordersSafe, loopMo * 12, loopMo / revSafe);
+    setApp('recharge', rechargeMo, rechargeMo / ordersSafe, rechargeMo * 12, rechargeMo / revSafe);
+    setApp('pro', proMo, proMo / ordersSafe, proMo * 12, proMo / revSafe);
+
+    // Cost-vs-value bars (¢ per A$1 of revenue, scaled to widest = 100%)
+    const sealRatio = sealMo / revSafe;
+    const loopRatio = loopMo / revSafe;
+    const rechargeRatio = rechargeMo / revSafe;
+    const proRatio = proMo / revSafe;
+    const maxRatio = Math.max(sealRatio, loopRatio, rechargeRatio, proRatio) || 1;
+
+    function setBar(prefix, ratio){
+      $('bar-' + prefix).style.width = ((ratio / maxRatio) * 100) + '%';
+      $('barv-' + prefix).textContent = (ratio * 100).toFixed(2) + '¢ per A$1 revenue';
+    }
+    setBar('seal', sealRatio);
+    setBar('loop', loopRatio);
+    setBar('recharge', rechargeRatio);
+    setBar('pro', proRatio);
+
+    // Payback maths — Loop vs Seal
+    const annualDelta = (loopMo - sealMo) * 12;
+    $('pay-delta').textContent = fmt(annualDelta);
+    // 2% churn improvement = saving 2% of annual subscription revenue
+    $('pay-churn').textContent = fmt(gmvAnnualAUD * 0.02);
+    // Failed payment recovery — assume ~5% of annual rev fails, Loop recovers ~25% of that
+    $('pay-dunning').textContent = fmt(gmvAnnualAUD * 0.05 * 0.25);
+  }
+
+  [subsEl, aovEl, freqEl, fxEl].forEach(el => el.addEventListener('input', calc));
+  calc();
+</script>
+
+</body>
+</html>
