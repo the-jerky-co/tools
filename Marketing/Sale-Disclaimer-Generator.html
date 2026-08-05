@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TJC Sale Disclaimer Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-hi: #242424;
+    --border: #2e2e2e;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #d4ff3a;
+    --accent-dim: #9bbf20;
+    --accent-hover: #e2ff5a;
+    --danger: #ff4d4d;
+    --warn: #ffaa33;
+    --grid: rgba(255,255,255,0.02);
+    --font-display: 'Futura', 'Futura PT', 'Futura Std', 'Trebuchet MS', 'Century Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+/* Header */
+.doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.doc-title { font-size: 56px; }
+.doc-title .accent { color: var(--accent); }
+.doc-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.9;
+}
+.doc-meta .label {
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.lede { color: var(--text-dim); margin-bottom: 40px; max-width: 660px; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+/* Section */
+section { margin-bottom: 56px; }
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+.section-title { font-size: 28px; }
+
+h3.sub-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+    color: var(--text);
+    margin: 24px 0 10px;
+}
+
+p { margin-bottom: 12px; color: var(--text-dim); }
+p strong { color: var(--text); font-weight: 500; }
+
+/* Panel */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Tabs */
+.tab-row {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+.tab {
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.tab:hover { color: var(--text-dim); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Form elements */
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.form-select, .form-input, .form-textarea {
+    width: 100%;
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.form-textarea { resize: vertical; min-height: 62px; line-height: 1.5; }
+.form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+input[type="date"], input[type="time"] { cursor: pointer; }
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+.field-hint { font-size: 11px; color: var(--text-faint); margin-top: 5px; line-height: 1.5; }
+.field-hint.live { color: var(--accent-dim); }
+
+/* Checkbox grid */
+.check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 2px 16px;
+}
+.check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 4px 0;
+    user-select: none;
+}
+.check:hover { color: var(--text); }
+.check input { accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+.check.solo { padding: 6px 0; }
+
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.sub-head {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Tier rows */
+.tier-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 8px; align-items: center; }
+.tier-row .form-input { padding: 8px 12px; }
+.btn-mini {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn-mini:hover { border-color: var(--danger); color: var(--danger); }
+.btn-mini.add:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Output */
+.output-box {
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    font-size: 13px;
+    line-height: 1.75;
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 12px;
+    min-height: 56px;
+    white-space: pre-wrap;
+}
+.output-box.small { font-size: 13px; padding: 14px 18px; min-height: 0; }
+.output-empty { color: var(--text-faint); font-weight: 400; }
+.output-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 700;
+    margin: 24px 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+}
+.output-label .count { color: var(--text-faint); letter-spacing: 0; text-transform: none; font-weight: 400; }
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 14px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--panel-hi); border-color: var(--text-dim); transform: translateY(-1px); }
+.btn-sm { padding: 9px 16px; font-size: 11px; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Reference grid */
+.ref-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    font-size: 12px;
+}
+.ref-grid .code { background: var(--panel); padding: 9px 14px; color: var(--accent); font-weight: 700; white-space: nowrap; }
+.ref-grid .desc { background: var(--panel); padding: 9px 14px; color: var(--text-dim); }
+
+/* Alerts */
+.alert-warn, .alert-info {
+    background: rgba(255, 170, 51, 0.08);
+    border-left: 3px solid var(--warn);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.65;
+}
+.alert-info { background: rgba(212, 255, 58, 0.06); border-left-color: var(--accent-dim); }
+.alert-warn .tag, .alert-info .tag {
+    color: var(--warn);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    margin-bottom: 4px;
+    display: block;
+}
+.alert-info .tag { color: var(--accent-dim); }
+
+/* Check panel */
+.check-panel { margin-top: 20px; border: 1px solid var(--border); background: var(--panel); padding: 16px 20px; }
+.check-panel .ok { color: var(--accent); font-size: 12px; }
+.check-item {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 5px 0;
+    line-height: 1.6;
+    align-items: flex-start;
+}
+.check-item .bullet { color: var(--warn); font-weight: 700; flex-shrink: 0; }
+.check-item.hard .bullet { color: var(--danger); }
+
+/* Footer */
+.doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    line-height: 1.9;
+}
+
+.hidden { display: none !important; }
+
+@media (max-width: 640px) {
+    .doc-title { font-size: 38px; }
+    .section-title { font-size: 22px; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    .tab { padding: 10px 12px; font-size: 10px; }
+    .container { padding: 32px 16px 72px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="doc-header">
+        <div>
+            <h1 class="display doc-title">Sale<br>Disclaimer Gen<span class="accent">.</span></h1>
+        </div>
+        <div class="doc-meta">
+            <div><span class="label">Utility</span> / Email Fine Print</div>
+            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Owner</span> / Sheldon</div>
+        </div>
+    </header>
+
+    <p class="lede">
+        Tick what applies, set the end date, get the footer fine print. Clause wording is the
+        house standard, built from every promo we've sent since May 2026 and de-duplicated.
+        <strong>Copy it. Paste it into the footer block. Move on.</strong>
+    </p>
+
+    <div class="tab-row">
+        <button class="tab active" data-tab="promo" onclick="switchTab('promo')">Sale / Promo</button>
+        <button class="tab" data-tab="comp" onclick="switchTab('comp')">Competition</button>
+        <button class="tab" data-tab="ref" onclick="switchTab('ref')">Clause Reference</button>
+    </div>
+
+<!-- ==================== PROMO ==================== -->
+<div id="tab-promo" class="tab-content">
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">01</span> &nbsp; The Offer</span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Offer type</label>
+                <select class="form-select" id="p-type" onchange="onOfferType()">
+                    <option value="sitewide">Percentage off — sitewide</option>
+                    <option value="restricted">Percentage off — selected products</option>
+                    <option value="tiered">Tiered / Stack &amp; Save (spend &amp; save)</option>
+                    <option value="dollar">Dollar-value discount</option>
+                    <option value="multibuy">Multibuy / bundle deal</option>
+                    <option value="gift">Free gift with purchase</option>
+                    <option value="shipping">Free shipping offer</option>
+                </select>
+            </div>
+            <div class="form-group" id="wrap-value">
+                <label class="form-label" id="lbl-value">Discount</label>
+                <input type="text" class="form-input" id="p-value" placeholder="e.g. 20%" oninput="build()">
+            </div>
+        </div>
+
+        <div class="form-group hidden" id="wrap-custom">
+            <label class="form-label" id="lbl-custom">Offer description</label>
+            <input type="text" class="form-input" id="p-custom" placeholder="e.g. Buy 2 sample packs, get the 3rd free" oninput="build()">
+            <div class="field-hint">Written in plain terms — this becomes the opening sentence.</div>
+        </div>
+
+        <!-- Tiers -->
+        <div class="hidden" id="wrap-tiers">
+            <div class="divider"></div>
+            <div class="sub-head">Spend / save tiers</div>
+            <div id="tier-list"></div>
+            <button class="btn-mini add" onclick="addTier()" style="margin-top:4px;">+ Add tier</button>
+            <label class="check solo" style="margin-top:12px;">
+                <input type="checkbox" id="p-tier-subtotal" checked onchange="build()">
+                Add "based on order subtotal before any other reductions"
+            </label>
+            <div class="field-hint">The tiers are the minimum spends, so they fold into one sentence rather than repeating a separate threshold clause.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="sub-head">Applies to</div>
+        <div class="form-group hidden" id="wrap-scope">
+            <div class="check-grid" id="scope-grid"></div>
+            <div class="field-hint">Tick only the ranges the discount is valid on.</div>
+        </div>
+        <div class="field-hint" id="scope-sitewide-note">Sitewide — all products sold at thejerkyco.com.au.</div>
+
+        <div class="form-group" style="margin-top:14px;">
+            <label class="check solo"><input type="checkbox" id="p-weight-on" onchange="toggleWeights()"> Restrict to certain bag sizes</label>
+            <div class="check-grid hidden" id="weight-grid" style="margin-top:6px;"></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">02</span> &nbsp; Exclusions</span>
+        </div>
+        <div class="check-grid" id="excl-grid"></div>
+        <div class="form-group" style="margin-top:16px;">
+            <label class="form-label">Anything else excluded</label>
+            <input type="text" class="form-input" id="p-excl-other" placeholder="e.g. Bulldogs merchandise, Exotic Truffle" oninput="build()">
+            <div class="field-hint">Comma-separated. Gets folded into the exclusions sentence.</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">03</span> &nbsp; When It Runs</span>
+        </div>
+
+        <div class="form-group">
+            <label class="check solo"><input type="checkbox" id="p-start-on" onchange="toggleStart()"> Include a start date</label>
+        </div>
+
+        <div class="form-row hidden" id="wrap-start">
+            <div class="form-group">
+                <label class="form-label">Starts</label>
+                <input type="date" class="form-input" id="p-start-date" onchange="build()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Start time</label>
+                <input type="time" class="form-input" id="p-start-time" value="00:00" onchange="build()">
+            </div>
+        </div>
+
+        <div class="form-row-3">
+            <div class="form-group">
+                <label class="form-label">Ends</label>
+                <input type="date" class="form-input" id="p-end-date" onchange="build()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">End time</label>
+                <input type="time" class="form-input" id="p-end-time" value="23:59" onchange="build()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-select" id="p-tz" onchange="build()">
+                    <option value="AWST">AWST (Perth)</option>
+                    <option value="AEST">AEST (Brisbane)</option>
+                    <option value="AEDT">AEDT (Sydney, summer)</option>
+                </select>
+            </div>
+        </div>
+        <div class="field-hint live" id="tz-echo"></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">04</span> &nbsp; How They Claim It</span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Redemption</label>
+                <select class="form-select" id="p-redeem" onchange="onRedeem()">
+                    <option value="auto">Applied automatically at checkout</option>
+                    <option value="code">Discount code required</option>
+                    <option value="codecap">Discount code — limited redemptions</option>
+                    <option value="none">Nothing to claim (price already reduced)</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="wrap-code">
+                <label class="form-label">Code</label>
+                <input type="text" class="form-input" id="p-code" placeholder="e.g. WINTER15" oninput="build()" style="text-transform:uppercase;">
+            </div>
+        </div>
+
+        <div class="form-row hidden" id="wrap-cap">
+            <div class="form-group">
+                <label class="form-label">Redemption limit</label>
+                <input type="number" class="form-input" id="p-cap" placeholder="e.g. 150" min="1" oninput="build()">
+            </div>
+            <div class="form-group"></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="sub-head">Minimum spend</div>
+        <div id="wrap-min">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Threshold</label>
+                    <input type="text" class="form-input" id="p-min" placeholder="e.g. 50 — leave blank for none" oninput="build()">
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;">
+                    <label class="check solo"><input type="checkbox" id="p-nomin" onchange="build()"> State "no minimum spend"</label>
+                </div>
+            </div>
+        </div>
+        <div class="field-hint hidden" id="min-tiered-note">
+            Handled by the spend tiers up in section 01 — no separate threshold clause needed.
+        </div>
+
+        <div class="divider"></div>
+        <div class="sub-head">Shipping</div>
+        <div class="form-group">
+            <select class="form-select" id="p-ship" onchange="onShip()">
+                <option value="none">Don't mention shipping</option>
+                <option value="excluded">Discount excludes shipping</option>
+                <option value="free">Free shipping over a threshold</option>
+            </select>
+        </div>
+        <div class="form-row hidden" id="wrap-ship-min">
+            <div class="form-group">
+                <label class="form-label">Free shipping over</label>
+                <input type="text" class="form-input" id="p-ship-min" placeholder="e.g. 150" oninput="build()">
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;">
+                <label class="check solo"><input type="checkbox" id="p-ship-au" checked onchange="build()"> Australia only</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">05</span> &nbsp; Conditions</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Where it's valid</label>
+            <select class="form-select" id="p-channel" onchange="build()">
+                <option value="online">Online only — not at retail stores</option>
+                <option value="instore">In-store only — not online</option>
+                <option value="both">Online and in retail stores</option>
+                <option value="silent">Don't mention</option>
+            </select>
+        </div>
+
+        <div class="check-grid" style="margin-top:14px;">
+            <label class="check"><input type="checkbox" id="p-nocombine" checked onchange="build()"> Can't combine with other offers</label>
+            <label class="check"><input type="checkbox" id="p-nosubs" checked onchange="build()"> Not valid on subscription orders</label>
+            <label class="check"><input type="checkbox" id="p-onetime" onchange="build()"> One-time purchases only</label>
+            <label class="check"><input type="checkbox" id="p-nowholesale" onchange="build()"> Not valid on wholesale / bulk-buy</label>
+            <label class="check"><input type="checkbox" id="p-reserve" checked onchange="build()"> Reserve right to end early</label>
+            <label class="check"><input type="checkbox" id="p-anypay" onchange="build()"> Any payment method accepted</label>
+            <label class="check"><input type="checkbox" id="p-stock" onchange="build()"> While stocks last</label>
+            <label class="check"><input type="checkbox" id="p-asterisk" checked onchange="build()"> Lead with an asterisk (*)</label>
+        </div>
+
+        <div class="form-row" style="margin-top:16px;">
+            <div class="form-group">
+                <label class="form-label">Limit per customer</label>
+                <input type="number" class="form-input" id="p-limit" placeholder="Blank for no limit" min="1" oninput="build()">
+            </div>
+            <div class="form-group"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Extra clause (optional)</label>
+            <textarea class="form-textarea" id="p-extra" placeholder="Anything the tool doesn't cover. Written verbatim at the end." oninput="build()"></textarea>
+        </div>
+    </div>
+
+    <div class="output-label"><span>Footer disclaimer</span><span class="count" id="p-count"></span></div>
+    <div class="output-box" id="p-out"><span class="output-empty">Set an end date to get started…</span></div>
+    <div class="btn-row">
+        <button class="btn" onclick="copyBox('p-out')">Copy disclaimer</button>
+        <button class="btn btn-secondary" onclick="resetPromo()">Reset</button>
+    </div>
+
+    <div class="output-label" id="lbl-caveat">Asterisk caveat — for under the offer block</div>
+    <div class="output-box small" id="p-caveat"><span class="output-empty">—</span></div>
+    <div class="btn-row"><button class="btn btn-secondary btn-sm" onclick="copyBox('p-caveat')">Copy</button></div>
+
+    <div class="check-panel">
+        <div class="sub-head" style="margin-bottom:8px;">Pre-send check</div>
+        <div id="p-checks"></div>
+    </div>
+</div>
+
+<!-- ==================== COMPETITION ==================== -->
+<div id="tab-comp" class="tab-content hidden">
+
+    <div class="alert-warn">
+        <span class="tag">Read this once</span>
+        Competition terms are a different animal to sale terms. Australian trade promotions can carry
+        state permit requirements depending on prize value and whether the promotion is a game of chance
+        (random draw) or a game of skill (judged). Those rules vary by state and have changed in recent
+        years — <strong>verify current requirements before publishing, and get a legal check on anything
+        with a high-value prize.</strong> This tool produces a starting draft, not legal advice.
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">01</span> &nbsp; Promoter &amp; Entry</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Promoter (full legal entity name)</label>
+            <input type="text" class="form-input" id="k-promoter" value="The Jerky Co" oninput="buildComp()">
+            <div class="field-hint">Use the registered company name and ACN if you have it — check with Finance rather than guessing.</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Promoter address</label>
+            <input type="text" class="form-input" id="k-address" value="6 Buckingham Drive, Wangara WA 6065" oninput="buildComp()">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Entries open</label>
+                <input type="date" class="form-input" id="k-open-date" onchange="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Time</label>
+                <input type="time" class="form-input" id="k-open-time" value="09:00" onchange="buildComp()">
+            </div>
+        </div>
+
+        <div class="form-row-3">
+            <div class="form-group">
+                <label class="form-label">Entries close</label>
+                <input type="date" class="form-input" id="k-close-date" onchange="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Time</label>
+                <input type="time" class="form-input" id="k-close-time" value="23:59" onchange="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-select" id="k-tz" onchange="buildComp()">
+                    <option value="AWST">AWST (Perth)</option>
+                    <option value="AEST">AEST (Brisbane)</option>
+                    <option value="AEDT">AEDT (Sydney, summer)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">How to enter</label>
+            <textarea class="form-textarea" id="k-how" placeholder="e.g. Follow @thejerkyco, like the post and tag a mate in the comments. One entry per tag, maximum five entries per person."  oninput="buildComp()"></textarea>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">02</span> &nbsp; Who Can Enter</span>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Minimum age</label>
+                <input type="number" class="form-input" id="k-age" value="18" min="0" oninput="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Eligible residents</label>
+                <select class="form-select" id="k-region" onchange="buildComp()">
+                    <option value="au">Australian residents</option>
+                    <option value="wa">Western Australian residents</option>
+                    <option value="custom">Custom…</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group hidden" id="wrap-k-region">
+            <label class="form-label">Custom eligibility</label>
+            <input type="text" class="form-input" id="k-region-custom" placeholder="e.g. residents of NSW, VIC and QLD" oninput="buildComp()">
+        </div>
+        <div class="check-grid">
+            <label class="check"><input type="checkbox" id="k-noemployees" checked onchange="buildComp()"> Exclude staff &amp; immediate family</label>
+            <label class="check"><input type="checkbox" id="k-oneentry" onchange="buildComp()"> One entry per person</label>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">03</span> &nbsp; The Prize</span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Prize description</label>
+            <input type="text" class="form-input" id="k-prize" placeholder="e.g. a signed Bulldogs pack and 1kg of air-dried jerky" oninput="buildComp()">
+        </div>
+        <div class="form-row-3">
+            <div class="form-group">
+                <label class="form-label">Value (AUD)</label>
+                <input type="text" class="form-input" id="k-value" placeholder="e.g. 250" oninput="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Number of prizes</label>
+                <input type="number" class="form-input" id="k-count" value="1" min="1" oninput="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Total prize pool</label>
+                <input type="text" class="form-input" id="k-pool" placeholder="Auto if blank" oninput="buildComp()">
+            </div>
+        </div>
+        <div class="check-grid">
+            <label class="check"><input type="checkbox" id="k-notransfer" checked onchange="buildComp()"> Not transferable or redeemable for cash</label>
+            <label class="check"><input type="checkbox" id="k-shipau" checked onchange="buildComp()"> Prize shipped within Australia only</label>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">04</span> &nbsp; Picking a Winner</span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Type of promotion</label>
+            <select class="form-select" id="k-mode" onchange="onCompMode()">
+                <option value="chance">Game of chance — random draw</option>
+                <option value="skill">Game of skill — judged entries</option>
+            </select>
+            <div class="field-hint" id="k-mode-hint"></div>
+        </div>
+
+        <div id="wrap-chance">
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label class="form-label">Draw date</label>
+                    <input type="date" class="form-input" id="k-draw-date" onchange="buildComp()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Draw time</label>
+                    <input type="time" class="form-input" id="k-draw-time" value="10:00" onchange="buildComp()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Draw location</label>
+                    <input type="text" class="form-input" id="k-draw-loc" value="6 Buckingham Drive, Wangara WA 6065" oninput="buildComp()">
+                </div>
+            </div>
+        </div>
+
+        <div id="wrap-skill" class="hidden">
+            <div class="form-group">
+                <label class="form-label">Judging criteria</label>
+                <input type="text" class="form-input" id="k-criteria" placeholder="e.g. creativity and originality of the caption" oninput="buildComp()">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Judging date</label>
+                    <input type="date" class="form-input" id="k-judge-date" onchange="buildComp()">
+                </div>
+                <div class="form-group"></div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="form-row-3">
+            <div class="form-group">
+                <label class="form-label">Notified by</label>
+                <select class="form-select" id="k-notify" onchange="buildComp()">
+                    <option value="email">Email</option>
+                    <option value="dm">Direct message</option>
+                    <option value="both">Email and direct message</option>
+                    <option value="comment">Comment on the post</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Within (business days)</label>
+                <input type="number" class="form-input" id="k-notify-days" value="5" min="1" oninput="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Claim window (days)</label>
+                <input type="number" class="form-input" id="k-claim-days" value="14" min="1" oninput="buildComp()">
+            </div>
+        </div>
+        <label class="check solo"><input type="checkbox" id="k-redraw" checked onchange="buildComp()"> Unclaimed prizes may be redrawn or forfeited</label>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <span><span style="color:var(--accent);font-weight:700;">05</span> &nbsp; Platform, Privacy &amp; Permits</span>
+        </div>
+        <div class="sub-head">Running on social? Tick the platforms</div>
+        <div class="check-grid" id="k-platform-grid"></div>
+
+        <div class="divider"></div>
+        <div class="check-grid">
+            <label class="check"><input type="checkbox" id="k-privacy" checked onchange="buildComp()"> Include privacy statement</label>
+            <label class="check"><input type="checkbox" id="k-publish" onchange="buildComp()"> Winner's name may be published</label>
+        </div>
+
+        <div class="form-row" style="margin-top:14px;">
+            <div class="form-group">
+                <label class="form-label">Permit number(s)</label>
+                <input type="text" class="form-input" id="k-permit" placeholder="e.g. SA T26/123 — leave blank if none" oninput="buildComp()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full T&amp;Cs URL</label>
+                <input type="text" class="form-input" id="k-tcurl" placeholder="e.g. thejerkyco.com.au/pages/competition-terms" oninput="buildComp()">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Extra clause (optional)</label>
+            <textarea class="form-textarea" id="k-extra" placeholder="Anything specific to this comp." oninput="buildComp()"></textarea>
+        </div>
+    </div>
+
+    <div class="output-label"><span>Competition terms</span><span class="count" id="k-count-out"></span></div>
+    <div class="output-box" id="k-out"><span class="output-empty">Fill in the prize and entry dates…</span></div>
+    <div class="btn-row">
+        <button class="btn" onclick="copyBox('k-out')">Copy terms</button>
+        <button class="btn btn-secondary" onclick="copyBox('k-short')">Copy short version</button>
+    </div>
+
+    <div class="output-label">Short version — for the email itself, linking to full T&amp;Cs</div>
+    <div class="output-box small" id="k-short"><span class="output-empty">—</span></div>
+
+    <div class="check-panel">
+        <div class="sub-head" style="margin-bottom:8px;">Pre-send check</div>
+        <div id="k-checks"></div>
+    </div>
+</div>
+
+<!-- ==================== REFERENCE ==================== -->
+<div id="tab-ref" class="tab-content hidden">
+
+    <div class="alert-info">
+        <span class="tag">Why the wording changed</span>
+        Across the 11 promos sent between May and July 2026, the same six ideas were written five
+        different ways — "Can not be combined" vs "Cannot be combined", a timezone stated in only five
+        of eleven, and one grammatical error ("Can not to be used") copied across both Winter Warmers
+        sends. The clauses below are the single canonical version of each. Use the tool rather than
+        copying an old email.
+    </div>
+
+    <h3 class="sub-title">Clause order</h3>
+    <div class="ref-grid">
+        <div class="code">1</div><div class="desc">Scope — what the discount applies to, and the domain</div>
+        <div class="code">2</div><div class="desc">Tier ladder (tiered offers only)</div>
+        <div class="code">3</div><div class="desc">Bag-size restriction</div>
+        <div class="code">4</div><div class="desc">Exclusions</div>
+        <div class="code">5</div><div class="desc">Minimum spend</div>
+        <div class="code">6</div><div class="desc">Redemption — auto-applied or code</div>
+        <div class="code">7</div><div class="desc">Dates and timezone</div>
+        <div class="code">8</div><div class="desc">Combination and subscription exclusion</div>
+        <div class="code">9</div><div class="desc">Purchase limits</div>
+        <div class="code">10</div><div class="desc">Shipping</div>
+        <div class="code">11</div><div class="desc">Online / in-store validity</div>
+        <div class="code">12</div><div class="desc">Payment method, stock, reservation of rights</div>
+    </div>
+
+    <h3 class="sub-title">House rules</h3>
+    <div class="ref-grid">
+        <div class="code">Cannot</div><div class="desc">One word, always. Never "can not".</div>
+        <div class="code">Timezone</div><div class="desc">Always stated. Default AWST — we're a Perth business, but say so or an east-coast customer reads it as their own time.</div>
+        <div class="code">Date format</div><div class="desc">11:59pm AWST, Sunday 16 August 2026. Time first, then weekday, then date.</div>
+        <div class="code">Domain</div><div class="desc">thejerkyco.com.au — no "www.", no trailing space before the full stop.</div>
+        <div class="code">Air-dried</div><div class="desc">Never "dried", "slow-dried" or "dehydrated". Applies in fine print too.</div>
+        <div class="code">Dollar figures</div><div class="desc">Fine allowed in thresholds. Brand rule bans dollar breakdowns of the discount itself in body copy — state those as percentages.</div>
+        <div class="code">Em dash</div><div class="desc">Not used in fine print. Commas and full stops only. Any em dash typed into a free-text field is swapped for a comma automatically.</div>
+        <div class="code">Placement</div><div class="desc">Last text block in the email, below the unsubscribe footer. Centred, 11–12px, grey.</div>
+    </div>
+
+    <h3 class="sub-title">Watch out for</h3>
+    <div class="ref-grid">
+        <div class="code">Reminder&nbsp;sends</div><div class="desc">The "#2" reminder is usually a clone. In July the reminder silently dropped the free-shipping sentence the first send had. Regenerate rather than clone.</div>
+        <div class="code">Shipping</div><div class="desc">Two clauses that sound similar mean opposite things — "discount excludes shipping" vs "free shipping over $150". Pick deliberately.</div>
+        <div class="code">Prizes</div><div class="desc">Any mention of winning something needs competition terms, even in a NEWS email. The Bulldogs launch promoted a giveaway with none.</div>
+        <div class="code">9am&nbsp;cutoffs</div><div class="desc">Non-midnight end times are fine but need the weekday spelled out — 9:00am AWST Monday reads very differently to 11:59pm Sunday.</div>
+    </div>
+</div>
+
+    <footer class="doc-footer">
+        TJC Sale Disclaimer Generator · v1.0 · Maintained by Sheldon<br>
+        Clause library derived from sent Klaviyo campaigns, May–July 2026. Not legal advice.
+    </footer>
+</div>
+
+<div class="toast" id="toast">Copied.</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const RANGES = [
+    ['beef',      'Beef jerky',            'beef jerky'],
+    ['fruit',     'Fruit jerky',           'fruit jerky'],
+    ['biltong',   'Biltong',               'biltong'],
+    ['drow',      'Droëwors',              'droëwors'],
+    ['snap',      'Snap sticks',           'snap sticks'],
+    ['bites',     'Beef bites',            'beef bites'],
+    ['nibbles',   'Nibbles',               'nibbles'],
+    ['hampers',   'Gift hampers',          'gift hampers'],
+    ['cartons',   'Bulk cartons',          'bulk cartons'],
+    ['subs',      'Subscription products', 'subscription products'],
+    ['giftcards', 'Gift cards',            'gift cards'],
+    ['merch',     'Merchandise',           'merchandise'],
+    ['equip',     'Slicers & equipment',   'slicers and equipment'],
+    ['discounted','Already-discounted items','already-discounted items']
+];
+
+const WEIGHTS = [
+    ['sample', 'Sample bags',  'sample bags'],
+    ['250',    '250g bags',    '250g bags'],
+    ['500',    '500g bags',    '500g bags'],
+    ['1kg',    '1kg bags',     '1kg bags'],
+    ['2kg',    '2kg bags',     '2kg bags']
+];
+
+const PLATFORMS = [
+    ['instagram', 'Instagram'],
+    ['facebook',  'Facebook'],
+    ['tiktok',    'TikTok'],
+    ['youtube',   'YouTube']
+];
+
+const TZ_OFFSET = { AWST: 8, AEST: 10, AEDT: 11 };
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function el(id) { return document.getElementById(id); }
+function val(id) { const e = el(id); return e ? e.value.trim() : ''; }
+function on(id) { const e = el(id); return e ? e.checked : false; }
+function show(id, yes) { el(id).classList.toggle('hidden', !yes); }
+
+function joinList(arr) {
+    if (!arr.length) return '';
+    if (arr.length === 1) return arr[0];
+    return arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
+}
+
+function sentenceCase(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/* Belt and braces: no em dash reaches the output, including via free-text fields. */
+function noEmDash(s) {
+    return s.replace(/\s*—\s*/g, ', ')
+            .replace(/,\s*,/g, ',')
+            .replace(/\s+,/g, ',')
+            .replace(/,\s*([.;])/g, '$1');
+}
+
+function money(v) {
+    if (!v) return '';
+    const clean = String(v).replace(/[^0-9.]/g, '');
+    if (!clean) return '';
+    const n = parseFloat(clean);
+    if (isNaN(n)) return '';
+    return '$' + (n % 1 === 0 ? n.toLocaleString('en-AU') : n.toFixed(2));
+}
+
+function pct(v) {
+    if (!v) return '';
+    const t = String(v).trim();
+    return /%|off|\$/i.test(t) ? t : t + '%';
+}
+
+/* --- date/time --- */
+function parseDate(str) {
+    if (!str) return null;
+    const p = str.split('-');
+    if (p.length !== 3) return null;
+    return { y: +p[0], m: +p[1], d: +p[2] };
+}
+
+function fmtTime(t) {
+    if (!t) return '';
+    const p = t.split(':');
+    let h = +p[0];
+    const m = p[1] || '00';
+    const suffix = h >= 12 ? 'pm' : 'am';
+    let h12 = h % 12;
+    if (h12 === 0) h12 = 12;
+    if (h === 0 && m === '00') return '12:00am';
+    return h12 + ':' + m + suffix;
+}
+
+// "Sunday 16 August 2026"
+function fmtDateLong(str) {
+    const p = parseDate(str);
+    if (!p) return '';
+    const d = new Date(p.y, p.m - 1, p.d);
+    return DAYS[d.getDay()] + ' ' + p.d + ' ' + MONTHS[p.m - 1] + ' ' + p.y;
+}
+
+// "11:59pm AWST, Sunday 16 August 2026"
+function fmtStamp(dateStr, timeStr, tz) {
+    const dl = fmtDateLong(dateStr);
+    if (!dl) return '';
+    const t = fmtTime(timeStr || '23:59');
+    return t + ' ' + tz + ', ' + dl;
+}
+
+function firstSundayOfMonth(year, monthIdx) {
+    const d = new Date(Date.UTC(year, monthIdx, 1));
+    return 1 + ((7 - d.getUTCDay()) % 7);
+}
+
+// Is a given UTC instant inside eastern-states daylight saving?
+function isEasternDST(utcMs) {
+    const y = new Date(utcMs).getUTCFullYear();
+    // DST starts 2am AEST first Sunday Oct = 16:00 UTC previous day
+    const start = Date.UTC(y, 9, firstSundayOfMonth(y, 9), -8, 0);
+    // DST ends 3am AEDT first Sunday Apr = 16:00 UTC previous day
+    const end = Date.UTC(y, 3, firstSundayOfMonth(y, 3), -8, 0);
+    return utcMs >= start || utcMs < end;
+}
+
+function toUTC(dateStr, timeStr, tz) {
+    const p = parseDate(dateStr);
+    if (!p) return null;
+    const t = (timeStr || '23:59').split(':');
+    return Date.UTC(p.y, p.m - 1, p.d, +t[0] - TZ_OFFSET[tz], +t[1]);
+}
+
+function renderAt(utcMs, offsetHours) {
+    const d = new Date(utcMs + offsetHours * 3600000);
+    let h = d.getUTCHours();
+    const m = String(d.getUTCMinutes()).padStart(2, '0');
+    const suffix = h >= 12 ? 'pm' : 'am';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + m + suffix + ' ' + DAYS[d.getUTCDay()].slice(0, 3) +
+           ' ' + d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()].slice(0, 3);
+}
+
+// Cross-check line so nobody ships an AWST deadline thinking it's east-coast time
+function tzEcho(dateStr, timeStr, tz) {
+    const utc = toUTC(dateStr, timeStr, tz);
+    if (utc === null) return '';
+    const dst = isEasternDST(utc);
+    const parts = [];
+    if (tz !== 'AWST') parts.push(renderAt(utc, 8) + ' AWST (Perth)');
+    const eastLabel = dst ? 'AEDT (Sydney/Melb)' : 'AEST (Sydney/Melb)';
+    const eastOffset = dst ? 11 : 10;
+    if (tz !== (dst ? 'AEDT' : 'AEST')) parts.push(renderAt(utc, eastOffset) + ' ' + eastLabel);
+    if (dst && tz !== 'AEST') parts.push(renderAt(utc, 10) + ' AEST (Bris)');
+    if (!parts.length) return '';
+    return 'Same moment elsewhere: ' + parts.join('  ·  ');
+}
+
+/* ============================================================
+   BUILD CHECKBOX GRIDS
+   ============================================================ */
+function buildGrids() {
+    el('scope-grid').innerHTML = RANGES.filter(r => r[0] !== 'discounted')
+        .map(r => `<label class="check"><input type="checkbox" data-scope="${r[0]}" onchange="build()"> ${r[1]}</label>`).join('');
+
+    el('excl-grid').innerHTML = RANGES
+        .map(r => `<label class="check"><input type="checkbox" data-excl="${r[0]}" onchange="build()"> ${r[1]}</label>`).join('');
+
+    el('weight-grid').innerHTML = WEIGHTS
+        .map(w => `<label class="check"><input type="checkbox" data-weight="${w[0]}" onchange="build()"> ${w[1]}</label>`).join('');
+
+    el('k-platform-grid').innerHTML = PLATFORMS
+        .map(p => `<label class="check"><input type="checkbox" data-plat="${p[1]}" onchange="buildComp()"> ${p[1]}</label>`).join('');
+}
+
+function picked(attr, source) {
+    const out = [];
+    document.querySelectorAll('[data-' + attr + ']').forEach(cb => {
+        if (cb.checked) {
+            const key = cb.getAttribute('data-' + attr);
+            const row = source.find(r => r[0] === key);
+            if (row) out.push(row);
+        }
+    });
+    return out;
+}
+
+/* ============================================================
+   UI TOGGLES
+   ============================================================ */
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(e => e.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+    el('tab-' + tab).classList.remove('hidden');
+    document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+}
+
+function onOfferType() {
+    const t = val('p-type');
+    const needsValue = ['sitewide', 'restricted', 'dollar'].includes(t);
+    const needsCustom = ['multibuy', 'gift'].includes(t);
+    show('wrap-value', needsValue);
+    show('wrap-custom', needsCustom);
+    show('wrap-tiers', t === 'tiered');
+    show('wrap-scope', t !== 'sitewide' && t !== 'tiered');
+    show('scope-sitewide-note', t === 'sitewide' || t === 'tiered');
+    show('wrap-min', t !== 'tiered');
+    show('min-tiered-note', t === 'tiered');
+
+    el('lbl-value').textContent = t === 'dollar' ? 'Amount off' : 'Discount';
+    el('p-value').placeholder = t === 'dollar' ? 'e.g. 15' : 'e.g. 20%';
+    el('lbl-custom').textContent = t === 'gift' ? 'What they get free' : 'Offer description';
+    el('p-custom').placeholder = t === 'gift'
+        ? 'e.g. a free 50g Traditional sample bag'
+        : 'e.g. Buy 2 sample packs, get the 3rd free';
+    if (t === 'tiered' && !el('tier-list').children.length) { addTier(); addTier(); addTier(); }
+    build();
+}
+
+function toggleWeights() { show('weight-grid', on('p-weight-on')); build(); }
+function toggleStart()   { show('wrap-start', on('p-start-on')); build(); }
+function onRedeem() {
+    const r = val('p-redeem');
+    show('wrap-code', r === 'code' || r === 'codecap');
+    show('wrap-cap', r === 'codecap');
+    build();
+}
+function onShip() { show('wrap-ship-min', val('p-ship') === 'free'); build(); }
+
+function addTier(spend, save) {
+    const row = document.createElement('div');
+    row.className = 'tier-row';
+    row.innerHTML =
+        '<input type="text" class="form-input tier-spend" placeholder="Spend $50" value="' + (spend || '') + '" oninput="build()">' +
+        '<input type="text" class="form-input tier-save" placeholder="Save 5%" value="' + (save || '') + '" oninput="build()">' +
+        '<button class="btn-mini" onclick="this.parentNode.remove();build()">×</button>';
+    el('tier-list').appendChild(row);
+    build();
+}
+
+function onCompMode() {
+    const m = val('k-mode');
+    show('wrap-chance', m === 'chance');
+    show('wrap-skill', m === 'skill');
+    el('k-mode-hint').textContent = m === 'chance'
+        ? 'Random draws are games of chance and are the type most likely to attract state permit requirements.'
+        : 'Judged entries are games of skill. Generally lighter-touch, but state your criteria clearly.';
+    buildComp();
+}
+
+/* ============================================================
+   PROMO BUILDER
+   ============================================================ */
+function build() {
+    const type = val('p-type');
+    const S = [];          // sentences
+    const warn = [];       // soft warnings
+    const hard = [];       // must-fix
+
+    const domain = 'thejerkyco.com.au';
+    const scope = picked('scope', RANGES);
+    const excl = picked('excl', RANGES);
+    const weights = picked('weight', WEIGHTS);
+    const weightsOn = on('p-weight-on');
+    const value = val('p-value');
+    const custom = val('p-custom');
+
+    /* --- 1. Scope --- */
+    if (type === 'sitewide') {
+        if (value) S.push(pct(value) + ' off applies to all products sold at ' + domain + '.');
+        else hard.push('No discount amount entered.');
+    } else if (type === 'restricted') {
+        if (!value) hard.push('No discount amount entered.');
+        if (!scope.length) hard.push('Offer is restricted but no product ranges are ticked.');
+        if (value && scope.length) {
+            S.push(pct(value) + ' off applies to ' + joinList(scope.map(r => r[2])) +
+                   ' only, at ' + domain + '.');
+        }
+    } else if (type === 'tiered') {
+        S.push('Tiered discounts apply to all products sold at ' + domain + '.');
+    } else if (type === 'dollar') {
+        if (!value) hard.push('No discount amount entered.');
+        else {
+            const target = scope.length ? joinList(scope.map(r => r[2])) : 'all products';
+            S.push(money(value) + ' off applies to ' + target + ' at ' + domain + '.');
+            warn.push('Brand rule: state discounts as percentages in body copy, not dollar amounts. Fine print is the exception — check the hero matches.');
+        }
+    } else if (type === 'multibuy') {
+        if (!custom) hard.push('No offer description entered.');
+        else S.push(sentenceCase(custom.replace(/\.$/, '')) +
+                    (scope.length ? ', on ' + joinList(scope.map(r => r[2])) : '') +
+                    ', at ' + domain + '.');
+    } else if (type === 'gift') {
+        if (!custom) hard.push('Nothing entered for the free gift.');
+        else S.push('Qualifying orders placed at ' + domain + ' receive ' +
+                    custom.replace(/\.$/, '') + ' free.');
+    } else if (type === 'shipping') {
+        S.push('Free shipping applies to qualifying orders placed at ' + domain + '.');
+    }
+
+    /* --- 2. Tiers (absorbs the minimum-spend clause — the tiers ARE the thresholds) --- */
+    if (type === 'tiered') {
+        const tiers = [];
+        document.querySelectorAll('.tier-row').forEach(r => {
+            const s = r.querySelector('.tier-spend').value.trim();
+            const v = r.querySelector('.tier-save').value.trim();
+            if (s && v) tiers.push(s.replace(/^spend\s*/i, '') + ' to save ' + v.replace(/^save\s*/i, ''));
+        });
+        if (!tiers.length) {
+            hard.push('Tiered offer selected but no complete tiers entered.');
+        } else {
+            // "or" not "and" — you hit one tier, not all of them.
+            const ladder = tiers.length > 1
+                ? tiers.slice(0, -1).join(', ') + ' or ' + tiers[tiers.length - 1]
+                : tiers[0];
+            S.push('Spend ' + ladder +
+                   (on('p-tier-subtotal') ? ', based on order subtotal before any other reductions' : '') + '.');
+        }
+    }
+
+    /* --- 3. Bag sizes --- */
+    if (weightsOn) {
+        if (!weights.length) hard.push('Bag-size restriction is on but no sizes are ticked.');
+        else {
+            const chosen = weights.map(w => w[0]);
+            const others = WEIGHTS.filter(w => !chosen.includes(w[0])).map(w => w[2]);
+            let s = 'Valid on ' + joinList(weights.map(w => w[2])) + ' only';
+            if (others.length) s += '; ' + joinList(others) + ' are excluded';
+            S.push(s + '.');
+        }
+    }
+
+    /* --- 4. Exclusions --- */
+    const exclNames = excl.map(r => r[2]);
+    const exclOther = val('p-excl-other');
+    if (exclOther) exclOther.split(',').map(s => s.trim()).filter(Boolean).forEach(s => exclNames.push(s));
+    // "Excludes X, Y and Z." — avoids the is/are agreement trap with mixed
+    // singular ("merchandise") and plural ("gift hampers") nouns.
+    if (exclNames.length) S.push('Excludes ' + joinList(exclNames) + '.');
+
+    /* --- 5. Minimum spend (skipped for tiered — folded into the ladder above) --- */
+    const minSpend = type === 'tiered' ? '' : val('p-min');
+    if (type !== 'tiered') {
+        if (on('p-nomin')) {
+            S.push('No minimum spend applies.');
+            if (minSpend) warn.push('You have both a minimum spend and "no minimum spend" set — pick one.');
+        } else if (minSpend) {
+            S.push('A minimum spend of ' + money(minSpend) +
+                   ' applies, based on order subtotal before any other reductions.');
+        }
+    }
+
+    /* --- 6. Redemption --- */
+    const redeem = val('p-redeem');
+    const code = val('p-code').toUpperCase();
+    if (redeem === 'auto') {
+        S.push('The discount is applied automatically at checkout, no code required.');
+        if (code) warn.push('A code is entered but redemption is set to automatic.');
+    } else if (redeem === 'code' || redeem === 'codecap') {
+        if (!code) hard.push('Redemption requires a code but none is entered.');
+        else if (/\s/.test(code)) warn.push('Code "' + code + '" contains a space — check that is intentional.');
+        if (code) {
+            let s = 'Use code ' + code + ' at checkout.';
+            if (redeem === 'codecap') {
+                const cap = val('p-cap');
+                if (cap) s += ' Valid for the first ' + (+cap).toLocaleString('en-AU') +
+                              ' redemptions only, or until the offer ends, whichever occurs first.';
+                else hard.push('Limited-redemption offer selected but no limit entered.');
+            }
+            S.push(s);
+        }
+    }
+
+    /* --- 7. Dates --- */
+    const tz = val('p-tz');
+    const endDate = val('p-end-date');
+    const endTime = val('p-end-time') || '23:59';
+    const endStamp = fmtStamp(endDate, endTime, tz);
+
+    if (!endDate) {
+        hard.push('No end date set. Every offer needs one.');
+    } else {
+        if (on('p-start-on') && val('p-start-date')) {
+            const startStamp = fmtStamp(val('p-start-date'), val('p-start-time') || '00:00', tz);
+            S.push('The offer is valid from ' + startStamp + ' to ' + endStamp + '.');
+            const su = toUTC(val('p-start-date'), val('p-start-time') || '00:00', tz);
+            const eu = toUTC(endDate, endTime, tz);
+            if (su !== null && eu !== null && su >= eu) hard.push('Start date is on or after the end date.');
+        } else {
+            S.push('The offer ends ' + endStamp + '.');
+        }
+        const eu = toUTC(endDate, endTime, tz);
+        if (eu !== null && eu < Date.now()) warn.push('The end date is in the past.');
+        el('tz-echo').textContent = tzEcho(endDate, endTime, tz);
+    }
+    if (!endDate) el('tz-echo').textContent = '';
+
+    /* --- 8. Combination --- */
+    const noCombine = on('p-nocombine');
+    const noSubs = on('p-nosubs');
+    if (noCombine && noSubs) {
+        S.push('Cannot be combined with any other offer or discount code, and is not valid on subscription orders.');
+    } else if (noCombine) {
+        S.push('Cannot be combined with any other offer or discount code.');
+    } else if (noSubs) {
+        S.push('Not valid on subscription orders.');
+    }
+    if (on('p-nowholesale')) S.push('Not valid on wholesale or bulk-buy pricing.');
+
+    /* --- 9. Purchase limits --- */
+    if (on('p-onetime')) S.push('Valid on one-time purchases only.');
+    const limit = val('p-limit');
+    if (limit) {
+        S.push(+limit === 1 ? 'Limit one use per customer.'
+                            : 'Limit ' + (+limit).toLocaleString('en-AU') + ' uses per customer.');
+    }
+
+    /* --- 10. Shipping --- */
+    const ship = val('p-ship');
+    if (ship === 'excluded') {
+        S.push('The discount applies to product pricing only and does not include shipping.');
+    } else if (ship === 'free') {
+        const sm = val('p-ship-min');
+        if (!sm) hard.push('Free shipping selected but no threshold entered.');
+        else {
+            S.push('Free shipping applies to orders over ' + money(sm) +
+                   ' after the discount has been applied' + (on('p-ship-au') ? ' (Australia only)' : '') + '.');
+        }
+    }
+    if (type === 'shipping' && ship === 'none') {
+        warn.push('This is a free shipping offer but no shipping threshold clause is set.');
+    }
+
+    /* --- 11. Channel --- */
+    const ch = val('p-channel');
+    if (ch === 'online') S.push('Online only, not valid at retail store locations.');
+    else if (ch === 'instore') S.push('Valid in retail store locations only, not valid online.');
+    else if (ch === 'both') S.push('Valid online at ' + domain + ' and at The Jerky Co retail store locations.');
+
+    /* --- 12. Misc --- */
+    if (on('p-stock')) S.push('Offer available while stocks last.');
+    if (on('p-anypay')) S.push('Any payment method may be used to claim this offer.');
+    if (on('p-reserve')) S.push('The Jerky Co reserves the right to modify or end this promotion at any time.');
+    const extra = val('p-extra');
+    if (extra) S.push(extra.replace(/\s+$/, '').replace(/([^.!?])$/, '$1.'));
+
+    /* --- assemble --- */
+    let text = S.join(' ');
+    if (/—/.test(text)) {
+        text = noEmDash(text);
+        warn.push('An em dash in your free text was swapped for a comma. Check it still reads right.');
+    }
+    if (text && on('p-asterisk')) text = '*' + text;
+
+    const outEl = el('p-out');
+    if (!text) {
+        outEl.innerHTML = '<span class="output-empty">Set an end date to get started…</span>';
+        el('p-count').textContent = '';
+    } else {
+        outEl.textContent = text;
+        el('p-count').textContent = hard.length
+            ? '⚠ incomplete — ' + hard.length + ' item' + (hard.length > 1 ? 's' : '') + ' to fix'
+            : text.length + ' chars · ' + S.length + ' clauses';
+    }
+    // Block copying a half-built disclaimer — that is the exact mistake this tool exists to stop.
+    outEl.dataset.blocked = hard.length ? '1' : '';
+    outEl.style.borderLeftColor = hard.length ? 'var(--danger)' : 'var(--accent)';
+    outEl.style.color = hard.length ? 'var(--text-dim)' : 'var(--accent)';
+
+    /* --- asterisk caveat snippet --- */
+    const cav = [];
+    if (weightsOn && weights.length) cav.push(joinList(weights.map(w => w[1])) + ' only');
+    if (type === 'restricted' && scope.length) cav.push(joinList(scope.map(r => r[2])) + ' only');
+    if (minSpend && !on('p-nomin')) cav.push('min. spend ' + money(minSpend));
+    if (redeem === 'code' || redeem === 'codecap') { if (code) cav.push('code ' + code); }
+    const cavEl = el('p-caveat');
+    if (cav.length) cavEl.textContent = '*' + sentenceCase(joinList(cav)) + '. T&Cs below.';
+    else cavEl.innerHTML = '<span class="output-empty">No restrictions that need calling out in the body.</span>';
+
+    /* --- soft style checks --- */
+    if (text) {
+        if (/\bcan not\b/i.test(text)) warn.push('"Can not" found — should be "cannot".');
+        if (/\bwww\./i.test(text)) warn.push('Drop the "www." from the domain.');
+        if (/\b(slow[- ]?dried|dehydrated)\b/i.test(text) || /(^|[^-])\bdried\b/i.test(text.replace(/air-dried/gi, '')))
+            warn.push('Check meat is described as "air-dried", never just "dried".');
+        if (text.length > 700) warn.push('Fine print is ' + text.length + ' characters — long enough that nobody reads it. Consider trimming or linking to a terms page.');
+        if (ch === 'silent') warn.push('Online/in-store validity is not stated. Every past promo said it.');
+    }
+
+    renderChecks('p-checks', hard, warn);
+}
+
+/* ============================================================
+   COMPETITION BUILDER
+   ============================================================ */
+function buildComp() {
+    const S = [], warn = [], hard = [];
+    const tz = val('k-tz');
+
+    const promoter = val('k-promoter');
+    const address = val('k-address');
+    if (promoter) {
+        S.push('Promoter: ' + promoter + (address ? ', ' + address : '') + '.');
+        if (!/pty|ltd|abn|acn/i.test(promoter)) warn.push('Promoter name has no legal-entity suffix or ABN/ACN. Confirm the registered name with Finance.');
+    } else hard.push('No promoter named.');
+
+    /* entry period */
+    const openD = val('k-open-date'), closeD = val('k-close-date');
+    if (!closeD) hard.push('No entry close date. This is the single most important clause.');
+    if (openD && closeD) {
+        S.push('Entries open ' + fmtStamp(openD, val('k-open-time') || '09:00', tz) +
+               ' and close ' + fmtStamp(closeD, val('k-close-time') || '23:59', tz) + '.');
+        const ou = toUTC(openD, val('k-open-time') || '09:00', tz);
+        const cu = toUTC(closeD, val('k-close-time') || '23:59', tz);
+        if (ou !== null && cu !== null && ou >= cu) hard.push('Entries open on or after they close.');
+    } else if (closeD) {
+        S.push('Entries close ' + fmtStamp(closeD, val('k-close-time') || '23:59', tz) + '.');
+    }
+
+    /* eligibility */
+    const age = val('k-age');
+    const region = val('k-region');
+    let who = 'Australian residents';
+    if (region === 'wa') who = 'Western Australian residents';
+    else if (region === 'custom') who = val('k-region-custom') || 'eligible entrants';
+    S.push('Open to ' + who + (age ? ' aged ' + age + ' years and over' : '') + '.');
+    if (!age) warn.push('No minimum age set.');
+    if (on('k-noemployees')) S.push('Employees of ' + (promoter || 'the Promoter') + ' and their immediate families are not eligible to enter.');
+
+    /* how to enter */
+    const how = val('k-how');
+    if (how) S.push('To enter: ' + how.replace(/\s+$/, '').replace(/([^.!?])$/, '$1.'));
+    else hard.push('No entry method described.');
+    if (on('k-oneentry')) S.push('One entry per person.');
+
+    /* prize */
+    const prize = val('k-prize');
+    const pv = val('k-value');
+    const pc = parseInt(val('k-count') || '1', 10);
+    if (!prize) hard.push('No prize described.');
+    else {
+        let s = pc > 1 ? ('There are ' + pc + ' prizes, each consisting of ' + prize)
+                       : ('The prize is ' + prize);
+        if (pv) s += ', valued at ' + money(pv) + ' each';
+        S.push(s.replace(/\.$/, '') + '.');
+        if (!pv) warn.push('No prize value stated. Prize value is what determines permit thresholds — worth stating.');
+        const pool = val('k-pool');
+        if (pool) S.push('Total prize pool: ' + money(pool) + '.');
+        else if (pv && pc > 1) S.push('Total prize pool: ' + money(String(parseFloat(String(pv).replace(/[^0-9.]/g, '')) * pc)) + '.');
+    }
+    if (on('k-notransfer')) S.push(pc > 1
+        ? 'Prizes are not transferable, not redeemable for cash and cannot be exchanged.'
+        : 'The prize is not transferable, not redeemable for cash and cannot be exchanged.');
+    if (on('k-shipau')) S.push('Prizes are shipped within Australia only.');
+
+    /* draw / judging */
+    const mode = val('k-mode');
+    if (mode === 'chance') {
+        const dd = val('k-draw-date');
+        if (dd) {
+            S.push('The draw will take place at ' + fmtStamp(dd, val('k-draw-time') || '10:00', tz) +
+                   (val('k-draw-loc') ? ' at ' + val('k-draw-loc') : '') + '.');
+            const cu = toUTC(closeD, val('k-close-time') || '23:59', tz);
+            const du = toUTC(dd, val('k-draw-time') || '10:00', tz);
+            if (cu !== null && du !== null && du <= cu) hard.push('The draw is scheduled before entries close.');
+        } else hard.push('No draw date set.');
+        S.push('The winner will be drawn at random from all valid entries.');
+    } else {
+        const crit = val('k-criteria');
+        if (crit) S.push('Entries will be judged on ' + crit.replace(/\.$/, '') + '.');
+        else hard.push('Game of skill selected but no judging criteria given.');
+        if (val('k-judge-date')) S.push('Judging will take place on ' + fmtDateLong(val('k-judge-date')) + '.');
+        S.push("The judges' decision is final and no correspondence will be entered into.");
+    }
+
+    /* notification */
+    const nMap = { email: 'by email', dm: 'by direct message', both: 'by email and direct message', comment: 'by comment on the entry post' };
+    const nd = val('k-notify-days');
+    S.push('The winner will be notified ' + nMap[val('k-notify')] +
+           (nd ? ' within ' + nd + ' business days of the ' + (mode === 'chance' ? 'draw' : 'judging date') : '') + '.');
+    const cd = val('k-claim-days');
+    if (cd) S.push('Prizes must be claimed within ' + cd + ' days of notification.');
+    if (on('k-redraw')) S.push('Unclaimed prizes may be redrawn or forfeited at the Promoter\'s discretion.');
+    if (on('k-publish')) S.push("The winner's first name and state may be published on The Jerky Co's website and social channels.");
+
+    /* platforms */
+    const plats = [];
+    document.querySelectorAll('[data-plat]').forEach(cb => { if (cb.checked) plats.push(cb.getAttribute('data-plat')); });
+    if (plats.length) {
+        S.push('This promotion is in no way sponsored, endorsed, administered by or associated with ' +
+               joinList(plats) + '.');
+    }
+
+    /* privacy, permit, terms */
+    if (on('k-privacy')) {
+        S.push('Entrants\' personal information is collected and handled in accordance with our Privacy Policy at thejerkyco.com.au/policies/privacy-policy.');
+    }
+    const permit = val('k-permit');
+    if (permit) S.push('Authorised under permit no. ' + permit + '.');
+    const tcurl = val('k-tcurl');
+    if (tcurl) S.push('Full terms and conditions are available at ' + tcurl.replace(/^https?:\/\//, '') + '.');
+    const kextra = val('k-extra');
+    if (kextra) S.push(kextra.replace(/\s+$/, '').replace(/([^.!?])$/, '$1.'));
+
+    let text = S.join(' ');
+    if (/—/.test(text)) {
+        text = noEmDash(text);
+        warn.push('An em dash in your free text was swapped for a comma. Check it still reads right.');
+    }
+    const outEl = el('k-out');
+    if (!text) {
+        outEl.innerHTML = '<span class="output-empty">Fill in the prize and entry dates…</span>';
+        el('k-count-out').textContent = '';
+    } else {
+        outEl.textContent = text;
+        el('k-count-out').textContent = hard.length
+            ? '⚠ incomplete — ' + hard.length + ' item' + (hard.length > 1 ? 's' : '') + ' to fix'
+            : text.length + ' chars · ' + S.length + ' clauses';
+    }
+    outEl.dataset.blocked = hard.length ? '1' : '';
+    outEl.style.borderLeftColor = hard.length ? 'var(--danger)' : 'var(--accent)';
+    outEl.style.color = hard.length ? 'var(--text-dim)' : 'var(--accent)';
+
+    /* short version for the email body */
+    const shortEl = el('k-short');
+    if (closeD && prize) {
+        let sh = 'Entries close ' + fmtStamp(closeD, val('k-close-time') || '23:59', tz) + '. ' +
+                 'Open to ' + who + (age ? ' aged ' + age + '+' : '') + '. ';
+        sh += tcurl
+            ? 'Full terms and conditions at ' + tcurl.replace(/^https?:\/\//, '') + '.'
+            : 'Full terms and conditions apply.';
+        shortEl.textContent = sh;
+        if (!tcurl) warn.push('No full T&Cs URL. The short version has nowhere to point — host the full terms on a page and link it.');
+    } else {
+        shortEl.innerHTML = '<span class="output-empty">—</span>';
+    }
+
+    if (text && !permit && mode === 'chance') {
+        warn.push('Game of chance with no permit number. Permit requirements vary by state and prize value — verify before publishing.');
+    }
+
+    renderChecks('k-checks', hard, warn);
+}
+
+/* ============================================================
+   CHECKS + COPY
+   ============================================================ */
+function renderChecks(target, hard, warn) {
+    const box = el(target);
+    if (!hard.length && !warn.length) {
+        box.innerHTML = '<div class="ok">✓ Nothing flagged. Give it one human read before it goes out.</div>';
+        return;
+    }
+    box.innerHTML =
+        hard.map(m => '<div class="check-item hard"><span class="bullet">!</span><span>' + esc(m) + '</span></div>').join('') +
+        warn.map(m => '<div class="check-item"><span class="bullet">•</span><span>' + esc(m) + '</span></div>').join('');
+}
+
+function esc(s) {
+    return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function toast(msg) {
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* navigator.clipboard only exists in a secure context (https / localhost) and
+   is blocked inside sandboxed iframes without clipboard-write permission — so
+   it is unavailable when this file is opened straight off disk or previewed
+   in an embedded viewer. Fall back to the old execCommand path, and if that
+   also fails, select the text so Ctrl+C still works. */
+function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('copy unavailable'));
+    });
+}
+
+function selectBox(box) {
+    const range = document.createRange();
+    range.selectNodeContents(box);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+function copyBox(id) {
+    const box = el(id);
+    if (box.querySelector('.output-empty')) return;
+    if (box.dataset.blocked === '1') { toast('Fix the flagged items first'); return; }
+    const text = box.textContent;
+    if (!text.trim()) return;
+    copyText(text)
+        .then(() => toast('Copied.'))
+        .catch(() => { selectBox(box); toast('Selected. Press Ctrl+C'); });
+}
+
+function resetPromo() {
+    el('p-type').value = 'sitewide';
+    ['p-value','p-custom','p-excl-other','p-min','p-code','p-cap','p-limit','p-ship-min','p-extra']
+        .forEach(id => el(id).value = '');
+    ['p-weight-on','p-start-on','p-nomin','p-onetime','p-nowholesale','p-anypay','p-stock']
+        .forEach(id => el(id).checked = false);
+    ['p-nocombine','p-nosubs','p-reserve','p-asterisk','p-ship-au']
+        .forEach(id => el(id).checked = true);
+    document.querySelectorAll('[data-scope],[data-excl],[data-weight]').forEach(cb => cb.checked = false);
+    el('tier-list').innerHTML = '';
+    el('p-redeem').value = 'auto';
+    el('p-ship').value = 'none';
+    el('p-channel').value = 'online';
+    el('p-tz').value = 'AWST';
+    el('p-end-date').value = '';
+    el('p-end-time').value = '23:59';
+    el('p-start-time').value = '00:00';
+    onOfferType(); onRedeem(); onShip(); toggleWeights(); toggleStart();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    buildGrids();
+    onOfferType();
+    onRedeem();
+    onShip();
+    onCompMode();
+    build();
+    buildComp();
+});
+</script>
+</body>
+</html>
