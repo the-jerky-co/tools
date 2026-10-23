@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TJC Email Signature Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-hi: #242424;
+    --border: #2e2e2e;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #d4ff3a;
+    --accent-dim: #9bbf20;
+    --accent-hover: #e2ff5a;
+    --danger: #ff4d4d;
+    --warn: #ffaa33;
+    --grid: rgba(255,255,255,0.02);
+    --font-display: 'Futura', 'Futura PT', 'Futura Std', 'Trebuchet MS', 'Century Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+.doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.doc-title { font-size: 56px; }
+.doc-title .accent { color: var(--accent); }
+.doc-meta { font-size: 11px; color: var(--text-dim); text-align: right; line-height: 1.9; }
+.doc-meta .label { color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.lede { color: var(--text-dim); margin-bottom: 48px; max-width: 640px; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+section { margin-bottom: 56px; }
+.section-header {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.section-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; }
+.section-title { font-size: 28px; }
+
+p { margin-bottom: 12px; color: var(--text-dim); }
+
+.panel { background: var(--panel); border: 1px solid var(--border); padding: 24px; margin-bottom: 16px; }
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-faint); margin-bottom: 6px; font-weight: 700;
+}
+.form-label .opt { color: var(--text-faint); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.form-select, .form-input {
+    width: 100%; background: var(--panel-hi); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--font-mono); font-size: 13px; padding: 10px 14px; outline: none;
+    transition: border-color 0.15s ease;
+}
+.form-select:focus, .form-input:focus { border-color: var(--accent); }
+.form-input.invalid { border-color: var(--danger); }
+.form-select {
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.hint { font-size: 11px; color: var(--text-faint); margin-top: 6px; margin-bottom: 0; }
+.hint.err { color: var(--danger); }
+.hint.warn { color: var(--warn); }
+
+.preview {
+    background: #fff; border: 1px solid var(--border); padding: 28px 24px; margin-bottom: 12px;
+    overflow-x: auto;
+}
+.code-box {
+    background: var(--panel-hi); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    padding: 16px 20px; font-size: 11px; color: var(--text); margin-bottom: 12px;
+    white-space: pre-wrap; word-break: break-all; max-height: 220px; overflow-y: auto; line-height: 1.6;
+}
+.out-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 8px; }
+
+.btn {
+    background: var(--accent); color: var(--bg); border: none; padding: 14px 24px;
+    font-family: inherit; font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s ease;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; background: var(--accent); }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--panel-hi); border-color: var(--text-dim); transform: translateY(-1px); }
+.btn-secondary:disabled:hover { background: transparent; border-color: var(--border); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+
+.steps { counter-reset: s; list-style: none; }
+.steps li { counter-increment: s; color: var(--text-dim); margin-bottom: 8px; padding-left: 32px; position: relative; }
+.steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 0; color: var(--accent); font-weight: 700; font-size: 11px; top: 1px; }
+.steps strong { color: var(--text); font-weight: 500; }
+
+.toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--accent); color: var(--bg); padding: 12px 24px; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; opacity: 0; transition: all 0.2s ease; z-index: 100;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.doc-footer {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--text-faint); text-align: center; line-height: 1.9;
+}
+
+@media (max-width: 640px) {
+    .doc-title { font-size: 40px; }
+    .section-title { font-size: 22px; }
+    .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="doc-header">
+        <div>
+            <h1 class="display doc-title">Signature<br>Gen<span class="accent">.</span></h1>
+        </div>
+        <div class="doc-meta">
+            <div><span class="label">Utility</span> / Email Signatures</div>
+            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Owner</span> / Sheldon</div>
+        </div>
+    </header>
+
+    <p class="lede">
+        Enter your details. Get the standard The Jerky Co email signature as a ready-to-use HTML file. <strong>No copying an old one and swapping bits.</strong>
+    </p>
+
+    <section>
+        <div class="section-header">
+            <span class="section-num">01</span>
+            <h2 class="display section-title">Your Details</h2>
+        </div>
+
+        <div class="panel">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" class="form-input" id="name" placeholder="e.g. Hamish Motley" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="title">Position</label>
+                    <input type="text" class="form-input" id="title" placeholder="e.g. Operations Manager" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" class="form-input" id="email" placeholder="e.g. hamish.m@thejerkyco.com.au" autocomplete="off">
+                <p class="hint" id="email-hint"></p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone <span class="opt">(optional)</span></label>
+                    <input type="text" class="form-input" id="phone" placeholder="e.g. 0426 621 628" autocomplete="off">
+                    <p class="hint" id="phone-hint">Leave blank to drop the phone and hours.</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="hours">Working Hours <span class="opt">(change if different)</span></label>
+                    <input type="text" class="form-input" id="hours" value="8:30am - 4:30pm, Mon to Fri" data-default="8:30am - 4:30pm, Mon to Fri" placeholder="e.g. 8:30am - 4:30pm, Mon to Fri" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0; max-width:240px;">
+                <label class="form-label" for="state">State <span class="opt">(filename only)</span></label>
+                <select class="form-select" id="state">
+                    <option value="WA">WA</option>
+                    <option value="NSW">NSW</option>
+                    <option value="VIC">VIC</option>
+                    <option value="QLD">QLD</option>
+                    <option value="SA">SA</option>
+                    <option value="TAS">TAS</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-num">02</span>
+            <h2 class="display section-title">Output</h2>
+        </div>
+
+        <div class="out-label">Preview</div>
+        <div class="preview" id="preview"></div>
+
+        <div class="btn-row">
+            <button class="btn" id="btn-download" onclick="downloadFile()">Download .html</button>
+            <button class="btn btn-secondary" id="btn-copy-sig" onclick="copySignature()">Copy Signature</button>
+            <button class="btn btn-secondary" id="btn-copy-code" onclick="copyCode()">Copy HTML Code</button>
+            <button class="btn btn-secondary" onclick="resetAll()">Reset All</button>
+        </div>
+
+        <div class="out-label">HTML</div>
+        <div class="code-box" id="code"></div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-num">03</span>
+            <h2 class="display section-title">Using It</h2>
+        </div>
+        <ol class="steps">
+            <li><strong>Copy Signature</strong>, then paste it into the signature box in your email settings (Outlook: Settings, Accounts, Signatures).</li>
+            <li>If the layout breaks on paste, use <strong>Copy HTML Code</strong> in an HTML signature field, or send the downloaded file to IT.</li>
+            <li>Hours and address are on the signature as typed. Check them before you save.</li>
+        </ol>
+    </section>
+
+    <footer class="doc-footer">
+        TJC Email Signature Generator · v1.0 · Maintained by Sheldon
+    </footer>
+</div>
+
+<div class="toast" id="toast">Copied.</div>
+
+<script>
+var CDN = 'https://cdn.shopify.com/s/files/1/0148/9646/3936/files/';
+var ICON = {
+    phone: CDN + 'icon-phone.png?v=1688697917',
+    time: CDN + 'icon-time.png?v=1689061858',
+    web: CDN + 'icon-website.png?v=1688697917',
+    email: CDN + 'icon-email.png?v=1688697917',
+    loc: CDN + 'icon-location.png?v=1688697917'
+};
+var LOGO = CDN + 'TJC-Email_Logo_-L.png?v=1737687427';
+var SOCIAL = [
+    ['https://www.facebook.com/Thejerkyco/', CDN + 'face.svg?v=1739235603', 'Facebook'],
+    ['https://www.instagram.com/thejerkyco/', CDN + 'insta.svg?v=1739235604', 'Instagram'],
+    ['https://au.linkedin.com/company/the-jerky-co', CDN + 'linkedin.svg?v=1739235604', 'LinkedIn']
+];
+var ADDRESS = '2 Uppill Place, Wangara, WA 6065';
+var MAP = 'https://maps.app.goo.gl/Qs4niw2pUZHVTki17';
+var DISCLAIMER = 'IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.';
+var LINK = 'target="_blank" style="color:#212121;text-decoration:none"';
+var EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function escAttr(s) {
+    return esc(s).replace(/"/g, '&quot;');
+}
+
+// Returns {display, tel} or null. Restores the leading 0 Excel strips and groups 4-3-3.
+function cleanPhone(raw) {
+    var d = (raw || '').replace(/\D/g, '');
+    if (d.indexOf('61') === 0 && d.length === 11) d = '0' + d.slice(2);
+    if (d.length === 9 && '234578'.indexOf(d.charAt(0)) !== -1) d = '0' + d;
+    if (d.length !== 10) return null;
+    var disp;
+    if (d.indexOf('13') === 0 || d.indexOf('18') === 0 || d.indexOf('04') === 0) {
+        disp = d.slice(0, 4) + ' ' + d.slice(4, 7) + ' ' + d.slice(7);
+    } else {
+        disp = '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + ' ' + d.slice(6);
+    }
+    return { display: disp, tel: d };
+}
+
+function icon(key, alt) {
+    return '<img src="' + ICON[key] + '" width="12" style="width:12px;vertical-align:-2px;border:0" alt="' + alt + '">';
+}
+
+function buildSignature(name, title, email, phone, hours) {
+    var row1 = '';
+    if (phone) {
+        row1 += icon('phone', 'ph') + ' <a href="tel:' + phone.tel + '" ' + LINK + '>' + phone.display + '</a> &nbsp;';
+        if (hours) row1 += icon('time', 'hrs') + ' <span>' + esc(hours) + '</span> &nbsp;';
+    }
+    row1 += icon('web', 'web') + ' <a href="https://thejerkyco.com.au" ' + LINK + '>thejerkyco.com.au</a>';
+    var row2 = icon('email', 'em') + ' <a href="mailto:' + escAttr(email) + '" ' + LINK + '>' + esc(email) + '</a> &nbsp;' +
+        icon('loc', 'loc') + ' <a href="' + MAP + '" ' + LINK + '>' + ADDRESS + '</a>';
+    var social = SOCIAL.map(function (s, i) {
+        var pad = i < SOCIAL.length - 1 ? ' style="padding-right:10px"' : '';
+        return '<td' + pad + '><a href="' + s[0] + '" target="_blank"><img src="' + s[1] + '" height="25" alt="' + s[2] + '" style="border:0"></a></td>';
+    }).join('');
+    return '<div dir="ltr"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Helvetica,Arial,sans-serif;color:#212121"><tr><td style="font-size:14px;padding-bottom:16px">Kind Regards</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr><td width="112" style="width:112px;vertical-align:middle"><img src="' + LOGO + '" width="112" height="112" alt="The Jerky Co" style="width:112px;height:112px;border:0"></td><td style="padding-left:18px;vertical-align:top"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr><td>' +
+        '<span style="font-size:16px;font-weight:bold;color:#121212;line-height:1.2">' + esc(name) + '</span><br>' +
+        '<span style="font-size:13px;color:#121212;line-height:1.2">' + esc(title) + '</span></td></tr>' +
+        '<tr><td width="497" style="width:497px;padding-top:10px;font-size:10px;white-space:nowrap;line-height:1.6">' + row1 + '<br>' + row2 + '</td></tr>' +
+        '<tr><td style="padding-top:10px"><table cellpadding="0" cellspacing="0" border="0"><tr>' + social + '</tr></table></td></tr></table></td></tr></table></td></tr>' +
+        '<tr><td style="padding-top:16px"><table cellpadding="0" cellspacing="0" border="0" width="500" style="width:500px"><tr><td style="font-size:10px;color:#121212;line-height:120%">' + DISCLAIMER + '</td></tr></table></td></tr></table></div>';
+}
+
+var currentHtml = '';
+var currentFilename = '26-WA-Signature.html';
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function setHint(id, text, cls) {
+    var el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'hint' + (cls ? ' ' + cls : '');
+}
+
+function update() {
+    var name = val('name'), title = val('title'), email = val('email');
+    var phoneRaw = val('phone'), hours = val('hours'), state = val('state');
+    var phone = null, ok = true;
+
+    var emailBad = email && !EMAIL_RE.test(email);
+    document.getElementById('email').classList.toggle('invalid', !!emailBad);
+    setHint('email-hint', emailBad ? 'That doesn’t look like a valid email.' : '', emailBad ? 'err' : '');
+    if (emailBad) ok = false;
+
+    var phoneBad = false;
+    if (phoneRaw) {
+        phone = cleanPhone(phoneRaw);
+        if (!phone) {
+            phoneBad = true;
+            setHint('phone-hint', 'Needs 10 digits, e.g. 0426 621 628.', 'err');
+            ok = false;
+        } else if (!hours) {
+            setHint('phone-hint', 'Add working hours to show the phone.', 'warn');
+            ok = false;
+        } else {
+            setHint('phone-hint', 'Shown as ' + phone.display, '');
+        }
+    } else {
+        setHint('phone-hint', 'Leave blank to drop the phone and hours.', '');
+    }
+    document.getElementById('phone').classList.toggle('invalid', phoneBad);
+
+    if (!name || !title || !email) ok = false;
+
+    var pName = name || 'Full Name', pTitle = title || 'Position', pEmail = email && !emailBad ? email : 'name@thejerkyco.com.au';
+    var shownPhone = phone && hours ? phone : null;
+    currentHtml = buildSignature(pName, pTitle, pEmail, shownPhone, hours);
+    document.getElementById('preview').innerHTML = currentHtml;
+    document.getElementById('code').textContent = currentHtml;
+
+    var slug = (name || 'Signature').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'Signature';
+    currentFilename = '26-' + state + '-' + slug + '.html';
+
+    ['btn-download', 'btn-copy-sig', 'btn-copy-code'].forEach(function (id) {
+        document.getElementById(id).disabled = !ok;
+    });
+}
+
+function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg || 'Copied.';
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 1500);
+}
+
+function copyCode() {
+    navigator.clipboard.writeText(currentHtml).then(function () { toast('HTML copied.'); });
+}
+
+function copySignature() {
+    var done = function () { toast('Signature copied.'); };
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        var item = new ClipboardItem({
+            'text/html': new Blob([currentHtml], { type: 'text/html' }),
+            'text/plain': new Blob([document.getElementById('preview').innerText], { type: 'text/plain' })
+        });
+        navigator.clipboard.write([item]).then(done, fallbackCopy);
+    } else {
+        fallbackCopy();
+    }
+}
+
+// Selects the rendered preview and copies it, for browsers without rich clipboard support.
+function fallbackCopy() {
+    var el = document.getElementById('preview');
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try { document.execCommand('copy'); toast('Signature copied.'); } catch (e) { toast('Copy failed.'); }
+    sel.removeAllRanges();
+}
+
+function downloadFile() {
+    var blob = new Blob([currentHtml], { type: 'text/html;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = currentFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    toast('Downloaded.');
+}
+
+function resetAll() {
+    document.querySelectorAll('.form-input').forEach(function (el) { el.value = el.getAttribute('data-default') || ''; });
+    document.getElementById('state').value = 'WA';
+    update();
+}
+
+document.querySelectorAll('.form-input, .form-select').forEach(function (el) {
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+});
+update();
+</script>
+</body>
+</html>
