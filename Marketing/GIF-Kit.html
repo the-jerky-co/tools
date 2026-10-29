@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TJC GIF Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-hi: #242424;
+    --border: #2e2e2e;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #d4ff3a;
+    --accent-dim: #9bbf20;
+    --accent-hover: #e2ff5a;
+    --danger: #ff4d4d;
+    --warn: #ffaa33;
+    --grid: rgba(255,255,255,0.02);
+    --font-display: 'Futura', 'Futura PT', 'Futura Std', 'Trebuchet MS', 'Century Gothic', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+/* Header */
+.doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.doc-title { font-size: 56px; }
+.doc-title .accent { color: var(--accent); }
+.doc-meta { font-size: 11px; color: var(--text-dim); text-align: right; line-height: 1.9; }
+.doc-meta .label { color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.lede { color: var(--text-dim); margin-bottom: 48px; max-width: 640px; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+/* Sections */
+section { margin-bottom: 56px; }
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.section-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; }
+.section-title { font-size: 28px; }
+
+h3.sub-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+    color: var(--text);
+    margin: 24px 0 10px;
+}
+
+p { margin-bottom: 12px; color: var(--text-dim); }
+p strong { color: var(--text); font-weight: 500; }
+
+/* Panels */
+.panel { background: var(--panel); border: 1px solid var(--border); padding: 24px; margin-bottom: 16px; }
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+}
+
+/* Tabs (optional, for multi-mode tools) */
+.tab-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.tab {
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.tab:hover { color: var(--text-dim); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Form elements */
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+.form-select, .form-input, .form-textarea {
+    width: 100%;
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+.form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* Checkbox group */
+.checkbox-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 4px; }
+.checkbox-label { font-size: 12px; color: var(--text-dim); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.checkbox-label input { cursor: pointer; }
+
+/* Output: multi-line text variant (default) */
+.output-box {
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 600px;
+    overflow-y: auto;
+    line-height: 1.6;
+}
+/* Output: single-string variant (add class "output-inline" alongside output-box) */
+.output-box.output-inline {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent);
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    white-space: normal;
+    word-break: break-all;
+    max-height: none;
+    overflow: visible;
+}
+.output-empty { color: var(--text-faint); font-weight: 400; font-size: 13px; }
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 14px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--panel-hi); border-color: var(--text-dim); transform: translateY(-1px); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Stat grid */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+.stat { background: var(--panel); padding: 16px; }
+.stat .lab { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 4px; }
+.stat .val { font-family: var(--font-display); font-weight: 900; font-size: 28px; color: var(--text); letter-spacing: -0.01em; }
+.stat .val.accent { color: var(--accent); }
+
+/* Reference grid (code / description pairs) */
+.ref-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    font-size: 12px;
+}
+.ref-grid .code { background: var(--panel); padding: 8px 14px; color: var(--accent); font-weight: 700; }
+.ref-grid .desc { background: var(--panel); padding: 8px 14px; color: var(--text-dim); }
+
+/* Alerts */
+.alert-warn {
+    background: rgba(255, 170, 51, 0.08);
+    border-left: 3px solid var(--warn);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+.alert-warn .tag { color: var(--warn); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; margin-bottom: 4px; }
+/* Danger variant (not on the originals, but uses the same pattern with --danger) */
+.alert-danger {
+    background: rgba(255, 77, 77, 0.08);
+    border-left: 3px solid var(--danger);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+.alert-danger .tag { color: var(--danger); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; margin-bottom: 4px; }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Footer */
+.doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    line-height: 1.9;
+}
+
+@media (max-width: 640px) {
+    .doc-title { font-size: 40px; }
+    .section-title { font-size: 22px; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .tab { padding: 10px 12px; font-size: 10px; }
+}
+</style>
+<style>
+/* GIF Kit additions (template CSS above is untouched) */
+.hidden { display: none !important; }
+.drop {
+    background: var(--panel-hi);
+    border: 1px solid var(--border);
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+.drop:hover, .drop:focus, .drop.over { border-color: var(--accent); color: var(--text); outline: none; }
+.drop .big { font-family: var(--font-display); font-weight: 900; text-transform: uppercase; font-size: 18px; color: var(--text); margin-bottom: 6px; }
+.drop .small { font-size: 11px; color: var(--text-faint); }
+.media-stage { text-align: center; margin-bottom: 16px; }
+.media-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 0;
+    overflow: hidden;
+    background: repeating-conic-gradient(#242424 0 25%, #1a1a1a 0 50%) 0 0 / 16px 16px;
+    border: 1px solid var(--border);
+    user-select: none;
+    -webkit-user-select: none;
+}
+.media-wrap video, .media-wrap img { display: block; max-width: 100%; max-height: 60vh; width: auto; height: auto; }
+.media-wrap.active { touch-action: none; cursor: crosshair; }
+.crop-box {
+    display: none;
+    position: absolute;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+    cursor: move;
+}
+.media-wrap.active .crop-box { display: block; }
+.crop-box i { position: absolute; width: 12px; height: 12px; background: var(--accent); }
+.crop-box i[data-h="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
+.crop-box i[data-h="ne"] { right: -6px; top: -6px; cursor: nesw-resize; }
+.crop-box i[data-h="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
+.crop-box i[data-h="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
+.progress { height: 3px; background: var(--border); margin: 16px 0 8px; }
+.progress > div { height: 100%; width: 0; background: var(--accent); transition: width 0.1s linear; }
+.status { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; min-height: 18px; margin-bottom: 12px; }
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row input[type=range] { flex: 1; accent-color: var(--accent); }
+.range-row .range-val { min-width: 32px; text-align: right; color: var(--accent); font-weight: 700; }
+input[type=checkbox] { accent-color: var(--accent); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn:focus-visible, .tab:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.stat .val.small { font-size: 20px; }
+.hint { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="doc-header">
+        <div>
+            <h1 class="display doc-title">GIF<br>Kit<span class="accent">.</span></h1>
+        </div>
+        <div class="doc-meta">
+            <div><span class="label">Utility</span> / Video to GIF, optimise, crop</div>
+            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Owner</span> / Sheldon</div>
+        </div>
+    </header>
+
+    <p class="lede">
+        Drop in a video or a GIF, get back a smaller, tighter GIF. Everything runs in your browser, so files never leave your machine. <strong>No uploads. No watermarks. No ads.</strong>
+    </p>
+
+    <div class="tab-row">
+        <button class="tab active" data-tab="v" onclick="switchTab('v')">Video → GIF</button>
+        <button class="tab" data-tab="o" onclick="switchTab('o')">Optimise</button>
+        <button class="tab" data-tab="c" onclick="switchTab('c')">Crop</button>
+    </div>
+
+    <!-- ===================== VIDEO → GIF ===================== -->
+    <section id="tab-v" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Source Video</span>
+                <span>MP4 | WEBM | MOV</span>
+            </div>
+            <div class="drop" id="v-drop" tabindex="0">
+                <div class="big">Drop a video here</div>
+                <div class="small">or click to choose a file</div>
+            </div>
+            <input type="file" id="v-file" accept="video/*" class="hidden">
+            <div id="v-err" class="alert-danger hidden" style="margin-top:16px;"><div class="tag">Can't read that</div><span></span></div>
+
+            <div id="v-loaded" class="hidden" style="margin-top:16px;">
+                <div class="media-stage">
+                    <div class="media-wrap" id="v-wrap">
+                        <video id="v-video" controls muted playsinline preload="auto"></video>
+                        <div class="crop-box"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat"><div class="lab">Source</div><div class="val small" id="v-s-dims">–</div></div>
+                    <div class="stat"><div class="lab">Length</div><div class="val small" id="v-s-len">–</div></div>
+                    <div class="stat"><div class="lab">File size</div><div class="val small" id="v-s-size">–</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel hidden" id="v-settings">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">02</span> &nbsp; Settings</span>
+                <span>TIME | SIZE | COLOUR</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="v-start">Start (seconds)</label>
+                    <input type="number" class="form-input" id="v-start" min="0" step="0.1" value="0" oninput="vEstimate()">
+                    <div class="hint"><a href="#" style="color:var(--text-dim)" onclick="vSetTime('v-start');return false;">Use current video position</a></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="v-end">End (seconds)</label>
+                    <input type="number" class="form-input" id="v-end" min="0" step="0.1" value="0" oninput="vEstimate()">
+                    <div class="hint"><a href="#" style="color:var(--text-dim)" onclick="vSetTime('v-end');return false;">Use current video position</a></div>
+                </div>
+            </div>
+
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label class="form-label" for="v-fps">Frame rate</label>
+                    <select class="form-select" id="v-fps" onchange="vEstimate()">
+                        <option value="5">5 fps</option>
+                        <option value="8">8 fps</option>
+                        <option value="10">10 fps</option>
+                        <option value="12" selected>12 fps</option>
+                        <option value="15">15 fps</option>
+                        <option value="20">20 fps</option>
+                        <option value="25">25 fps</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="v-width">Width (px)</label>
+                    <input type="number" class="form-input" id="v-width" min="16" max="1600" step="1" value="480" oninput="vEstimate()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="v-colours">Colours</label>
+                    <select class="form-select" id="v-colours">
+                        <option value="256" selected>256 (best)</option>
+                        <option value="128">128</option>
+                        <option value="64">64</option>
+                        <option value="32">32</option>
+                        <option value="16">16</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="v-tol">Compression (lossy)</label>
+                <div class="range-row"><input type="range" id="v-tol" min="0" max="40" value="6" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">6</span></div>
+                <div class="hint">0 keeps every pixel change. Higher skips tiny changes between frames: smaller file, a bit more shimmer.</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Options</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" id="v-crop" onchange="vToggleCrop()"> Crop the video</label>
+                    <label class="checkbox-label"><input type="checkbox" id="v-dither"> Dither (smoother gradients, bigger file)</label>
+                    <label class="checkbox-label"><input type="checkbox" id="v-once"> Play once (no loop)</label>
+                </div>
+            </div>
+
+            <div id="v-crop-fields" class="hidden">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="v-ratio">Aspect ratio</label>
+                        <select class="form-select" id="v-ratio">
+                            <option value="free">Free</option>
+                            <option value="1:1">1:1 Square</option>
+                            <option value="4:5">4:5 Portrait</option>
+                            <option value="9:16">9:16 Story</option>
+                            <option value="16:9">16:9 Wide</option>
+                            <option value="3:2">3:2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Crop (x, y, width, height)</label>
+                        <div class="form-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;">
+                            <input type="number" class="form-input" id="v-cx" min="0" aria-label="Crop X">
+                            <input type="number" class="form-input" id="v-cy" min="0" aria-label="Crop Y">
+                            <input type="number" class="form-input" id="v-cw" min="1" aria-label="Crop width">
+                            <input type="number" class="form-input" id="v-ch" min="1" aria-label="Crop height">
+                        </div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:-8px;margin-bottom:16px;">Drag on the video to draw the crop. Untick crop to get the video controls back for scrubbing.</div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat"><div class="lab">Frames</div><div class="val" id="v-e-frames">–</div></div>
+                <div class="stat"><div class="lab">GIF size (px)</div><div class="val small" id="v-e-dims">–</div></div>
+                <div class="stat"><div class="lab">Duration</div><div class="val small" id="v-e-dur">–</div></div>
+            </div>
+            <div id="v-warn" class="alert-warn hidden"><div class="tag">Heads up</div><span></span></div>
+
+            <div class="btn-row">
+                <button class="btn" id="v-go" onclick="vGenerate()">Make GIF</button>
+            </div>
+            <div class="progress"><div id="v-bar"></div></div>
+            <div class="status" id="v-status"></div>
+        </div>
+
+        <div class="panel hidden" id="v-out">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">03</span> &nbsp; Result</span>
+                <span id="v-out-name"></span>
+            </div>
+            <div class="media-stage"><div class="media-wrap"><img id="v-out-img" alt="GIF result"></div></div>
+            <div class="stat-grid" id="v-out-stats"></div>
+            <div class="btn-row">
+                <button class="btn" onclick="download('v')">Download GIF</button>
+                <button class="btn btn-secondary" onclick="sendTo('v','o')">Optimise it</button>
+                <button class="btn btn-secondary" onclick="sendTo('v','c')">Crop it</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== OPTIMISE ===================== -->
+    <section id="tab-o" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Source GIF</span>
+                <span>GIF ONLY</span>
+            </div>
+            <div class="drop" id="o-drop" tabindex="0">
+                <div class="big">Drop a GIF here</div>
+                <div class="small">or click to choose a file</div>
+            </div>
+            <input type="file" id="o-file" accept="image/gif" class="hidden">
+            <div id="o-err" class="alert-danger hidden" style="margin-top:16px;"><div class="tag">Can't read that</div><span></span></div>
+            <div id="o-loaded" class="hidden" style="margin-top:16px;">
+                <div class="media-stage"><div class="media-wrap"><img id="o-img" alt="Source GIF"></div></div>
+                <div class="stat-grid" id="o-src-stats"></div>
+            </div>
+        </div>
+
+        <div class="panel hidden" id="o-settings">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">02</span> &nbsp; Settings</span>
+                <span>COLOUR | FRAMES | SIZE</span>
+            </div>
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label class="form-label" for="o-colours">Colours</label>
+                    <select class="form-select" id="o-colours">
+                        <option value="256">256 (best)</option>
+                        <option value="128" selected>128</option>
+                        <option value="64">64</option>
+                        <option value="32">32</option>
+                        <option value="16">16</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="o-skip">Drop frames</label>
+                    <select class="form-select" id="o-skip">
+                        <option value="1" selected>Keep all</option>
+                        <option value="2">Every 2nd</option>
+                        <option value="3">Keep 1 in 3</option>
+                        <option value="4">Keep 1 in 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="o-scale">Resize</label>
+                    <select class="form-select" id="o-scale">
+                        <option value="100" selected>100%</option>
+                        <option value="90">90%</option>
+                        <option value="75">75%</option>
+                        <option value="66">66%</option>
+                        <option value="50">50%</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="o-tol">Compression (lossy)</label>
+                <div class="range-row"><input type="range" id="o-tol" min="0" max="40" value="10" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">10</span></div>
+                <div class="hint">Biggest lever after colours. 5–15 is usually invisible; 25+ starts to smear motion.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Options</label>
+                <div class="checkbox-row">
+                    <label class="checkbox-label"><input type="checkbox" id="o-dither"> Dither</label>
+                    <label class="checkbox-label"><input type="checkbox" id="o-once"> Play once (no loop)</label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn" id="o-go" onclick="oRun()">Optimise</button>
+            </div>
+            <div class="progress"><div id="o-bar"></div></div>
+            <div class="status" id="o-status"></div>
+        </div>
+
+        <div class="panel hidden" id="o-out">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">03</span> &nbsp; Result</span>
+                <span id="o-out-name"></span>
+            </div>
+            <div class="media-stage"><div class="media-wrap"><img id="o-out-img" alt="Optimised GIF"></div></div>
+            <div class="stat-grid" id="o-out-stats"></div>
+            <div id="o-out-warn" class="alert-warn hidden"><div class="tag">Heads up</div><span></span></div>
+            <div class="btn-row">
+                <button class="btn" onclick="download('o')">Download GIF</button>
+                <button class="btn btn-secondary" onclick="sendTo('o','c')">Crop it</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CROP ===================== -->
+    <section id="tab-c" class="tab-content" style="display:none;">
+        <div class="panel">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">01</span> &nbsp; Source GIF</span>
+                <span>GIF ONLY</span>
+            </div>
+            <div class="drop" id="c-drop" tabindex="0">
+                <div class="big">Drop a GIF here</div>
+                <div class="small">or click to choose a file</div>
+            </div>
+            <input type="file" id="c-file" accept="image/gif" class="hidden">
+            <div id="c-err" class="alert-danger hidden" style="margin-top:16px;"><div class="tag">Can't read that</div><span></span></div>
+        </div>
+
+        <div class="panel hidden" id="c-settings">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">02</span> &nbsp; Crop Area</span>
+                <span>DRAG TO SELECT</span>
+            </div>
+            <div class="media-stage">
+                <div class="media-wrap active" id="c-wrap">
+                    <img id="c-img" alt="GIF to crop" draggable="false">
+                    <div class="crop-box"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div>
+                </div>
+            </div>
+            <div class="stat-grid" id="c-src-stats"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="c-ratio">Aspect ratio</label>
+                    <select class="form-select" id="c-ratio">
+                        <option value="free">Free</option>
+                        <option value="1:1">1:1 Square</option>
+                        <option value="4:5">4:5 Portrait</option>
+                        <option value="9:16">9:16 Story</option>
+                        <option value="16:9">16:9 Wide</option>
+                        <option value="3:2">3:2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Crop (x, y, width, height)</label>
+                    <div class="form-row" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;">
+                        <input type="number" class="form-input" id="c-cx" min="0" aria-label="Crop X">
+                        <input type="number" class="form-input" id="c-cy" min="0" aria-label="Crop Y">
+                        <input type="number" class="form-input" id="c-cw" min="1" aria-label="Crop width">
+                        <input type="number" class="form-input" id="c-ch" min="1" aria-label="Crop height">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="c-colours">Colours</label>
+                    <select class="form-select" id="c-colours">
+                        <option value="256" selected>256 (best)</option>
+                        <option value="128">128</option>
+                        <option value="64">64</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="c-tol">Compression (lossy)</label>
+                    <div class="range-row" style="height:41px;"><input type="range" id="c-tol" min="0" max="40" value="0" oninput="this.nextElementSibling.textContent=this.value"><span class="range-val">0</span></div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn" id="c-go" onclick="cRun()">Crop GIF</button>
+                <button class="btn btn-secondary" onclick="cropC.reset()">Reset area</button>
+            </div>
+            <div class="progress"><div id="c-bar"></div></div>
+            <div class="status" id="c-status"></div>
+        </div>
+
+        <div class="panel hidden" id="c-out">
+            <div class="panel-header">
+                <span><span style="color: var(--accent); font-weight: 700;">03</span> &nbsp; Result</span>
+                <span id="c-out-name"></span>
+            </div>
+            <div class="media-stage"><div class="media-wrap"><img id="c-out-img" alt="Cropped GIF"></div></div>
+            <div class="stat-grid" id="c-out-stats"></div>
+            <div class="btn-row">
+                <button class="btn" onclick="download('c')">Download GIF</button>
+                <button class="btn btn-secondary" onclick="sendTo('c','o')">Optimise it</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <span class="section-num">REF</span>
+            <h2 class="display section-title">Quick Reference</h2>
+        </div>
+        <h3 class="sub-title">What makes a GIF heavy</h3>
+        <div class="ref-grid">
+            <div class="code">Pixels</div><div class="desc">Width matters most. Halving the width roughly quarters the file. 480–600px is plenty for email.</div>
+            <div class="code">Frames</div><div class="desc">Length × frame rate. 10–15 fps looks smooth for product shots; 5–8 fps for text or slideshow-style clips.</div>
+            <div class="code">Colours</div><div class="desc">Fewer colours, smaller file. Flat graphics survive 32–64; footage usually wants 128–256.</div>
+            <div class="code">Motion</div><div class="desc">Only changed pixels get stored, so static backgrounds are cheap and handheld camera shake is expensive.</div>
+            <div class="code">Compression</div><div class="desc">Ignores near-identical pixel changes between frames. The best size-for-quality trade on real footage.</div>
+            <div class="code">Dither</div><div class="desc">Hides colour banding in gradients, but adds noise that costs bytes. Leave off unless banding is obvious.</div>
+        </div>
+        <h3 class="sub-title">Good to know</h3>
+        <div class="ref-grid">
+            <div class="code">Privacy</div><div class="desc">Files are processed in your browser tab. Nothing is uploaded or stored.</div>
+            <div class="code">iPhone .mov</div><div class="desc">HEVC videos may not play in Chrome on Windows. Export or AirDrop as "Most Compatible" (H.264) if it won't load.</div>
+            <div class="code">Speed</div><div class="desc">Long or large clips take a while and use a lot of memory. Trim first; keep it under ~300 frames.</div>
+        </div>
+    </section>
+
+    <footer class="doc-footer">
+        TJC GIF Kit · v1.0 · Maintained by Sheldon<br>
+        GIF encoding uses gifenc (MIT, Matt DesLauriers)
+    </footer>
+</div>
+
+<div class="toast" id="toast">Done.</div>
+
+<script>
+/*! gifenc 1.0.3 (subset) | MIT | (c) 2017 Matt DesLauriers | github.com/mattdesl/gifenc */
+var GIFENC=function(){function t(t=256){let r=0,e=new Uint8Array(t);return{get buffer(){return e.buffer},reset(){r=0},bytesView:()=>e.subarray(0,r),bytes:()=>e.slice(0,r),writeByte(t){n(r+1),e[r]=t,r++},writeBytes(t,c=0,a=t.length){n(r+a);for(let n=0;n<a;n++)e[r++]=t[n+c]},writeBytesView(t,c=0,a=t.byteLength){n(r+a),e.set(t.subarray(c,c+a),r),r+=a}};function n(t){var n=e.length;if(n>=t)return;t=Math.max(t,n*(n<1048576?2:1.125)>>>0),0!=n&&(t=Math.max(t,256));const c=e;e=new Uint8Array(t),r>0&&e.set(c.subarray(0,r),0)}}var r=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];function e(e,n,c,a,f=t(512),i=new Uint8Array(256),o=new Int32Array(5003),l=new Int32Array(5003)){const u=o.length,s=Math.max(2,a);i.fill(0),l.fill(0),o.fill(-1);let w=0,b=0;const y=s+1,h=y;let g=!1,m=h,A=(1<<m)-1;const v=1<<y-1,B=v+1;let d=v+2,k=0,p=c[0],M=0;for(let t=u;t<65536;t*=2)++M;M=8-M,f.writeByte(s),q(v);const U=c.length;for(let t=1;t<U;t++)t:{const r=c[t],e=(r<<12)+p;let n=r<<M^p;if(o[n]===e){p=l[n];break t}const a=0===n?1:u-n;for(;o[n]>=0;)if(n-=a,n<0&&(n+=u),o[n]===e){p=l[n];break t}q(p),p=r,d<4096?(l[n]=d++,o[n]=e):(o.fill(-1),d=v+2,g=!0,q(v))}return q(p),q(B),f.writeByte(0),f.bytesView();function q(t){for(w&=r[b],b>0?w|=t<<b:w=t,b+=m;b>=8;)i[k++]=255&w,k>=254&&(f.writeByte(k),f.writeBytesView(i,0,k),k=0),w>>=8,b-=8;if((d>A||g)&&(g?(m=h,A=(1<<m)-1,g=!1):(++m,A=12===m?1<<m:(1<<m)-1)),t==B){for(;b>0;)i[k++]=255&w,k>=254&&(f.writeByte(k),f.writeBytesView(i,0,k),k=0),w>>=8,b-=8;k>0&&(f.writeByte(k),f.writeBytesView(i,0,k),k=0)}}}function n(t,r,e){return t<<8&63488|r<<2&992|e>>3}function c(t,r,e,n){return t>>4|240&r|(240&e)<<4|(240&n)<<8}function a(t,r,e){return t>>4<<8|240&r|e>>4}function f(t,r,e){return t<r?r:t>e?e:t}function i(t){return t*t}function o(t,r,e){var n=0,c=1e100;const a=t[r],f=a.cnt,o=a.ac,l=a.rc,u=a.gc,s=a.bc;for(var w=a.fw;0!=w;w=t[w].fw){const r=t[w],a=r.cnt,y=f*a/(f+a);if(!(y>=c)){var b=0;e&&(b+=y*i(r.ac-o))>=c||(b+=y*i(r.rc-l))>=c||(b+=y*i(r.gc-u))>=c||(b+=y*i(r.bc-s))>=c||(c=b,n=w)}}a.err=c,a.nn=n}function l(){return{ac:0,rc:0,gc:0,bc:0,cnt:0,nn:0,fw:0,bk:0,tm:0,mtm:0,err:0}}function u(t,r){for(let e=0;e<t.length;e++){const n=t[e];let c=n[0]===r[0]&&n[1]===r[1]&&n[2]===r[2],a=!(n.length>=4&&r.length>=4)||n[3]===r[3];if(c&&a)return!0}return!1}return{createStream:t,lzwEncode:e,quantize:function(t,r,e={}){const{format:s="rgb565",clearAlpha:w=!0,clearAlphaColor:b=0,clearAlphaThreshold:y=0,oneBitAlpha:h=!1}=e;if(!t||!t.buffer)throw new Error("quantize() expected RGBA Uint8Array data");if(!(t instanceof Uint8Array||t instanceof Uint8ClampedArray))throw new Error("quantize() expected RGBA Uint8Array data");const g=new Uint32Array(t.buffer);let m=!1!==e.useSqrt;const A="rgba4444"===s,v=function(t,r){const e=new Array("rgb444"===r?4096:65536),f=t.length;if("rgba4444"===r)for(let r=0;r<f;++r){const n=t[r],a=n>>24&255,f=n>>16&255,i=n>>8&255,o=255&n,u=c(o,i,f,a);let s=u in e?e[u]:e[u]=l();s.rc+=o,s.gc+=i,s.bc+=f,s.ac+=a,s.cnt++}else if("rgb444"===r)for(let r=0;r<f;++r){const n=t[r],c=n>>16&255,f=n>>8&255,i=255&n,o=a(i,f,c);let u=o in e?e[o]:e[o]=l();u.rc+=i,u.gc+=f,u.bc+=c,u.cnt++}else for(let r=0;r<f;++r){const c=t[r],a=c>>16&255,f=c>>8&255,i=255&c,o=n(i,f,a);let u=o in e?e[o]:e[o]=l();u.rc+=i,u.gc+=f,u.bc+=a,u.cnt++}return e}(g,s),B=v.length,d=B-1,k=new Uint32Array(B+1);for(var p=0,M=0;M<B;++M){const t=v[M];if(null!=t){var U=1/t.cnt;A&&(t.ac*=U),t.rc*=U,t.gc*=U,t.bc*=U,v[p++]=t}}var q,V,x;for(i(r)/p<.022&&(m=!1),M=0;M<p-1;++M)v[M].fw=M+1,v[M+1].bk=M,m&&(v[M].cnt=Math.sqrt(v[M].cnt));for(m&&(v[M].cnt=Math.sqrt(v[M].cnt)),M=0;M<p;++M){o(v,M,!1);var z=v[M].err;for(V=++k[0];V>1&&!(v[q=k[x=V>>1]].err<=z);V=x)k[V]=q;k[V]=M}var E=p-r;for(M=0;M<E;){for(var C;;){var G=k[1];if((C=v[G]).tm>=C.mtm&&v[C.nn].mtm<=C.tm)break;C.mtm==d?G=k[1]=k[k[0]--]:(o(v,G,!1),C.tm=M);z=v[G].err;for(V=1;(x=V+V)<=k[0]&&(x<k[0]&&v[k[x]].err>v[k[x+1]].err&&x++,!(z<=v[q=k[x]].err));V=x)k[V]=q;k[V]=G}var I=v[C.nn],R=C.cnt,S=I.cnt;U=1/(R+S);A&&(C.ac=U*(R*C.ac+S*I.ac)),C.rc=U*(R*C.rc+S*I.rc),C.gc=U*(R*C.gc+S*I.gc),C.bc=U*(R*C.bc+S*I.bc),C.cnt+=I.cnt,C.mtm=++M,v[I.bk].fw=I.fw,v[I.fw].bk=I.bk,I.mtm=d}let F=[];var L=0;for(M=0;;++L){let t=f(Math.round(v[M].rc),0,255),r=f(Math.round(v[M].gc),0,255),e=f(Math.round(v[M].bc),0,255),n=255;if(A){if(n=f(Math.round(v[M].ac),0,255),h){n=n<=("number"==typeof h?h:127)?0:255}w&&n<=y&&(t=r=e=b,n=0)}const c=A?[t,r,e,n]:[t,r,e];if(u(F,c)||F.push(c),0==(M=v[M].fw))break}return F}}}();
+</script>
+<script>
+/* ---------- CORE START ---------- */
+
+/* Decode a GIF into fully composited RGBA frames. Returns {w, h, frames:[{rgba, delay(ms)}]} */
+function decodeGif(b) {
+    if (b[0] !== 0x47 || b[1] !== 0x49 || b[2] !== 0x46) throw new Error('Not a GIF file');
+    const u16 = i => b[i] | (b[i + 1] << 8);
+    const W = u16(6), H = u16(8), packed = b[10];
+    let p = 13, gct = null;
+    if (packed & 0x80) { const n = 2 << (packed & 7); gct = b.subarray(p, p + n * 3); p += n * 3; }
+    const canvas = new Uint8ClampedArray(W * H * 4);
+    const frames = [];
+    let disposal = 0, delay = 0, trans = -1;
+    const skipBlocks = () => { while (p < b.length) { const s = b[p++]; if (!s) break; p += s; } };
+
+    while (p < b.length) {
+        const c = b[p++];
+        if (c === 0x3B) break;
+        if (c === 0x21) {
+            const label = b[p++];
+            if (label === 0xF9) {
+                const size = b[p++];
+                const pk = b[p];
+                disposal = (pk >> 2) & 7;
+                delay = u16(p + 1);
+                trans = (pk & 1) ? b[p + 3] : -1;
+                p += size;
+            }
+            skipBlocks();
+        } else if (c === 0x2C) {
+            const ix = u16(p), iy = u16(p + 2), iw = u16(p + 4), ih = u16(p + 6), ipk = b[p + 8];
+            p += 9;
+            let ct = gct;
+            if (ipk & 0x80) { const n = 2 << (ipk & 7); ct = b.subarray(p, p + n * 3); p += n * 3; }
+            const interlaced = !!(ipk & 0x40);
+            const minCode = b[p++];
+            // gather sub-blocks
+            let len = 0, q = p;
+            while (q < b.length) { const s = b[q++]; if (!s) break; len += s; q += s; }
+            const data = new Uint8Array(len);
+            let o = 0;
+            while (p < b.length) { const s = b[p++]; if (!s) break; data.set(b.subarray(p, p + s), o); o += s; p += s; }
+            const px = lzwDecode(minCode, data, iw * ih);
+
+            const saved = disposal === 3 ? canvas.slice() : null;
+            // row mapping for interlace
+            const rows = new Array(ih);
+            if (interlaced) {
+                let r = 0;
+                for (const [start, step] of [[0, 8], [4, 8], [2, 4], [1, 2]]) for (let y = start; y < ih; y += step) rows[r++] = y;
+            } else for (let y = 0; y < ih; y++) rows[y] = y;
+            if (ct) {
+                const ctLen = ct.length / 3;
+                for (let r = 0; r < ih; r++) {
+                    const y = iy + rows[r];
+                    if (y >= H) continue;
+                    for (let x = 0; x < iw; x++) {
+                        const k = px[r * iw + x];
+                        if (k === trans || k >= ctLen) continue;
+                        const X = ix + x;
+                        if (X >= W) continue;
+                        const d = (y * W + X) * 4;
+                        canvas[d] = ct[k * 3]; canvas[d + 1] = ct[k * 3 + 1]; canvas[d + 2] = ct[k * 3 + 2]; canvas[d + 3] = 255;
+                    }
+                }
+            }
+            frames.push({ rgba: canvas.slice(), delay: delay <= 1 ? 100 : delay * 10 });
+
+            if (disposal === 2) {
+                for (let y = iy; y < Math.min(H, iy + ih); y++) canvas.fill(0, (y * W + ix) * 4, (y * W + Math.min(W, ix + iw)) * 4);
+            } else if (disposal === 3 && saved) canvas.set(saved);
+            disposal = 0; delay = 0; trans = -1;
+        } else break; // unknown / corrupt: stop with what we have
+    }
+    if (!frames.length) throw new Error('No frames found');
+    return { w: W, h: H, frames };
+}
+
+function lzwDecode(minCode, data, npix) {
+    const out = new Uint8Array(npix);
+    const prefix = new Int16Array(4096), suffix = new Uint8Array(4096), stack = new Uint8Array(4097);
+    const clear = 1 << minCode, eoi = clear + 1;
+    for (let k = 0; k < clear; k++) suffix[k] = k;
+    let codeSize = minCode + 1, codeMask = (1 << codeSize) - 1, avail = clear + 2;
+    let old = -1, first = 0, datum = 0, bits = 0, i = 0, pi = 0;
+    outer:
+    while (pi < npix) {
+        while (bits < codeSize) {
+            if (i >= data.length) break outer;
+            datum |= data[i++] << bits; bits += 8;
+        }
+        let code = datum & codeMask;
+        datum >>>= codeSize; bits -= codeSize;
+        if (code === clear) { codeSize = minCode + 1; codeMask = (1 << codeSize) - 1; avail = clear + 2; old = -1; continue; }
+        if (code === eoi) break;
+        if (old === -1) { out[pi++] = suffix[code]; old = code; first = code; continue; }
+        const inCode = code;
+        let top = 0;
+        if (code >= avail) { stack[top++] = first; code = old; }
+        while (code >= clear) { stack[top++] = suffix[code]; code = prefix[code]; }
+        first = suffix[code];
+        stack[top++] = first;
+        if (avail < 4096) {
+            prefix[avail] = old; suffix[avail] = first; avail++;
+            if ((avail & codeMask) === 0 && avail < 4096) { codeSize++; codeMask += avail; }
+        }
+        old = inCode;
+        while (top > 0 && pi < npix) out[pi++] = stack[--top];
+    }
+    return out;
+}
+
+/* Encode RGBA frames to a GIF.
+   opts: colours (2-256), dither (bool), tol (0-40 lossy tolerance), loop (bool) */
+async function encodeGif(frames, W, H, opts, onProg) {
+    const N = W * H;
+    const colours = Math.max(2, Math.min(256, opts.colours | 0));
+    const tol = Math.max(0, opts.tol || 0), thr = tol * tol * 3;
+
+    let hasAlpha = false;
+    outerA: for (const f of frames) { const d = f.rgba; for (let i = 3; i < d.length; i += 4) if (d[i] < 128) { hasAlpha = true; break outerA; } }
+
+    // Global palette from a sample of every frame
+    const total = frames.length * N;
+    const stride = Math.max(1, Math.ceil(total / 400000));
+    const sample = new Uint8Array((Math.ceil(total / stride) + 1) * 4);
+    let s = 0, ctr = 0;
+    for (const f of frames) {
+        const d = f.rgba;
+        for (let i = 0; i < N; i++) {
+            if (ctr++ % stride) continue;
+            const j = i * 4;
+            if (d[j + 3] < 128) continue;
+            sample[s++] = d[j]; sample[s++] = d[j + 1]; sample[s++] = d[j + 2]; sample[s++] = 255;
+        }
+    }
+    const pal = s ? GIFENC.quantize(sample.slice(0, s), colours - 1) : [[0, 0, 0]];
+    const n = pal.length, T = n;
+    const pr = new Int16Array(n), pg = new Int16Array(n), pb = new Int16Array(n);
+    for (let i = 0; i < n; i++) { pr[i] = pal[i][0]; pg[i] = pal[i][1]; pb[i] = pal[i][2]; }
+    pal.push([0, 0, 0]); // transparent slot
+
+    const cache = new Int16Array(1 << 18).fill(-1);
+    const nearest = (r, g, b) => {
+        const k = ((r >> 2) << 12) | ((g >> 2) << 6) | (b >> 2);
+        let v = cache[k];
+        if (v >= 0) return v;
+        let bd = 1e9; v = 0;
+        for (let i = 0; i < n; i++) {
+            const dr = r - pr[i], dg = g - pg[i], db = b - pb[i];
+            const dd = dr * dr * 2 + dg * dg * 4 + db * db * 3;
+            if (dd < bd) { bd = dd; v = i; }
+        }
+        cache[k] = v;
+        return v;
+    };
+
+    const shown = new Uint8Array(N), idx = new Uint8Array(N);
+    const useDiff = !hasAlpha;
+    const E = W + 2;
+    let cr = new Float32Array(E), cg = new Float32Array(E), cb = new Float32Array(E);
+    let nr = new Float32Array(E), ng = new Float32Array(E), nb = new Float32Array(E);
+    const out = [];
+    let tAcc = 0, tPrev = 0;
+
+    for (let fi = 0; fi < frames.length; fi++) {
+        const d = frames[fi].rgba, first = fi === 0;
+        let minX = W, minY = H, maxX = -1, maxY = -1;
+        if (opts.dither) { nr.fill(0); ng.fill(0); nb.fill(0); }
+        for (let y = 0; y < H; y++) {
+            if (opts.dither) {
+                let t = cr; cr = nr; nr = t; nr.fill(0);
+                t = cg; cg = ng; ng = t; ng.fill(0);
+                t = cb; cb = nb; nb = t; nb.fill(0);
+            }
+            for (let x = 0; x < W; x++) {
+                const p = y * W + x, j = p * 4;
+                if (hasAlpha && d[j + 3] < 128) { idx[p] = T; continue; }
+                let r = d[j], g = d[j + 1], b = d[j + 2];
+                if (opts.dither) {
+                    r += cr[x + 1]; g += cg[x + 1]; b += cb[x + 1];
+                    r = r < 0 ? 0 : r > 255 ? 255 : r | 0;
+                    g = g < 0 ? 0 : g > 255 ? 255 : g | 0;
+                    b = b < 0 ? 0 : b > 255 ? 255 : b | 0;
+                }
+                const ni = nearest(r, g, b);
+                let ci = ni;
+                if (useDiff && !first) {
+                    const sv = shown[p];
+                    let keep = ni === sv;
+                    if (!keep && thr > 0) {
+                        const dr = r - pr[sv], dg = g - pg[sv], db = b - pb[sv];
+                        keep = dr * dr + dg * dg + db * db <= thr;
+                    }
+                    if (keep) { idx[p] = T; ci = sv; }
+                    else {
+                        idx[p] = ni; shown[p] = ni;
+                        if (x < minX) minX = x; if (x > maxX) maxX = x;
+                        if (y < minY) minY = y; if (y > maxY) maxY = y;
+                    }
+                } else { idx[p] = ni; shown[p] = ni; }
+                if (opts.dither) {
+                    const er = (r - pr[ci]) * 0.75, eg = (g - pg[ci]) * 0.75, eb = (b - pb[ci]) * 0.75;
+                    cr[x + 2] += er * 0.4375; cg[x + 2] += eg * 0.4375; cb[x + 2] += eb * 0.4375;
+                    nr[x] += er * 0.1875; ng[x] += eg * 0.1875; nb[x] += eb * 0.1875;
+                    nr[x + 1] += er * 0.3125; ng[x + 1] += eg * 0.3125; nb[x + 1] += eb * 0.3125;
+                    nr[x + 2] += er * 0.0625; ng[x + 2] += eg * 0.0625; nb[x + 2] += eb * 0.0625;
+                }
+            }
+        }
+        tAcc += frames[fi].delay;
+        const cs = Math.round(tAcc / 10) - Math.round(tPrev / 10);
+        tPrev = tAcc;
+
+        if (first || hasAlpha) {
+            out.push({ x: 0, y: 0, w: W, h: H, data: idx.slice(), cs, disp: hasAlpha ? 2 : 1 });
+        } else if (maxX < 0) {
+            out[out.length - 1].cs += cs; // nothing changed: extend the previous frame
+        } else {
+            const w = maxX - minX + 1, h = maxY - minY + 1, sub = new Uint8Array(w * h);
+            for (let yy = 0; yy < h; yy++) sub.set(idx.subarray((minY + yy) * W + minX, (minY + yy) * W + minX + w), yy * w);
+            out.push({ x: minX, y: minY, w, h, data: sub, cs, disp: 1 });
+        }
+        if (onProg) { onProg((fi + 1) / frames.length); if (fi % 2 === 0) await new Promise(r => setTimeout(r, 0)); }
+    }
+
+    // Write the file
+    const bits = Math.max(1, Math.ceil(Math.log2(pal.length)));
+    const st = GIFENC.createStream(1 << 16);
+    const wb = v => st.writeByte(v), w16 = v => { wb(v & 255); wb((v >> 8) & 255); }, ws = t => { for (const ch of t) wb(ch.charCodeAt(0)); };
+    ws('GIF89a'); w16(W); w16(H); wb(0x80 | 0x70 | (bits - 1)); wb(0); wb(0);
+    for (let i = 0; i < (1 << bits); i++) { const c = pal[i] || [0, 0, 0]; wb(c[0]); wb(c[1]); wb(c[2]); }
+    if (opts.loop !== false) { wb(0x21); wb(0xFF); wb(11); ws('NETSCAPE2.0'); wb(3); wb(1); w16(0); wb(0); }
+    for (const f of out) {
+        wb(0x21); wb(0xF9); wb(4); wb((f.disp << 2) | 1); w16(Math.max(2, Math.min(65535, f.cs))); wb(T); wb(0);
+        wb(0x2C); w16(f.x); w16(f.y); w16(f.w); w16(f.h); wb(0);
+        GIFENC.lzwEncode(f.w, f.h, f.data, bits, st);
+    }
+    wb(0x3B);
+    return { bytes: st.bytes(), frames: out.length, colours: n };
+}
+
+function cropFrames(frames, W, c) {
+    return frames.map(f => {
+        const o = new Uint8ClampedArray(c.w * c.h * 4);
+        for (let y = 0; y < c.h; y++) {
+            const a = ((c.y + y) * W + c.x) * 4;
+            o.set(f.rgba.subarray(a, a + c.w * 4), y * c.w * 4);
+        }
+        return { rgba: o, delay: f.delay };
+    });
+}
+/* ---------- CORE END ---------- */
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const S = { v: {}, o: {}, c: {} };
+const fmtBytes = n => n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(2) + ' MB';
+const fmtSec = s => (Math.round(s * 10) / 10).toFixed(1) + 's';
+const baseName = n => (n || 'gif').replace(/\.[^.]+$/, '').replace(/-(optimised|cropped)$/, '');
+
+function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1400);
+}
+function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.tab-content').forEach(c => { c.style.display = (c.id === 'tab-' + name) ? '' : 'none'; });
+    if (name === 'c' && S.c.gif) cropC.render();
+}
+function showErr(tab, msg) {
+    const e = $(tab + '-err');
+    if (!msg) { e.classList.add('hidden'); return; }
+    e.querySelector('span').textContent = msg; e.classList.remove('hidden');
+}
+function statGrid(el, items) {
+    el.innerHTML = '';
+    for (const [lab, val, accent] of items) {
+        const d = document.createElement('div'); d.className = 'stat';
+        const l = document.createElement('div'); l.className = 'lab'; l.textContent = lab;
+        const v = document.createElement('div'); v.className = 'val small' + (accent ? ' accent' : ''); v.textContent = val;
+        d.append(l, v); el.appendChild(d);
+    }
+}
+function setBusy(tab, busy) { $(tab + '-go').disabled = busy; }
+function prog(tab, f, msg) { $(tab + '-bar').style.width = Math.round(f * 100) + '%'; if (msg !== undefined) $(tab + '-status').textContent = msg; }
+function setUrl(img, blob, key) {
+    if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+    const u = URL.createObjectURL(blob); img.dataset.url = u; img.src = u; return u;
+}
+
+function wireDrop(tab, onFile) {
+    const drop = $(tab + '-drop'), input = $(tab + '-file');
+    drop.addEventListener('click', () => input.click());
+    drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+    input.addEventListener('change', () => { if (input.files[0]) onFile(input.files[0], input.files[0].name); input.value = ''; });
+    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) onFile(f, f.name); });
+}
+
+/* Crop box controller */
+function CropBox(prefix, wrap) {
+    const box = wrap.querySelector('.crop-box');
+    const ratioSel = $(prefix + '-ratio');
+    const ins = ['x', 'y', 'w', 'h'].map(k => $(prefix + '-c' + k));
+    let nw = 1, nh = 1, c = { x: 0, y: 0, w: 1, h: 1 }, drag = null, onChange = null;
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const ratio = () => { const v = ratioSel.value; if (v === 'free') return 0; const [a, b] = v.split(':').map(Number); return a / b; };
+    function fitRatio() {
+        const r = ratio(); if (!r) return;
+        let w = c.w, h = c.h;
+        if (w / h > r) w = h * r; else h = w / r;
+        w = Math.max(1, Math.round(w)); h = Math.max(1, Math.round(h));
+        c = { x: Math.round(c.x + (c.w - w) / 2), y: Math.round(c.y + (c.h - h) / 2), w, h };
+    }
+    function render() {
+        box.style.left = (c.x / nw * 100) + '%'; box.style.top = (c.y / nh * 100) + '%';
+        box.style.width = (c.w / nw * 100) + '%'; box.style.height = (c.h / nh * 100) + '%';
+        ins[0].value = c.x; ins[1].value = c.y; ins[2].value = c.w; ins[3].value = c.h;
+        if (onChange) onChange(c);
+    }
+    function pt(e) {
+        const r = wrap.getBoundingClientRect();
+        return { x: clamp((e.clientX - r.left) / r.width * nw, 0, nw), y: clamp((e.clientY - r.top) / r.height * nh, 0, nh) };
+    }
+    function resizeTo(ax, ay, p) {
+        let w = Math.abs(p.x - ax), h = Math.abs(p.y - ay);
+        const r = ratio();
+        if (r) { if (h === 0 || w / h > r) w = h * r; else h = w / r; }
+        let x = p.x < ax ? ax - w : ax, y = p.y < ay ? ay - h : ay;
+        x = Math.round(x); y = Math.round(y); w = Math.max(1, Math.round(w)); h = Math.max(1, Math.round(h));
+        x = clamp(x, 0, nw - 1); y = clamp(y, 0, nh - 1); w = Math.min(w, nw - x); h = Math.min(h, nh - y);
+        c = { x, y, w, h };
+    }
+    wrap.addEventListener('pointerdown', e => {
+        if (!wrap.classList.contains('active')) return;
+        e.preventDefault();
+        wrap.setPointerCapture(e.pointerId);
+        const p = pt(e), hd = e.target.dataset ? e.target.dataset.h : null;
+        if (hd) drag = { m: 'r', ax: hd.includes('w') ? c.x + c.w : c.x, ay: hd.includes('n') ? c.y + c.h : c.y };
+        else if (p.x >= c.x && p.x <= c.x + c.w && p.y >= c.y && p.y <= c.y + c.h) drag = { m: 'm', ox: p.x - c.x, oy: p.y - c.y };
+        else drag = { m: 'r', ax: p.x, ay: p.y };
+    });
+    wrap.addEventListener('pointermove', e => {
+        if (!drag) return;
+        const p = pt(e);
+        if (drag.m === 'm') { c.x = clamp(Math.round(p.x - drag.ox), 0, nw - c.w); c.y = clamp(Math.round(p.y - drag.oy), 0, nh - c.h); }
+        else resizeTo(drag.ax, drag.ay, p);
+        render();
+    });
+    const end = () => {
+        if (drag && (c.w < 4 || c.h < 4)) { c = { x: 0, y: 0, w: nw, h: nh }; fitRatio(); render(); }
+        drag = null;
+    };
+    wrap.addEventListener('pointerup', end);
+    wrap.addEventListener('pointercancel', end);
+    ratioSel.addEventListener('change', () => { if (ratio()) { c = { x: 0, y: 0, w: nw, h: nh }; fitRatio(); } render(); });
+    ins.forEach(inp => inp.addEventListener('change', () => {
+        ratioSel.value = 'free';
+        let x = clamp(parseInt(ins[0].value) || 0, 0, nw - 1), y = clamp(parseInt(ins[1].value) || 0, 0, nh - 1);
+        let w = clamp(parseInt(ins[2].value) || 1, 1, nw - x), h = clamp(parseInt(ins[3].value) || 1, 1, nh - y);
+        c = { x, y, w, h }; render();
+    }));
+    return {
+        setSize(w, h) { nw = w; nh = h; c = { x: 0, y: 0, w, h }; fitRatio(); render(); },
+        reset() { ratioSel.value = 'free'; c = { x: 0, y: 0, w: nw, h: nh }; render(); },
+        get() { return Object.assign({}, c); },
+        render,
+        set onChange(fn) { onChange = fn; }
+    };
+}
+
+/* ---------- Video → GIF ---------- */
+const cropV = CropBox('v', $('v-wrap'));
+cropV.onChange = () => vEstimate();
+const cropC = CropBox('c', $('c-wrap'));
+
+wireDrop('v', (file, name) => {
+    showErr('v', '');
+    const v = $('v-video');
+    S.v.srcName = name; S.v.srcSize = file.size;
+    if (v.dataset.url) URL.revokeObjectURL(v.dataset.url);
+    v.dataset.url = URL.createObjectURL(file);
+    v.onloadedmetadata = () => {
+        if (!v.videoWidth) { showErr('v', 'No video track found in that file.'); return; }
+        $('v-loaded').classList.remove('hidden'); $('v-settings').classList.remove('hidden');
+        $('v-s-dims').textContent = v.videoWidth + '×' + v.videoHeight;
+        $('v-s-len').textContent = isFinite(v.duration) ? fmtSec(v.duration) : '?';
+        $('v-s-size').textContent = fmtBytes(file.size);
+        $('v-start').value = 0;
+        $('v-end').value = isFinite(v.duration) ? Math.min(v.duration, 10).toFixed(1) : 5;
+        $('v-width').value = Math.min(480, v.videoWidth);
+        cropV.setSize(v.videoWidth, v.videoHeight);
+        vEstimate();
+    };
+    v.onerror = () => showErr('v', 'This browser can’t decode that video. iPhone HEVC .mov files are the usual culprit: re-export as MP4 (H.264) and try again.');
+    v.src = v.dataset.url;
+});
+
+function vToggleCrop() {
+    const on = $('v-crop').checked, v = $('v-video');
+    $('v-wrap').classList.toggle('active', on);
+    $('v-crop-fields').classList.toggle('hidden', !on);
+    v.controls = !on;
+    if (on) { v.pause(); cropV.render(); }
+    vEstimate();
+}
+function vSetTime(id) { $(id).value = $('v-video').currentTime.toFixed(1); vEstimate(); }
+
+function vParams() {
+    const v = $('v-video');
+    const dur = isFinite(v.duration) ? v.duration : 0;
+    let start = Math.max(0, parseFloat($('v-start').value) || 0);
+    let end = parseFloat($('v-end').value) || 0;
+    if (dur) { start = Math.min(start, dur); end = Math.min(end, dur); }
+    const fps = parseInt($('v-fps').value);
+    const c = $('v-crop').checked ? cropV.get() : { x: 0, y: 0, w: v.videoWidth, h: v.videoHeight };
+    const outW = Math.max(16, Math.min(parseInt($('v-width').value) || 480, c.w, 1600));
+    const outH = Math.max(1, Math.round(c.h * outW / c.w));
+    const n = end > start ? Math.max(1, Math.floor((end - start) * fps)) : 0;
+    return { start, end, fps, c, outW, outH, n };
+}
+function vEstimate() {
+    if (!$('v-video').videoWidth) return;
+    const p = vParams();
+    $('v-e-frames').textContent = p.n || '–';
+    $('v-e-dims').textContent = p.outW + '×' + p.outH;
+    $('v-e-dur').textContent = p.n ? fmtSec(p.n / p.fps) : '–';
+    const warn = $('v-warn');
+    let msg = '';
+    if (!p.n) msg = 'End needs to be after start.';
+    else if (p.n > 300 || p.n * p.outW * p.outH > 90e6) msg = 'That’s a big GIF. Expect a slow build and a heavy file. Trim the clip, lower the frame rate or shrink the width.';
+    warn.classList.toggle('hidden', !msg);
+    warn.querySelector('span').textContent = msg;
+    $('v-go').disabled = !p.n;
+}
+
+function seekTo(v, t) {
+    return new Promise(res => {
+        let done = false;
+        const fin = () => { if (done) return; done = true; v.removeEventListener('seeked', fin); clearTimeout(to); res(); };
+        const to = setTimeout(fin, 4000);
+        v.addEventListener('seeked', fin);
+        v.currentTime = t;
+    });
+}
+
+async function vGenerate() {
+    const v = $('v-video'), p = vParams();
+    if (!p.n) return;
+    setBusy('v', true);
+    try {
+        v.pause();
+        const cvs = document.createElement('canvas'); cvs.width = p.outW; cvs.height = p.outH;
+        const ctx = cvs.getContext('2d', { willReadFrequently: true });
+        ctx.imageSmoothingQuality = 'high';
+        const frames = [];
+        const maxT = (isFinite(v.duration) ? v.duration : p.end) - 0.02;
+        for (let i = 0; i < p.n; i++) {
+            const t = Math.min(p.start + i / p.fps, maxT);
+            await seekTo(v, t);
+            ctx.drawImage(v, p.c.x, p.c.y, p.c.w, p.c.h, 0, 0, p.outW, p.outH);
+            frames.push({ rgba: ctx.getImageData(0, 0, p.outW, p.outH).data, delay: 1000 / p.fps });
+            prog('v', (i + 1) / p.n * 0.5, 'Grabbing frame ' + (i + 1) + ' of ' + p.n);
+        }
+        const r = await encodeGif(frames, p.outW, p.outH, {
+            colours: +$('v-colours').value, dither: $('v-dither').checked, tol: +$('v-tol').value, loop: !$('v-once').checked
+        }, f => prog('v', 0.5 + f * 0.5, 'Encoding… ' + Math.round(f * 100) + '%'));
+        const blob = new Blob([r.bytes], { type: 'image/gif' });
+        const name = baseName(S.v.srcName) + '.gif';
+        S.v.out = { blob, name };
+        setUrl($('v-out-img'), blob);
+        $('v-out-name').textContent = name;
+        statGrid($('v-out-stats'), [['File size', fmtBytes(blob.size), true], ['Dimensions', p.outW + '×' + p.outH], ['Frames', String(p.n)], ['Length', fmtSec(p.n / p.fps)]]);
+        $('v-out').classList.remove('hidden');
+        prog('v', 1, 'Done. ' + fmtBytes(blob.size));
+        $('v-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+        console.error(e); prog('v', 0, 'Failed: ' + e.message);
+    }
+    setBusy('v', false);
+}
+
+/* ---------- GIF loading (Optimise + Crop) ---------- */
+async function loadGif(tab, blob, name) {
+    showErr(tab, '');
+    let g;
+    try { g = decodeGif(new Uint8Array(await blob.arrayBuffer())); }
+    catch (e) { showErr(tab, 'That doesn’t look like a readable GIF (' + e.message + ').'); return; }
+    S[tab] = { blob, name, gif: g };
+    const dur = g.frames.reduce((a, f) => a + f.delay, 0) / 1000;
+    const stats = [['File size', fmtBytes(blob.size)], ['Dimensions', g.w + '×' + g.h], ['Frames', String(g.frames.length)], ['Length', fmtSec(dur)]];
+    $(tab + '-out').classList.add('hidden');
+    prog(tab, 0, '');
+    if (tab === 'o') {
+        setUrl($('o-img'), blob);
+        statGrid($('o-src-stats'), stats);
+        $('o-loaded').classList.remove('hidden');
+    } else {
+        setUrl($('c-img'), blob);
+        statGrid($('c-src-stats'), stats);
+        $('c-ratio').value = 'free';
+        cropC.setSize(g.w, g.h);
+    }
+    $(tab + '-settings').classList.remove('hidden');
+}
+wireDrop('o', (f, n) => loadGif('o', f, n));
+wireDrop('c', (f, n) => loadGif('c', f, n));
+
+function scaleFrames(frames, W, H, nw, nh) {
+    const a = document.createElement('canvas'); a.width = W; a.height = H;
+    const b = document.createElement('canvas'); b.width = nw; b.height = nh;
+    const ac = a.getContext('2d'), bc = b.getContext('2d', { willReadFrequently: true });
+    bc.imageSmoothingQuality = 'high';
+    return frames.map(f => {
+        ac.putImageData(new ImageData(f.rgba, W, H), 0, 0);
+        bc.clearRect(0, 0, nw, nh);
+        bc.drawImage(a, 0, 0, nw, nh);
+        return { rgba: bc.getImageData(0, 0, nw, nh).data, delay: f.delay };
+    });
+}
+
+async function oRun() {
+    const st = S.o; if (!st.gif) return;
+    setBusy('o', true);
+    try {
+        let { w: W, h: H, frames } = st.gif;
+        const skip = +$('o-skip').value;
+        if (skip > 1) {
+            const nf = [];
+            for (let i = 0; i < frames.length; i += skip) {
+                let d = 0;
+                for (let k = i; k < Math.min(i + skip, frames.length); k++) d += frames[k].delay;
+                nf.push({ rgba: frames[i].rgba, delay: d });
+            }
+            frames = nf;
+        }
+        const sc = +$('o-scale').value / 100;
+        if (sc < 1) {
+            prog('o', 0.05, 'Resizing…');
+            await new Promise(r => setTimeout(r, 0));
+            const nw = Math.max(1, Math.round(W * sc)), nh = Math.max(1, Math.round(H * sc));
+            frames = scaleFrames(frames, W, H, nw, nh); W = nw; H = nh;
+        }
+        const r = await encodeGif(frames, W, H, {
+            colours: +$('o-colours').value, dither: $('o-dither').checked, tol: +$('o-tol').value, loop: !$('o-once').checked
+        }, f => prog('o', 0.1 + f * 0.9, 'Encoding… ' + Math.round(f * 100) + '%'));
+        const blob = new Blob([r.bytes], { type: 'image/gif' });
+        const name = baseName(st.name) + '-optimised.gif';
+        S.o.out = { blob, name };
+        setUrl($('o-out-img'), blob);
+        $('o-out-name').textContent = name;
+        const saving = Math.round((1 - blob.size / st.blob.size) * 100);
+        statGrid($('o-out-stats'), [['New size', fmtBytes(blob.size), true], ['Was', fmtBytes(st.blob.size)], ['Saving', saving + '%', saving > 0], ['Dimensions', W + '×' + H], ['Frames', String(frames.length)]]);
+        const w = $('o-out-warn');
+        w.classList.toggle('hidden', saving > 0);
+        w.querySelector('span').textContent = 'This came out bigger than the original, which was already well optimised. Try fewer colours, more compression or a smaller size, or just keep the original.';
+        $('o-out').classList.remove('hidden');
+        prog('o', 1, 'Done. ' + (saving > 0 ? saving + '% smaller.' : 'No saving.'));
+        $('o-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) { console.error(e); prog('o', 0, 'Failed: ' + e.message); }
+    setBusy('o', false);
+}
+
+async function cRun() {
+    const st = S.c; if (!st.gif) return;
+    setBusy('c', true);
+    try {
+        const c = cropC.get();
+        const frames = cropFrames(st.gif.frames, st.gif.w, c);
+        const r = await encodeGif(frames, c.w, c.h, {
+            colours: +$('c-colours').value, dither: false, tol: +$('c-tol').value, loop: true
+        }, f => prog('c', f, 'Encoding… ' + Math.round(f * 100) + '%'));
+        const blob = new Blob([r.bytes], { type: 'image/gif' });
+        const name = baseName(st.name) + '-cropped.gif';
+        S.c.out = { blob, name };
+        setUrl($('c-out-img'), blob);
+        $('c-out-name').textContent = name;
+        statGrid($('c-out-stats'), [['File size', fmtBytes(blob.size), true], ['Dimensions', c.w + '×' + c.h], ['Frames', String(frames.length)], ['Was', fmtBytes(st.blob.size)]]);
+        $('c-out').classList.remove('hidden');
+        prog('c', 1, 'Done. ' + fmtBytes(blob.size));
+        $('c-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) { console.error(e); prog('c', 0, 'Failed: ' + e.message); }
+    setBusy('c', false);
+}
+
+/* ---------- Output actions ---------- */
+function download(tab) {
+    const o = S[tab].out; if (!o) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(o.blob); a.download = o.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast('Saved.');
+}
+async function sendTo(from, to) {
+    const o = S[from].out; if (!o) return;
+    switchTab(to);
+    await loadGif(to, o.blob, o.name);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast('Loaded.');
+}
+</script>
+</body>
+</html>
