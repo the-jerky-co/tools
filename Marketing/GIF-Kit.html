@@ -368,7 +368,7 @@ input[type=checkbox] { accent-color: var(--accent); }
         </div>
         <div class="doc-meta">
             <div><span class="label">Utility</span> / Video to GIF, optimise, crop</div>
-            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Version</span> / 1.1</div>
             <div><span class="label">Owner</span> / Sheldon</div>
         </div>
     </header>
@@ -446,7 +446,8 @@ input[type=checkbox] { accent-color: var(--accent); }
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="v-width">Width (px)</label>
-                    <input type="number" class="form-input" id="v-width" min="16" max="1600" step="1" value="480" oninput="vEstimate()">
+                    <input type="number" class="form-input" id="v-width" min="16" step="1" value="480" oninput="S.v.widthSet=true;vEstimate()">
+                    <div class="hint" id="v-width-hint">Matches the source. <a href="#" style="color:var(--text-dim)" onclick="vMatchSource();return false;">Reset</a></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="v-colours">Colours</label>
@@ -729,7 +730,7 @@ input[type=checkbox] { accent-color: var(--accent); }
     </section>
 
     <footer class="doc-footer">
-        TJC GIF Kit · v1.0 · Maintained by Sheldon<br>
+        TJC GIF Kit · v1.1 · Maintained by Sheldon<br>
         GIF encoding uses gifenc (MIT, Matt DesLauriers)
     </footer>
 </div>
@@ -1115,7 +1116,15 @@ function CropBox(prefix, wrap) {
 
 /* ---------- Video → GIF ---------- */
 const cropV = CropBox('v', $('v-wrap'));
-cropV.onChange = () => vEstimate();
+cropV.onChange = () => { if (!S.v.widthSet) vSyncWidth(); vEstimate(); };
+
+/* Width defaults to the source (or crop) width until someone types their own */
+function vSourceW() {
+    const v = $('v-video');
+    return $('v-crop').checked ? cropV.get().w : v.videoWidth;
+}
+function vSyncWidth() { if ($('v-video').videoWidth) $('v-width').value = vSourceW(); }
+function vMatchSource() { S.v.widthSet = false; vSyncWidth(); vEstimate(); }
 const cropC = CropBox('c', $('c-wrap'));
 
 wireDrop('v', (file, name) => {
@@ -1132,8 +1141,9 @@ wireDrop('v', (file, name) => {
         $('v-s-size').textContent = fmtBytes(file.size);
         $('v-start').value = 0;
         $('v-end').value = isFinite(v.duration) ? Math.min(v.duration, 10).toFixed(1) : 5;
-        $('v-width').value = Math.min(480, v.videoWidth);
+        S.v.widthSet = false;
         cropV.setSize(v.videoWidth, v.videoHeight);
+        vSyncWidth();
         vEstimate();
     };
     v.onerror = () => showErr('v', 'This browser can’t decode that video. iPhone HEVC .mov files are the usual culprit: re-export as MP4 (H.264) and try again.');
@@ -1146,6 +1156,7 @@ function vToggleCrop() {
     $('v-crop-fields').classList.toggle('hidden', !on);
     v.controls = !on;
     if (on) { v.pause(); cropV.render(); }
+    if (!S.v.widthSet) vSyncWidth();
     vEstimate();
 }
 function vSetTime(id) { $(id).value = $('v-video').currentTime.toFixed(1); vEstimate(); }
@@ -1158,7 +1169,7 @@ function vParams() {
     if (dur) { start = Math.min(start, dur); end = Math.min(end, dur); }
     const fps = parseInt($('v-fps').value);
     const c = $('v-crop').checked ? cropV.get() : { x: 0, y: 0, w: v.videoWidth, h: v.videoHeight };
-    const outW = Math.max(16, Math.min(parseInt($('v-width').value) || 480, c.w, 1600));
+    const outW = Math.max(16, Math.min(parseInt($('v-width').value) || c.w, c.w));
     const outH = Math.max(1, Math.round(c.h * outW / c.w));
     const n = end > start ? Math.max(1, Math.floor((end - start) * fps)) : 0;
     return { start, end, fps, c, outW, outH, n };
@@ -1168,6 +1179,8 @@ function vEstimate() {
     const p = vParams();
     $('v-e-frames').textContent = p.n || '–';
     $('v-e-dims').textContent = p.outW + '×' + p.outH;
+    const srcW = vSourceW();
+    $('v-width-hint').firstChild.textContent = p.outW >= srcW ? 'Matches the source. ' : 'Source is ' + srcW + 'px. ';
     $('v-e-dur').textContent = p.n ? fmtSec(p.n / p.fps) : '–';
     const warn = $('v-warn');
     let msg = '';
