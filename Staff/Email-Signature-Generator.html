@@ -129,6 +129,17 @@ p { margin-bottom: 12px; color: var(--text-dim); }
 .btn-secondary:disabled:hover { background: transparent; border-color: var(--border); }
 .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 
+.tab-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+.tab {
+    padding: 12px 20px; font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint);
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    cursor: pointer; transition: all 0.15s ease;
+}
+.tab:hover { color: var(--text-dim); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
+
 .steps { counter-reset: s; list-style: none; }
 .steps li { counter-increment: s; color: var(--text-dim); margin-bottom: 8px; padding-left: 32px; position: relative; }
 .steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 0; color: var(--accent); font-weight: 700; font-size: 11px; top: 1px; }
@@ -150,6 +161,7 @@ p { margin-bottom: 12px; color: var(--text-dim); }
     .doc-title { font-size: 40px; }
     .section-title { font-size: 22px; }
     .form-row { grid-template-columns: 1fr; }
+    .tab { padding: 10px 12px; font-size: 10px; }
 }
 </style>
 </head>
@@ -162,14 +174,19 @@ p { margin-bottom: 12px; color: var(--text-dim); }
         </div>
         <div class="doc-meta">
             <div><span class="label">Utility</span> / Email Signatures</div>
-            <div><span class="label">Version</span> / 1.0</div>
+            <div><span class="label">Version</span> / 1.1</div>
             <div><span class="label">Owner</span> / Sheldon</div>
         </div>
     </header>
 
     <p class="lede">
-        Enter your details. Get the standard The Jerky Co email signature as a ready-to-use HTML file. <strong>No copying an old one and swapping bits.</strong>
+        Pick the brand, enter your details. Get the standard The Jerky Co or Poppa Porky’s email signature as a ready-to-use HTML file. <strong>No copying an old one and swapping bits.</strong>
     </p>
+
+    <div class="tab-row" role="tablist">
+        <button class="tab active" data-brand="tjc" role="tab" onclick="switchBrand('tjc')">The Jerky Co</button>
+        <button class="tab" data-brand="pp" role="tab" onclick="switchBrand('pp')">Poppa Porky’s</button>
+    </div>
 
     <section>
         <div class="section-header">
@@ -199,15 +216,15 @@ p { margin-bottom: 12px; color: var(--text-dim); }
                 <div class="form-group">
                     <label class="form-label" for="phone">Phone <span class="opt">(optional)</span></label>
                     <input type="text" class="form-input" id="phone" placeholder="e.g. 0426 621 628" autocomplete="off">
-                    <p class="hint" id="phone-hint">Leave blank to drop the phone and hours.</p>
+                    <p class="hint" id="phone-hint"></p>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="hours-group">
                     <label class="form-label" for="hours">Working Hours <span class="opt">(change if different)</span></label>
                     <input type="text" class="form-input" id="hours" value="8:30am - 4:30pm, Mon to Fri" data-default="8:30am - 4:30pm, Mon to Fri" placeholder="e.g. 8:30am - 4:30pm, Mon to Fri" autocomplete="off">
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom:0; max-width:240px;">
+            <div class="form-group" id="state-group" style="margin-bottom:0; max-width:240px;">
                 <label class="form-label" for="state">State <span class="opt">(filename only)</span></label>
                 <select class="form-select" id="state">
                     <option value="WA">WA</option>
@@ -250,11 +267,12 @@ p { margin-bottom: 12px; color: var(--text-dim); }
             <li><strong>Copy Signature</strong>, then paste it into the signature box in your email settings (Outlook: Settings, Accounts, Signatures).</li>
             <li>If the layout breaks on paste, use <strong>Copy HTML Code</strong> in an HTML signature field, or send the downloaded file to IT.</li>
             <li>Hours and address are on the signature as typed. Check them before you save.</li>
+            <li>Poppa Porky’s staff: switch to the <strong>Poppa Porky’s</strong> tab first. The shared info@ inbox is filled in; swap it if you have your own.</li>
         </ol>
     </section>
 
     <footer class="doc-footer">
-        TJC Email Signature Generator · v1.0 · Maintained by Sheldon
+        TJC Email Signature Generator · v1.1 · Maintained by Sheldon
     </footer>
 </div>
 
@@ -328,6 +346,62 @@ function buildSignature(name, title, email, phone, hours) {
         '<tr><td style="padding-top:16px"><table cellpadding="0" cellspacing="0" border="0" width="500" style="width:500px"><tr><td style="font-size:10px;color:#121212;line-height:120%">' + DISCLAIMER + '</td></tr></table></td></tr></table></div>';
 }
 
+// Poppa Porky's: same icons and disclaimer, own logo strip, site and address. No socials.
+var PP = {
+    logo: 'https://cdn.shopify.com/s/files/1/0648/2241/1486/files/Email_Sig.jpg?v=1739345247',
+    site: 'https://www.poppaporkys.com.au/',
+    siteLabel: 'poppaporkys.com.au',
+    address: '4/14 Dellamarta Road Wangara WA 6065',
+    map: 'https://maps.app.goo.gl/HknNz6PW3h6AVDQEA'
+};
+
+function buildPoppaPorkys(name, title, email, phone, hours) {
+    var lines = [];
+    if (phone) {
+        lines.push(icon('phone', 'ph') + ' <a href="tel:+61' + phone.tel.slice(1) + '" ' + LINK + '>' + phone.display + '</a>');
+    }
+    lines.push(icon('email', 'em') + ' <a href="mailto:' + escAttr(email) + '" ' + LINK + '>' + esc(email) + '</a>');
+    lines.push(icon('web', 'web') + ' <a href="' + PP.site + '" ' + LINK + '>' + PP.siteLabel + '</a>');
+    lines.push(icon('loc', 'loc') + ' <a href="' + PP.map + '" ' + LINK + '>' + PP.address + '</a>');
+    return '<div dir="ltr"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Helvetica,Arial,sans-serif;color:#212121"><tr><td style="font-size:14px;padding-bottom:16px">Kind Regards</td></tr>' +
+        '<tr><td><span style="font-size:16px;font-weight:bold;color:#121212;line-height:1.2">' + esc(name) + '</span><br>' +
+        '<span style="font-size:13px;color:#121212;line-height:1.2">' + esc(title) + '</span></td></tr>' +
+        '<tr><td width="497" style="width:497px;padding-top:10px;font-size:10px;white-space:nowrap;line-height:2">' + lines.join('<br>') + '</td></tr>' +
+        '<tr><td style="padding-top:10px"><img src="' + PP.logo + '" width="196" height="50" alt="Poppa Porky&#39;s" style="width:196px;height:50px;border:0;display:block"></td></tr>' +
+        '<tr><td style="padding-top:10px"><table cellpadding="0" cellspacing="0" border="0" width="500" style="width:500px"><tr><td style="font-size:10px;color:#121212;line-height:120%">' + DISCLAIMER + '</td></tr></table></td></tr></table></div>';
+}
+
+var BRANDS = {
+    tjc: {
+        build: buildSignature, domains: ['thejerkyco.com.au'], defaultEmail: '',
+        emailPh: 'e.g. hamish.m@thejerkyco.com.au', previewEmail: 'name@thejerkyco.com.au',
+        phoneHint: 'Leave blank to drop the phone and hours.', showState: true, useHours: true
+    },
+    pp: {
+        build: buildPoppaPorkys, domains: ['poppaporkys.com', 'poppaporkys.com.au'], defaultEmail: 'info@poppaporkys.com',
+        emailPh: 'e.g. info@poppaporkys.com', previewEmail: 'info@poppaporkys.com',
+        phoneHint: 'Optional. Leave blank to drop the phone line.', showState: false, useHours: false
+    }
+};
+var brand = 'tjc';
+
+function switchBrand(b) {
+    if (b === brand) return;
+    var emailEl = document.getElementById('email');
+    // Swap the email only if it's empty or still the old brand's default, so typed addresses survive.
+    if (!emailEl.value.trim() || emailEl.value.trim() === BRANDS[brand].defaultEmail) emailEl.value = BRANDS[b].defaultEmail;
+    brand = b;
+    document.querySelectorAll('.tab').forEach(function (t) {
+        var on = t.getAttribute('data-brand') === b;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    emailEl.placeholder = BRANDS[b].emailPh;
+    document.getElementById('state-group').style.display = BRANDS[b].showState ? '' : 'none';
+    document.getElementById('hours-group').style.display = BRANDS[b].useHours ? '' : 'none';
+    update();
+}
+
 var currentHtml = '';
 var currentFilename = '26-WA-Signature.html';
 
@@ -346,7 +420,12 @@ function update() {
 
     var emailBad = email && !EMAIL_RE.test(email);
     document.getElementById('email').classList.toggle('invalid', !!emailBad);
-    setHint('email-hint', emailBad ? 'That doesn’t look like a valid email.' : '', emailBad ? 'err' : '');
+    var B = BRANDS[brand];
+    var domain = email.split('@')[1] ? email.split('@')[1].toLowerCase() : '';
+    var offBrand = email && !emailBad && B.domains.indexOf(domain) === -1;
+    if (emailBad) setHint('email-hint', 'That doesn’t look like a valid email.', 'err');
+    else if (offBrand) setHint('email-hint', 'Heads up: not a ' + B.domains[0] + ' address. Fine if that’s intended.', 'warn');
+    else setHint('email-hint', '', '');
     if (emailBad) ok = false;
 
     var phoneBad = false;
@@ -356,27 +435,27 @@ function update() {
             phoneBad = true;
             setHint('phone-hint', 'Needs 10 digits, e.g. 0426 621 628.', 'err');
             ok = false;
-        } else if (!hours) {
+        } else if (B.useHours && !hours) {
             setHint('phone-hint', 'Add working hours to show the phone.', 'warn');
             ok = false;
         } else {
             setHint('phone-hint', 'Shown as ' + phone.display, '');
         }
     } else {
-        setHint('phone-hint', 'Leave blank to drop the phone and hours.', '');
+        setHint('phone-hint', B.phoneHint, '');
     }
     document.getElementById('phone').classList.toggle('invalid', phoneBad);
 
     if (!name || !title || !email) ok = false;
 
-    var pName = name || 'Full Name', pTitle = title || 'Position', pEmail = email && !emailBad ? email : 'name@thejerkyco.com.au';
-    var shownPhone = phone && hours ? phone : null;
-    currentHtml = buildSignature(pName, pTitle, pEmail, shownPhone, hours);
+    var pName = name || 'Full Name', pTitle = title || 'Position', pEmail = email && !emailBad ? email : B.previewEmail;
+    var shownPhone = phone && (hours || !B.useHours) ? phone : null;
+    currentHtml = B.build(pName, pTitle, pEmail, shownPhone, hours);
     document.getElementById('preview').innerHTML = currentHtml;
     document.getElementById('code').textContent = currentHtml;
 
     var slug = (name || 'Signature').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'Signature';
-    currentFilename = '26-' + state + '-' + slug + '.html';
+    currentFilename = '26-' + (brand === 'pp' ? 'PP' : state) + '-' + slug + '.html';
 
     ['btn-download', 'btn-copy-sig', 'btn-copy-code'].forEach(function (id) {
         document.getElementById(id).disabled = !ok;
@@ -434,6 +513,7 @@ function downloadFile() {
 function resetAll() {
     document.querySelectorAll('.form-input').forEach(function (el) { el.value = el.getAttribute('data-default') || ''; });
     document.getElementById('state').value = 'WA';
+    document.getElementById('email').value = BRANDS[brand].defaultEmail;
     update();
 }
 
